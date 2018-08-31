@@ -1,2 +1,433 @@
 Processing services
 ===================
+
+**GITB processing services** are used to extend the capabilities of the test bed with domain-specific processing functions.
+If a utility function is needed that is not supported natively or is too complex to realise with existing GITB TDL 
+constructs, you can add it to the test bed on-the-fly by means of a processing service. Their purpose is to receive one or
+more inputs and produce output through one or more defined operations.
+
+In addition, processing services foresee the definition of **processing transactions**, which can be considered as potentially long-running
+conversations that provide context to individual operations. These transactions allow processing services to maintain state relevant to 
+a given session through which they can build upon previous work or implement important performance benefits. As an example consider a 
+processing service used to selectively retrieve the contents of a ZIP archive. If each interaction with the service was isolated the 
+full ZIP archive would need to be passed to the service with each call and the service implementation would need to extract and read it
+for every file access. By maintaining state through processing transactions the service be provided with the ZIP archive as part of one
+operation and then reuse it to lookup individual files. The processing service API foresees appropriate lifecycle operations to signal 
+the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes). Note of course that full implementation
+of transactions is optional and in cases where it is not needed can be fully skipped.
+
+In the previous description the concept of processing **operations** was mentioned. This is the way in which processing services organise
+their work, by defining a set of supported operations, each with distinct inputs and outputs, that form a cohesive whole. You may thus consider
+a processing service as a utility library of related operations that can be called as part of a specific transaction. Continuing the previous 
+example of a ZIP archive processing service, potential operations could be "initialise" to pass the archive to process, "checkExists" to check if a 
+given file exists but not return it, "extract" to lookup and return a file, and "printContents" to return a representation of the archive's contents. 
+For an operation to take place a processing transaction must first be established although whether this is actually handled within the service to 
+manage session state is up to you.
+
+.. note::
+    **Displaying processing steps:** Processing operations used in GITB TDL test cases are currently not displayed in the GITB test bed. They can 
+    be used to perform internal operations but these are currently not visible to end users.
+
+Implementing the service
+------------------------
+
+A GITB processing service is a web application that at least exposes a web service implementing the GITB processing service API [REF].
+The easiest way to get up and running is to use the template processing service available as a Maven Archetype [REF]::
+
+  mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-processing-service
+
+Once you have answered the prompts you will have a fully functioning GITB processing service implemented using the Spring Boot framework [REF]
+that you can adapt to your specific needs. Alternatively of course you can implement the service from scratch in any way and technology stack you prefer.
+In this case a very useful resource is the ``gitb-types`` library that includes classes for all GITB types, service interfaces and service clients. This 
+is available on Maven Central [REF] and can be added as a Maven dependency as follows:
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>eu.europa.ec.itb</groupId>
+        <artifactId>gitb-types</artifactId>
+        <version>1.4.0</version>
+    </dependency>
+
+For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
+need to be implemented.
+
+Service operations
+------------------
+
+The following figure illustrates the operations that a processing service needs to implement and their use by the test bed.
+
+.. figure:: ProcessingService.png
+  :align: center
+
+  Use of the processing service operations
+
+getModuleDefinition
+~~~~~~~~~~~~~~~~~~~
+
+The ``getModuleDefinition`` operation is used to return information on how the service is expected to be used. It documents:
+
+    * The identification **metadata** of the service.
+    * The **configuration** parameters it expects.
+    * The **operations** that is supports as well as their individual **inputs** and **outputs**.
+
+Configuration parameters can be seen as parameterisation of the complete service addressing all its operations. Regarding the operations,
+each contains:
+
+    * A **name** that serves to identify it and request its execution.
+    * A set of zero or more **inputs** that need to be provided for the operation.
+    * A set of zero or more **outputs** that the operation will return. These will be available 
+
+The following example shows a complete implementation of the ``getModuleDefinition`` operation.
+
+.. code-block:: java
+
+    public GetModuleDefinitionResponse getModuleDefinition(Void parameters) {
+        GetModuleDefinitionResponse response = new GetModuleDefinitionResponse();
+        response.setModule(new ProcessingModule());
+        // Set an identifier for the service.
+        response.getModule().setId(serviceId);
+        response.getModule().setMetadata(new Metadata());
+        // Set a name for the service (the identifier is reused here).
+        response.getModule().getMetadata().setName(response.getModule().getId());
+        // Set a version string for the service.
+        response.getModule().getMetadata().setVersion(serviceVersion);
+        response.getModule().setConfigs(new ConfigurationParameters());
+        // Define the supported operations as well as their input and output parameters.
+        TypedParameter inputText = createParameter("input", "string", UsageEnumeration.R, ConfigurationType.SIMPLE, "The input text to process");
+        TypedParameter outputText = createParameter("output", "string", UsageEnumeration.R, ConfigurationType.SIMPLE, "The output result");
+        response.getModule().getOperation().add(createProcessingOperation("uppercase", Arrays.asList(inputText), Arrays.asList(outputText)));
+        response.getModule().getOperation().add(createProcessingOperation("lowercase", Arrays.asList(inputText), Arrays.asList(outputText)));
+        return response;
+    }
+
+    private ProcessingOperation createProcessingOperation(String name, List<TypedParameter> input, List<TypedParameter> output) {
+        ProcessingOperation operation = new ProcessingOperation();
+        // Set the operation's name.
+        operation.setName(name);
+        // Set the operation's inputs.
+        operation.setInputs(new TypedParameters());
+        operation.getInputs().getParam().addAll(input);
+        // Set the operation's outputs.
+        operation.setOutputs(new TypedParameters());
+        operation.getOutputs().getParam().addAll(output);
+        return operation;
+    }    
+
+The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
+operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
+two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
+(done here by calling a ``createParameter`` method) is documented in in [REF].
+
+beginTransaction
+~~~~~~~~~~~~~~~~
+
+The ``beginTransaction`` operation is used to signal to the processing service that a new transaction (or session) is to be started. This operation may also receive 
+zero or more configuration properties that could be specific to the transaction in question.
+
+The processing service is expected as part of this call to create a session and return its identifier as part of the operation's response. This session is not related
+to the test session running in the test bed but is rather used only for the internal purposes of the processing service. What the test bed guarantees is that the 
+identifier that is assigned to this session will be provided back to the processing service as part of every relevant call. If your processing service does not 
+require the use of transactions, this operation's implementation is greatly simplified to simply returning an arbitrary string value as the session ID (which will be
+of no further use or consequence).
+
+A more interesting scenario is when the processing service indeed wants to maintain transaction/session state in which case it typically needs to do the following:
+
+    #. Generate a unique session ID.
+    #. Record the session ID in a way that it can subsequently retrieve it and its associated information. Implementing this session management could be recording it 
+       in-memory in a thread-safe map construct or even recording it in a database.
+    #. Return the session ID as part of the response.
+
+An example implementation from a session-aware processing service is provided in the following code block:
+
+.. code-block:: java
+
+    /*
+     * Define a thread-safe map to store session identifiers and data.
+     * Session data is recorded using a map or String keys to Objects.
+     */
+    private Map<String, Map<String, Object>> sessions = new ConcurrentHashMap<>();
+
+    public BeginTransactionResponse beginTransaction(BeginTransactionRequest beginTransactionRequest) {
+        // Generate a new unique session ID.
+        String sessionId = UUID.randomUUID().toString();
+        // Record the session ID and an initially empty session state.
+        sessions.put(sessionId, new HashMap<String, Object>());
+        BeginTransactionResponse response = new BeginTransactionResponse();
+        // Return the generated session ID as part of the response.
+        response.setSessionId(sessionId);
+        return response;
+    }
+
+From this point on, subsequent operations relevant to the specific session can obtain it based on the session ID and either add data to its state or lookup existing
+values.
+
+process
+~~~~~~~
+
+The ``process`` operation represents the core of any processing service as it is where its processing is triggered. Although processing logic is domain-specific,
+all implementations follow a common sequence of steps:
+
+    #. Retrieve and validate the name of the operation to execute.
+    #. [Optional] Retrieve the session ID to lookup existing session information.
+    #. Verify the received operation's inputs to ensure processing can proceed.
+    #. Extract the values of the inputs.
+    #. Execute the operation.
+    #. [Optional] Update the session's state with new information.
+    #. Return the result including the status report and produced outputs.
+
+These steps are illustrated in the following code example:
+
+.. code-block:: java
+
+    public ProcessResponse process(ProcessRequest processRequest) {
+        // Retrieve the operation's input.
+        List<AnyContent> input = getInput(processRequest.getInput(), "INPUT");
+        if (input.size() != 1) {
+            throw new IllegalArgumentException("No input provided");
+        }
+        // Extract the input's value.
+        String inputValue = getInputValue(input);
+        // Retrieve the name of the operation to execute.
+        String operation = processRequest.getOperation();
+        String result;
+        // Execute the operation.
+        switch (operation) {
+            case "uppercase":
+                result = inputValue.toUpperCase();
+                break;
+            case "lowercase":
+                result = inputValue.toLowerCase();
+                break;
+            default:
+                // Fail for an unknown operation name.
+                throw new IllegalArgumentException(String.format("Unexpected operation [%s]. Expected [%s] or [%s].", operation, "uppercase", "lowercase"));
+        }
+        // The actual processing is decoupled and occurs via the processHandler component.
+        ProcessResponse response = new ProcessResponse();
+        // Construct a successful status report.
+        response.setReport(createReport(TestResultType.SUCCESS));
+        // Return the result.
+        response.getOutput().add(createAnyContent("OUTPUT", result, ValueEmbeddingEnumeration.STRING));
+        return response;
+    }
+
+The above example illustrates key steps that are taking place but decouples certain actions into separate methods. These are specifically:
+
+  * The extraction the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+    what you should consider when looking up your inputs.
+  * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter offers a string value that may initially seem to be the 
+    one to use. This however could be BASE64 content or a remote URL that points to the actual content. See [REF] on what you should consider when retrieving 
+    an input's value.
+  * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check [REF].
+  * The generation of the output parameter using method ``createAnyContent()``. For details on how output values are represented check [REF].
+
+Another point to consider from this example is that the actual processing operations (simple string manipulations in this case) are taking place within the
+implementation of the ``process`` operation. A cleaner approach for non-trivial cases would be to decouple the processing into a separate component that is not
+aware of the GITB service API or constructs, especially considering that the GITB service API may be only one of the service's available interfaces. This is a
+design choice that you will need to consider when implementing your processing service.
+
+In case session state is meaningful for your service the ``process`` operation would be the place you would be leveraging it. As an example consider the 
+previously mentioned ZIP archive processing service. From a high-level perspective an implementation of this could be as follows:
+
+.. code-block:: java
+
+    public ProcessResponse process(ProcessRequest processRequest) {
+        // Get the name of the operation to execute.
+        String operation = processRequest.getOperation();
+        // Get the current session's ID.
+        String sessionId = processRequest.getSessionId();
+        ProcessResponse response = new ProcessResponse();
+        switch (operation) {
+            case "initialise":
+                /*
+                 * In the "initialise" operation we only receive and cache the archive's bytes.
+                 */
+                // Extract the archive's bytes from the operation's inputs.
+                byte[] archiveBytes = getInput("archive", processRequest);
+                // Store the reference to the archive in the session's state.
+                sessionManager.set(sessionId, "archive", archiveBytes);
+                break;
+            case "extract":
+                /*
+                 * In the "extract" operation we receive the file pqth to extrqct but not the full archive.
+                 * This operation may be called multiple times.
+                 */
+                // Extract the value of the file path input parameter.
+                String filePath = getInput("filePath", processRequest);
+                // Lookup the archive from the session's state and read it using a separate component.
+                byte[] fileBytes = zipReader.read(filePath, sessionManager.get(sessionId, "archive"));
+                // Add the file's bytes as BASE64 content in the output.
+                response.getOutput().add(createAnyContent("FILE", fileBytes, ValueEmbeddingEnumeration.BASE64));
+                break;
+            default:
+                // Fail for an unknown operation name.
+                throw new IllegalArgumentException(String.format("Unexpected operation [%s]. Expected [%s] or [%s].", operation, "initialise", "extract"));
+        }
+        // Construct a successful status report.
+        response.setReport(createReport(TestResultType.SUCCESS));
+        // Return the result.
+        return response;
+    }
+
+Parts of this implementation are abstracted (e.g. the session management details, the reading of ZIP entries through a ``zipReader`` component) but the use of 
+sessions should be clear. Basically in each ``process`` call you receive the session ID that you can leverage to associate different calls and to cache shared
+state. Finally, note that in such a service implementation it would be important to have a correct implementation of the ``endTransaction`` operation to correctly
+clear obsolete state.
+
+endTransaction
+~~~~~~~~~~~~~~
+
+The ``endTransaction`` operation is the counterpart of ``beginTransaction``. It is used when a processing transactions is considered as completed, either because it
+was explicitly ended or because the relevant test session was terminated.
+
+The processing service here is not expected to do much except from cleaning up any state that was being maintained for the session. If of course the service was not 
+maintaining sessions the implementation of this operation will be empty.
+
+An ``endTransaction`` implementation from a service that is designed to work with sessions would not differ much from the following example:
+
+.. code-block:: java
+
+    private Map<String, Map<String, Object>> sessions = new ConcurrentHashMap<>();
+
+    public Void endTransaction(BasicRequest parameters) {
+        // Retrieve the session ID from the received parameters.
+        String sessionId = parameters.getSessionId();
+        // Remove the corresponding session.
+        sessions.remove(sessionId);
+        return new Void();
+    }
+
+Configuring the web service endpoint
+------------------------------------
+
+Apart from fully implementing the expected web service operations, the processing service needs to correctly publish its service endpoint. Specifically:
+
+  * The name of the service must be "ProcessingServiceService".
+  * The name of the service port must be "ProcessingServicePort".
+  * The namespace must be set to "http://www.gitb.com/ps/v1/".
+
+Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
+could be done in a Spring implementation using CXF:
+
+.. code-block:: java
+
+    @Configuration
+    public class ProcessingServiceConfig {
+        @Bean
+        public Endpoint processingService(Bus cxfBus, ProcessingServiceImpl processingServiceImplementation) {
+            EndpointImpl endpoint = new EndpointImpl(cxfBus, processingServiceImplementation);
+            endpoint.setServiceName(new QName("http://www.gitb.com/ps/v1/", "ProcessingServiceService"));
+            endpoint.setEndpointName(new QName("http://www.gitb.com/ps/v1/", "ProcessingServicePort"));
+            endpoint.publish("/process");
+            return endpoint;
+        }
+    }
+
+Using the service through a test case
+-------------------------------------
+
+Use of a processing service in a test case is achieved with the ``process`` step [REF] including the ``bptxn`` [REF] and ``eptxn`` [REF] steps to 
+start or stop respectively a processing transaction. The following example illustrates use of a processing service to read a ZIP archive:
+
+.. code-block:: xml
+
+    <!--
+        Create a processing transaction named "t1".
+    -->
+    <bptxn txnId="t1" handler="https://ZIP_PROCESSING_SERVICE?wsdl"/>
+    <!-- 
+        Call the "initialize" operation to pass the archive to the service.
+        The service handler can read and cache the archive for the transaction.
+    -->
+    <process id="init" txnId="t1">
+        <operation>initialize</operation>
+        <input name="zip">$zipContent</input>
+    </process>
+    <!-- 
+        Call the "checkExistence" operation to see if a given entry exists.
+    -->
+    <process id="exists" txnId="t1">
+        <operation>checkExistence</operation>
+        <input name="path">'file1.xml'</input>
+    </process>
+    <!-- 
+        Call the "extract" operation to get an entry.
+    -->
+    <process id="output" txnId="t1">
+        <operation>extract</operation>
+        <input name="path">'file1.xml'</input>
+    </process>
+    <!--
+        End the transaction.
+        The service handler can remove the archive.
+    -->
+    <eptxn txnId="t1"/>
+
+In terms of mapping GITB TDL steps to service calls the following take place:
+
+  #. The ``bptxn`` step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
+     ``beginTransaction`` operation is subequently called to create a new processing transaction/session.
+  #. The ``process`` steps each trigger a ``process`` operation call, passing each time the operation name as well as the expected inputs.
+     The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
+  #. The ``eptxn`` step results in the ``endTransaction`` operation to be called to clean-up the service's session state.
+
+Using the service standalone
+----------------------------
+
+Processing services can also be called in a standalone manner to perform processing actions. You may want to do this if the processing logic you have implemented
+for use by the test bed is also useful to you outside the context of a test session.
+
+In case your service makes use of transactions/sessions you will first need to create one:
+
+.. code-block:: xml
+
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.gitb.com/ps/v1/">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <v1:BeginTransactionRequest/>
+        </soapenv:Body>
+    </soapenv:Envelope>
+
+The response to this will provide you with a session ID to use. You will need to copy these in each ``process`` call as well as signal it in the final 
+``endTransaction`` call as follows:
+
+.. code-block:: xml
+
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.gitb.com/ps/v1/">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <v1:EndTransactionRequest>
+                <sessionId>SESSION_ID</sessionId>
+            </v1:EndTransactionRequest>
+        </soapenv:Body>
+    </soapenv:Envelope>
+
+Note that if your service does not make use of transactions/sessions you could simply skip these calls and pass an arbitrary string as the session ID for
+``process`` calls.
+
+A call to the ``process`` operation is illustrated in the following example:
+
+.. code-block:: xml
+
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.gitb.com/ps/v1/" xmlns:v11="http://www.gitb.com/core/v1/">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <v1:ProcessRequest>
+                <sessionId>SESSION_ID</sessionId>
+                <operation>uppercase</operation>
+                <input name="input" embeddingMethod="STRING">
+                    <v11:value>a text</v11:value>
+                </input>
+            </v1:ProcessRequest>
+        </soapenv:Body>
+    </soapenv:Envelope>
+
+The example above should be for the most part self-evident. Points that merit highlighting are:
+
+  * The possibility to pass inputs as-is or in ``CDATA`` blocks (actually this is simply a XML feature).
+  * The ``embeddingMethod`` that is set to ``STRING``. This tells the validation service how the text value should be interpreted. Possible values are:
+
+    * ``STRING``: The value is used as-is.
+    * ``BASE64``: The value is considered as BASE64-encoded bytes.
+    * ``URI``: The value is considered to be the content retrieved from a remote URI reference.

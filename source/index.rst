@@ -3,7 +3,6 @@
 GITB Services Documentation
 ===========================
 
-
 .. Introduction
 ..	What are the GITB service specifications?
 ..		Where are they used?
@@ -21,8 +20,6 @@ GITB Services Documentation
 .. 	Processing input
 .. 	Returning output
 .. Service templates
-.. The GITB TRR
-.. Examples
 .. Index
 
 
@@ -38,5 +35,4 @@ GITB Services Documentation
    processing/index
    common/index
    templates/index
-   examples/index
    genindex
