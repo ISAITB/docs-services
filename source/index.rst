@@ -29,10 +29,10 @@ GITB Services Documentation
    :includehidden:
 
    introduction/index
-   changelog/index
    validation/index
    messaging/index
    processing/index
    common/index
    templates/index
+   changelog/index
    genindex

@@ -3,20 +3,20 @@ Processing services
 
 **GITB processing services** are used to extend the capabilities of the test bed with domain-specific processing functions.
 If a utility function is needed that is not supported natively or is too complex to realise with existing GITB TDL 
-constructs, you can add it to the test bed on-the-fly by means of a processing service. Their purpose is to receive one or
-more inputs and produce output through one or more defined operations.
+constructs, you can add it to the test bed on-the-fly by means of a processing service. Their purpose is to receive inputs and produce outputs
+through one or more defined operations.
 
-In addition, processing services foresee the definition of **processing transactions**, which can be considered as potentially long-running
+Processing services foresee the definition of **processing transactions**, which can be considered as potentially long-running
 conversations that provide context to individual operations. These transactions allow processing services to maintain state relevant to 
 a given session through which they can build upon previous work or implement important performance benefits. As an example consider a 
 processing service used to selectively retrieve the contents of a ZIP archive. If each interaction with the service was isolated the 
 full ZIP archive would need to be passed to the service with each call and the service implementation would need to extract and read it
-for every file access. By maintaining state through processing transactions the service be provided with the ZIP archive as part of one
-operation and then reuse it to lookup individual files. The processing service API foresees appropriate lifecycle operations to signal 
-the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes). Note of course that full implementation
-of transactions is optional and in cases where it is not needed can be fully skipped.
+for every file access. By maintaining state with processing transactions the service can be provided with the ZIP archive as part of one
+operation and then reuse it when looking up individual files. The processing service API foresees appropriate lifecycle operations to signal 
+the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes). Note that support for
+transactions is optional and in cases where it is not needed can be fully skipped.
 
-In the previous description the concept of processing **operations** was mentioned. This is the way in which processing services organise
+The above description mentions the concept of processing **operations**. This is the way in which processing services organise
 their work, by defining a set of supported operations, each with distinct inputs and outputs, that form a cohesive whole. You may thus consider
 a processing service as a utility library of related operations that can be called as part of a specific transaction. Continuing the previous 
 example of a ZIP archive processing service, potential operations could be "initialise" to pass the archive to process, "checkExists" to check if a 
@@ -25,7 +25,7 @@ For an operation to take place a processing transaction must first be establishe
 manage session state is up to you.
 
 .. note::
-    **Displaying processing steps:** Processing operations used in GITB TDL test cases are currently not displayed in the GITB test bed. They can 
+    **Displaying processing steps:** Processing operations used in GITB TDL test cases are currently not displayed in the test bed. They can 
     be used to perform internal operations but these are currently not visible to end users.
 
 Implementing the service
@@ -76,7 +76,7 @@ each contains:
 
     * A **name** that serves to identify it and request its execution.
     * A set of zero or more **inputs** that need to be provided for the operation.
-    * A set of zero or more **outputs** that the operation will return. These will be available 
+    * A set of zero or more **outputs** that the operation will return and made available in the test session context.
 
 The following example shows a complete implementation of the ``getModuleDefinition`` operation.
 
@@ -117,7 +117,7 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
 operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
-(done here by calling a ``createParameter`` method) is documented in in [REF].
+(done here by calling a ``createParameter`` method) is documented in [REF].
 
 beginTransaction
 ~~~~~~~~~~~~~~~~
@@ -125,18 +125,18 @@ beginTransaction
 The ``beginTransaction`` operation is used to signal to the processing service that a new transaction (or session) is to be started. This operation may also receive 
 zero or more configuration properties that could be specific to the transaction in question.
 
-The processing service is expected as part of this call to create a session and return its identifier as part of the operation's response. This session is not related
+The processing service is expected to create a session and return its identifier as part of the operation's response. This session is not related
 to the test session running in the test bed but is rather used only for the internal purposes of the processing service. What the test bed guarantees is that the 
 identifier that is assigned to this session will be provided back to the processing service as part of every relevant call. If your processing service does not 
-require the use of transactions, this operation's implementation is greatly simplified to simply returning an arbitrary string value as the session ID (which will be
+require the use of transactions, this operation's implementation can be simplified to return an arbitrary string value as the session identifier (which will be
 of no further use or consequence).
 
 A more interesting scenario is when the processing service indeed wants to maintain transaction/session state in which case it typically needs to do the following:
 
-    #. Generate a unique session ID.
-    #. Record the session ID in a way that it can subsequently retrieve it and its associated information. Implementing this session management could be recording it 
-       in-memory in a thread-safe map construct or even recording it in a database.
-    #. Return the session ID as part of the response.
+    #. Generate a unique session identifier.
+    #. Record the identifier in a way that it can subsequently retrieve it and its associated information. Implementing this session management could be recording it 
+       in-memory in a thread-safe map construct or even in a database.
+    #. Return the identifier as part of the response.
 
 An example implementation from a session-aware processing service is provided in the following code block:
 
@@ -159,7 +159,7 @@ An example implementation from a session-aware processing service is provided in
         return response;
     }
 
-From this point on, subsequent operations relevant to the specific session can obtain it based on the session ID and either add data to its state or lookup existing
+From this point on, subsequent operations relevant to the specific session can look it up using its identifier and either add data to its state or read existing
 values.
 
 process
@@ -169,7 +169,7 @@ The ``process`` operation represents the core of any processing service as it is
 all implementations follow a common sequence of steps:
 
     #. Retrieve and validate the name of the operation to execute.
-    #. [Optional] Retrieve the session ID to lookup existing session information.
+    #. [Optional] Retrieve the session identifier to lookup existing session information.
     #. Verify the received operation's inputs to ensure processing can proceed.
     #. Extract the values of the inputs.
     #. Execute the operation.
@@ -214,7 +214,7 @@ These steps are illustrated in the following code example:
 
 The above example illustrates key steps that are taking place but decouples certain actions into separate methods. These are specifically:
 
-  * The extraction the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+  * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See [REF] on
     what you should consider when looking up your inputs.
   * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter offers a string value that may initially seem to be the 
     one to use. This however could be BASE64 content or a remote URL that points to the actual content. See [REF] on what you should consider when retrieving 
@@ -250,7 +250,7 @@ previously mentioned ZIP archive processing service. From a high-level perspecti
                 break;
             case "extract":
                 /*
-                 * In the "extract" operation we receive the file pqth to extrqct but not the full archive.
+                 * In the "extract" operation we receive the file path to extract but not the full archive.
                  * This operation may be called multiple times.
                  */
                 // Extract the value of the file path input parameter.
@@ -271,20 +271,20 @@ previously mentioned ZIP archive processing service. From a high-level perspecti
     }
 
 Parts of this implementation are abstracted (e.g. the session management details, the reading of ZIP entries through a ``zipReader`` component) but the use of 
-sessions should be clear. Basically in each ``process`` call you receive the session ID that you can leverage to associate different calls and to cache shared
-state. Finally, note that in such a service implementation it would be important to have a correct implementation of the ``endTransaction`` operation to correctly
+sessions should be clear. Basically in each ``process`` call you receive the session identifier that you can leverage to associate different calls and to cache shared
+state. Finally, note that in such a service implementation it would be important to have a correct implementation of the ``endTransaction`` [REF] operation to correctly
 clear obsolete state.
 
 endTransaction
 ~~~~~~~~~~~~~~
 
-The ``endTransaction`` operation is the counterpart of ``beginTransaction``. It is used when a processing transactions is considered as completed, either because it
+The ``endTransaction`` operation is the counterpart of ``beginTransaction`` [REF]. It is used when a processing transaction is considered as completed, either because it
 was explicitly ended or because the relevant test session was terminated.
 
 The processing service here is not expected to do much except from cleaning up any state that was being maintained for the session. If of course the service was not 
 maintaining sessions the implementation of this operation will be empty.
 
-An ``endTransaction`` implementation from a service that is designed to work with sessions would not differ much from the following example:
+An ``endTransaction`` implementation for a service that is designed to work with sessions would typically resemble the following example:
 
 .. code-block:: java
 
@@ -308,7 +308,7 @@ Apart from fully implementing the expected web service operations, the processin
   * The namespace must be set to "http://www.gitb.com/ps/v1/".
 
 Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
-could be done in a Spring implementation using CXF:
+could be done in a Spring [REF] implementation using CXF [REF]:
 
 .. code-block:: java
 
@@ -366,11 +366,11 @@ start or stop respectively a processing transaction. The following example illus
 
 In terms of mapping GITB TDL steps to service calls the following take place:
 
-  #. The ``bptxn`` step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
-     ``beginTransaction`` operation is subequently called to create a new processing transaction/session.
-  #. The ``process`` steps each trigger a ``process`` operation call, passing each time the operation name as well as the expected inputs.
+  #. The ``bptxn`` [REF] step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
+     ``beginTransaction`` [REF] operation is subequently called to create a new processing transaction/session.
+  #. The ``process`` [REF] steps each trigger a ``process`` [REF] operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
-  #. The ``eptxn`` step results in the ``endTransaction`` operation to be called to clean-up the service's session state.
+  #. The ``eptxn`` [REF] step results in the ``endTransaction`` [REF] operation to be called to clean-up the service's session state.
 
 Using the service standalone
 ----------------------------
@@ -389,8 +389,8 @@ In case your service makes use of transactions/sessions you will first need to c
         </soapenv:Body>
     </soapenv:Envelope>
 
-The response to this will provide you with a session ID to use. You will need to copy these in each ``process`` call as well as signal it in the final 
-``endTransaction`` call as follows:
+The response to this will provide you with a session identifier to use. You will need to copy this in each ``process`` [REF] call as well as signal it in the final 
+``endTransaction`` [REF] call as follows:
 
 .. code-block:: xml
 
@@ -403,10 +403,10 @@ The response to this will provide you with a session ID to use. You will need to
         </soapenv:Body>
     </soapenv:Envelope>
 
-Note that if your service does not make use of transactions/sessions you could simply skip these calls and pass an arbitrary string as the session ID for
-``process`` calls.
+Note that if your service does not make use of transactions/sessions you could simply skip these calls and pass an arbitrary string as the session identifier for
+``process`` [REF] calls.
 
-A call to the ``process`` operation is illustrated in the following example:
+A call to the ``process`` [REF] operation is illustrated in the following example:
 
 .. code-block:: xml
 

@@ -3,7 +3,7 @@ Validation services
 
 **GITB validation services** are used to validate input and produce a validation report. They are arguably the simplest type
 of test service given their specific use which is reflected in the limited operations such a service needs to implement. 
-Considering their focus on validation and the simplicity of their API validation services are also easy to use as standalone
+Considering their focus on validation and the simplicity of their API, validation services are also easily used as standalone
 services for one-off validation calls.
 
 Implementing the service
@@ -21,11 +21,11 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
 
 .. code-block:: xml
 
-    <dependency>
-        <groupId>eu.europa.ec.itb</groupId>
-        <artifactId>gitb-types</artifactId>
-        <version>1.4.0</version>
-    </dependency>
+  <dependency>
+      <groupId>eu.europa.ec.itb</groupId>
+      <artifactId>gitb-types</artifactId>
+      <version>1.4.0</version>
+  </dependency>
 
 For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
 need to be implemented.
@@ -34,7 +34,6 @@ Service operations
 ------------------
 
 The following figure illustrates the operations that a validation service needs to implement and their use by the test bed.
-
 
 .. figure:: ValidationService.png
   :align: center
@@ -50,18 +49,18 @@ The ``getModuleDefinition`` operation is used to return information on how the s
   * The **configuration** parameters it expects.
   * The variable **inputs** that are expected.
 
-The difference between configuration parameters and inputs is more of a conceptual nature in that configuration parameterises the
+The difference between configuration parameters and inputs is more a conceptual point in that configuration parameterises the
 validation to take place, whereas inputs represent the actual content to validate. In practice configuration parameters are often
 skipped in favour of inputs that serve both to pass the content to validate as well as any additional properties needed by the
 validation service.
 
 This operation is the first one to be called when using the service in a standalone manner as it allows the caller to figure out the
-inputs it expects. The validation service API defines generally how inputs are passed but not how many in this case or the name and value 
-of each. When used by the test bed this operation is also important as it is used to determine:
+inputs it expects. The validation service API defines generally how inputs are passed but not how many in this specific case nor the 
+name and value of each one. When used by the test bed this operation is also important as it determines:
 
   * The types of expected inputs. This enables automatic type conversions when passing the call's parameters.
-  * The inputs that are required. The test bed checks that all required inputs are accounted for before calling the ``validate`` operation
-    to fail quickly without an unnecessary call to the service.
+  * The mandatory inputs. The test bed checks that all required inputs are accounted for before calling the ``validate`` operation
+    to fail quickly without an unnecessary service call.
 
 The following example shows a complete implementation of the ``getModuleDefinition`` operation.
 
@@ -94,7 +93,7 @@ validate
 ~~~~~~~~
 
 The ``validate`` operation is used to carry out the validation that this service is meant to perform. Implementation of the validation logic is 
-entirely domain-specific. However, all ``validate`` methods follow a common sequence of steps:
+entirely domain-specific, however all ``validate`` methods follow a common sequence of steps:
 
   #. Verify the received inputs to ensure validation can proceed.
   #. Extract the values of the inputs.
@@ -124,17 +123,17 @@ These steps are illustrated in the following code example:
 
 The above example illustrates the key steps that are taking place but decouples certain actions into separate methods. These are specifically:
 
-  * The extraction the input parameter in method ``getInput1()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+  * The extraction of the input parameter in method ``getInput1()``. Multiple input parameters may be present including ones with the same name. See [REF] on
     what you should consider when looking up your inputs.
   * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter offers a string value that may initially seem to be the 
     one to use. This however could be BASE64 content or a remote URL that points to the actual content. See [REF] on what you should consider when retrieving 
     an input's value.
   * The validation and generation of the report in method ``doValidation()``. This method captures the domain-specific validation logic and is a prime candidate
-    to decouple in a separate component. Keep in mind however that the report includes errors and warnings that may need to be generated on the fly, which also 
+    to decouple in a separate component. Keep in mind however that the report includes errors and warnings that may need to be generated on-the-fly, which also 
     may include the relevant location in the processed input (if possible). Ommiting such details is possible but diminishes the reporting power of your validator
-    considering that it would otherwise only report a "success" or "failure" result. As such, it might be necessary to construct the TAR report as you validate
-    or foresee an intermediate GITB-agnostic structure as the result of your validation that you will then convert to the expected TAR report. These are all points
-    to consider when designing your validation service. Details on how the TAR validation report itself should be populated are provided in [REF].
+    considering that it would otherwise only report a "success" or "failure" result. As such, it might be necessary to construct the ``TAR`` report as you validate
+    or foresee an intermediate GITB-agnostic structure as the result of your validation that you will then convert to the expected ``TAR`` report. These are all points
+    to consider when designing your validation service. Details on how the ``TAR`` validation report itself should be populated are provided in [REF].
 
 Configuring the web service endpoint
 ------------------------------------
@@ -146,7 +145,7 @@ Apart from fully implementing the expected web service operations, the validatio
   * The namespace must be set to "http://www.gitb.com/vs/v1/".
 
 Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
-could be done in a Spring implementation using CXF:
+could be done in a Spring [REF] implementation using CXF [REF]:
 
 .. code-block:: java
 
@@ -181,7 +180,6 @@ When the ``verify`` step is executed the following actions take place:
   #. The inputs are constructed based on the GITB TDL expressions in the test case (in the example the single ``aDocument`` input is populated 
      from the ``document`` context variable).
   #. The ``validate`` operation is called to validate the content and retrieve the report.
-
 
 Using the service standalone
 ----------------------------
