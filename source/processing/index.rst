@@ -1,3 +1,5 @@
+.. _processing:
+
 Processing services
 ===================
 
@@ -28,6 +30,8 @@ manage session state is up to you.
     **Displaying processing steps:** Processing operations used in GITB TDL test cases are currently not displayed in the test bed. They can 
     be used to perform internal operations but these are currently not visible to end users.
 
+.. _processing__implementing:
+
 Implementing the service
 ------------------------
 
@@ -52,6 +56,8 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
 For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
+.. _processing__operations:
+
 Service operations
 ------------------
 
@@ -61,6 +67,8 @@ The following figure illustrates the operations that a processing service needs 
   :align: center
 
   Use of the processing service operations
+
+.. _processing__operations__getModuleDefinition:
 
 getModuleDefinition
 ~~~~~~~~~~~~~~~~~~~
@@ -119,6 +127,8 @@ operations as well as their input and output parameters. In this example the pro
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
 (done here by calling a ``createParameter`` method) is documented in [REF].
 
+.. _processing__operations__beginTransaction:
+
 beginTransaction
 ~~~~~~~~~~~~~~~~
 
@@ -161,6 +171,8 @@ An example implementation from a session-aware processing service is provided in
 
 From this point on, subsequent operations relevant to the specific session can look it up using its identifier and either add data to its state or read existing
 values.
+
+.. _processing__operations__process:
 
 process
 ~~~~~~~
@@ -275,6 +287,8 @@ sessions should be clear. Basically in each ``process`` call you receive the ses
 state. Finally, note that in such a service implementation it would be important to have a correct implementation of the ``endTransaction`` [REF] operation to correctly
 clear obsolete state.
 
+.. _processing__operations__endTransaction:
+
 endTransaction
 ~~~~~~~~~~~~~~
 
@@ -297,6 +311,8 @@ An ``endTransaction`` implementation for a service that is designed to work with
         sessions.remove(sessionId);
         return new Void();
     }
+
+.. _processing__configuring:
 
 Configuring the web service endpoint
 ------------------------------------
@@ -323,6 +339,8 @@ could be done in a Spring [REF] implementation using CXF [REF]:
             return endpoint;
         }
     }
+
+.. _processing__using_test_case:
 
 Using the service through a test case
 -------------------------------------
@@ -371,6 +389,8 @@ In terms of mapping GITB TDL steps to service calls the following take place:
   #. The ``process`` [REF] steps each trigger a ``process`` [REF] operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
   #. The ``eptxn`` [REF] step results in the ``endTransaction`` [REF] operation to be called to clean-up the service's session state.
+
+.. _processing__using_standalone:
 
 Using the service standalone
 ----------------------------

@@ -1,3 +1,5 @@
+.. _messaging:
+
 Messaging services
 ==================
 
@@ -43,6 +45,8 @@ complete messages in memory in order to subsequently determine what should happe
 when the test bed executes a ``send`` [REF] or ``receive`` [REF] step these are more logical operations whereas what actually happens and when is up to the
 messaging service. Such concerns represent key design decisions you need to take when implementing your service.
 
+.. _messaging__callbacks:
+
 Test bed call-backs
 -------------------
 
@@ -64,6 +68,8 @@ summarise how this is used to signal received messages:
     #. The test bed, in the implementation of the ``notifyForMessage`` operation, extracts the information, stores it in the session context and signals the 
        relevant test session to proceed.
 
+.. _messaging__configuration:
+
 Exchanging configuration for a test session
 -------------------------------------------
 
@@ -84,6 +90,8 @@ Overall the configuration exchange that takes place at the start of a test sessi
     #. The user can now start the test session.
 
 The exchange of configuration for a test session takes place through the ``initiate`` operation [REF]. Check its documentation to see how to manage this.
+
+.. _messaging__implementing:
 
 Implementing the service
 ------------------------
@@ -109,6 +117,8 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
 For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
+.. _messaging__operations:
+
 Service operations
 ------------------
 
@@ -119,6 +129,8 @@ that the messaging service calls on the test bed are also presented.
   :align: center
 
   Use of the messaging service operations
+
+.. _messaging__operations__getModuleDefinition:
 
 getModuleDefinition
 ~~~~~~~~~~~~~~~~~~~
@@ -175,6 +187,8 @@ constructed with the help of a ``createParameter`` method. The full details on h
     
     Until this issue is resolved in the specification, input parameters **should always be defined as optional** (i.e. ``UsageEnumeration.O``). The presence of not
     of each expected input must then be checked in the service's ``receive`` and ``send`` implementations.
+
+.. _messaging__operations__initiate:
 
 initiate
 ~~~~~~~~
@@ -343,6 +357,8 @@ Finally, note that when calling the ``initiate`` operation, the test bed passes 
 include properties configured in the test case and also entered by the test bed user for the SUT actor. This allows the messaging service implementation to
 both consider them before returning its own configuration values and also to record them in the session for subsequent use.
 
+.. _messaging__operations__beginTransaction:
+
 beginTransaction
 ~~~~~~~~~~~~~~~~
 
@@ -362,6 +378,8 @@ left empty:
     public Void beginTransaction(BeginTransactionRequest parameters) {
         return new Void();
     }
+
+.. _messaging__operations__send:
 
 send
 ~~~~
@@ -422,6 +440,8 @@ Finally, note that when sending the actual message to the remote system we may r
 synchronous reply. This information can be passed to the test bed as the context of the ``TAR`` report that is returned in the ``send`` call's response
 (see [REF] for details on this). The returned output will subsequently be displayed as the output of the ``send`` [REF] step and may leveraged in subsequent
 test steps (see [REF]).
+
+.. _messaging__operations__receive:
 
 receive
 ~~~~~~~
@@ -536,6 +556,8 @@ Key points for you to consider with respect to this example are:
     job scheduling (to allow ``receive`` to complete) with a sufficient execution delay (to ensure the test bed is actually waiting for a ``notifyForMessage``
     call).
 
+.. _messaging__operations__endTransaction:
+
 endTransaction
 ~~~~~~~~~~~~~~
 
@@ -547,6 +569,8 @@ the end of a transaction. The call receives the session identifier but in terms 
     public Void endTransaction(BasicRequest parameters) {
         return new Void();
     }
+
+.. _messaging__operations__finalize:
 
 finalize
 ~~~~~~~~
@@ -565,6 +589,8 @@ sessions.
         sessionManager.destroySession(parameters.getSessionId());
         return new Void();
     }
+
+.. _messaging__configuring:
 
 Configuring the web service endpoint
 ------------------------------------
@@ -591,6 +617,8 @@ could be done in a Spring [REF] implementation using CXF [REF]:
             return endpoint;
         }
     }
+
+.. _messaging__using_test_case:
 
 Using the service through a test case
 -------------------------------------
@@ -649,6 +677,8 @@ In terms of mapping the test session lifecycle and GITB TDL steps to service cal
     #. The ``etxn`` [REF] step results in calling the ``endTransaction`` [REF] operation to signal the end of the transaction.
     #. The test session completes at which point the ``finalize`` [REF] operation is called. The messaging service removes the relevant 
        session from memory.
+
+.. _messaging__using_standalone:
 
 Using the service standalone
 ----------------------------

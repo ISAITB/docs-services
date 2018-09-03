@@ -1,3 +1,5 @@
+.. _templates:
+
 Template services
 =================
 
@@ -14,10 +16,14 @@ already setup to address simple scenarios. The scenario for each case is selecte
 what is going on without needing additional context and to replace the sample implementations with your actual domain-specific needs.
 The code should be self-explanatory but is nonetheless accompanied by comprehensive step-by-step documentation.
 
+.. _templates__using:
+
 Using the templates
 -------------------
 
 The sections below provide the information you need to use the templates.
+
+.. _templates__using__prerequisites:
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -40,6 +46,8 @@ to view output similar to the example)::
     Java home: D:\tools\jdk1.8.0_152\jre
     Default locale: en_GB, platform encoding: Cp1252
     OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+
+.. _templates__using__generating:
 
 Generating a new service
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +105,8 @@ You should now see output similar to the following::
 Your new service's project files are located in a subfolder named using the value you provided for ``artifactId``. Everything you need to know about 
 building, packaging and running your service is provided in file ``README.md`` at the root of the generated project.
 
+.. _templates__using__building:
+
 Building and running the service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -118,6 +128,8 @@ to create a Docker [REF] image. Documentation on each build command is provided 
 
 Descriptions on how to access and use the running services are provided per case in [REF]. 
 
+.. _templates__architecture:
+
 Template service architecture and stack
 ---------------------------------------
 
@@ -135,10 +147,14 @@ In terms of development tools:
     * Spring Boot's auto-reload capabilities are activated to facilitate development [REF].
     * The configuration and commands for Docker [REF] image creation are included.
 
+.. _templates__samples:
+
 Description of sample implementations
 -------------------------------------
 
 The following sections briefly describe the existing sample implementations for each service and how to use them.
+
+.. _templates__samples__validation:
 
 Template validation service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,15 +167,7 @@ The sample implementation is used to test that two texts match. It expects to be
 
 The WSDL of the service (using the default configuration) is available at: http://localhost:8080/services/validation?WSDL.
 
-Template processing service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The sample implementation is used to process a provided text returning its uppercase or lowercase equivalent. It foresees two operations:
-
-    * "uppercase" to convert an input named "input" to its uppercase equivalent.
-    * "lowercase" to convert an input named "input" to its lowercase equivalent.
-
-The WSDL of the service (using the default configuration) is available at: http://localhost:8080/services/process?WSDL.
+.. _templates__samples__messaging:
 
 Template messaging service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,6 +182,20 @@ The sample implementation offers the following behaviour:
 
 Using the default configuration, the WSDL of the service is available at: http://localhost:8080/services/messaging?WSDL. The REST service that is used
 to provide a text for the test bed to receive is available at http://localhost:8080/input (called for example as http://localhost:8080/input?session=SESSION_ID&message=text).
+
+.. _templates__samples__processing:
+
+Template processing service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sample implementation is used to process a provided text returning its uppercase or lowercase equivalent. It foresees two operations:
+
+    * "uppercase" to convert an input named "input" to its uppercase equivalent.
+    * "lowercase" to convert an input named "input" to its lowercase equivalent.
+
+The WSDL of the service (using the default configuration) is available at: http://localhost:8080/services/process?WSDL.
+
+.. _templates__example:
 
 Example test case
 -----------------

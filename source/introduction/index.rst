@@ -1,9 +1,13 @@
+.. _introduction:
+
 Introduction
 ============
 
 The goal of the current documentation is to explain the purpose of GITB test services, when and how to use them,
 as well as guide you in creating your own service. It is meant as a comprehensive reference but also an easy to follow guide
 to help you get started.
+
+.. _introduction__specifications:
 
 What are the GITB service specifications?
 -----------------------------------------
@@ -38,6 +42,8 @@ Currently three types of services are defined:
 
 .. _GITB project: http://www.cen.eu/work/areas/ict/ebusiness/pages/ws-gitb.aspx
 
+.. _introduction__specifications__usage:
+
 Where are they used?
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -51,6 +57,8 @@ used in a standalone manner as they are really focused on making additional capa
 services however, given also the simplicity of the involved API, are good candidates for independent use. It is often
 the case that validation services are used as part of unit testing processes.
 
+.. _introduction__specifications__maintenance:
+
 How are they maintained?
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -63,12 +71,15 @@ and its version numbers currently follow the versioning of the GITB software.
 
 .. _Interoperability Test Bed Action: https://joinup.ec.europa.eu/solution/interoperability-test-bed/about
 
+.. _introduction__concepts:
+
 Core concepts
 -------------
 
 Before diving into the GITB service specifications it is important to be aware of certain core concepts.
 
 .. index:: Test case
+.. _introduction__concepts__test_case:
 
 Test case
 ~~~~~~~~~
@@ -79,6 +90,7 @@ These are captured in a single XML file authored in the `GITB TDL`_ (GITB Test D
 .. _GITB TDL: https://www.itb.ec.europa.eu/docs/tdl/latest/
 
 .. index:: Test suite
+.. _introduction__concepts__test_suite:
 
 Test suite
 ~~~~~~~~~~
@@ -89,6 +101,7 @@ tests. A test suite is expressed as an XML file and is bundled in a ZIP archive 
 test cases and the resources they use.
 
 .. index:: Test session
+.. _introduction__concepts__test_session:
 
 Test session
 ~~~~~~~~~~~~
@@ -99,6 +112,7 @@ completes providing the session's overall result.
 
 .. index:: Test session context
 .. index:: Session context
+.. _introduction__concepts__test_session_context:
 
 Test session context
 ~~~~~~~~~~~~~~~~~~~~
@@ -115,6 +129,7 @@ any supported type, including additional nested maps.
 
 .. index:: Actor
 .. index:: SUT (System Under Test)
+.. _introduction__concepts__actor:
 
 Actor
 ~~~~~
@@ -138,7 +153,7 @@ Once actors are defined they play an important role in the testing process as fo
   they are referred to as having a role of **SUT** (System Under Test).
 
 .. index:: Messaging handlers
-.. _introduction-concepts-messaging-handlers:
+.. _introduction__concepts__service_handlers:
 
 Service handlers
 ~~~~~~~~~~~~~~~~
@@ -151,6 +166,8 @@ called locally. Such embedded implementations are of course limited to truly gen
 More information on service handlers and embedded ones in particular can be looked up in the `GITB TDL documentation`_.
 
 .. _GITB TDL documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/
+
+.. _introduction__test_service_architecture:
 
 Test service architecture
 -------------------------
@@ -201,6 +218,8 @@ further processing, messaging of validation. In short:
   * The **test bed** executes test sessions, orchestrates service calls and adds context over steps.
   * **Test services** add new capabilities on-the-fly to cover domain-specific needs.
 
+.. _introduction__test_service_campaign:
+
 Test services as part of a testing campaign
 -------------------------------------------
 
@@ -229,6 +248,8 @@ validations against multiple Schematron files. Using existing embedded validator
 validation and one per Schematron file. You could choose to replace these with a single custom validator that would display a single validation step to your users and allow
 easier updating of the validation artefacts through the single centralised service.
 
+.. _introduction__specification_links:
+
 Specification links
 -------------------
 
@@ -254,6 +275,8 @@ messaging, processing and validation services as well as the XSDs for all GITB t
 The complete set of latest GITB specifications can be downloaded from https://www.itb.ec.europa.eu/specs/latest/gitb_all.zip.
 
 The final GITB workgroup report can be downloaded here [:download:`CEN_WS_GITB3_CWA_Final.pdf`].
+
+.. _introduction__documentation_structure:
 
 Documentation structure
 -----------------------

@@ -1,3 +1,5 @@
+.. _common:
+
 Common service concepts
 =======================
 
@@ -13,6 +15,8 @@ concepts that make their use by the test bed consistent. The following points su
 * **Template services** exist per case to facilitate service development (see [REF]).
 
 The sub-sections that follow address additional common concerns of a more detailed nature.
+
+.. _common__documenting_input_output:
 
 Documenting input and output parameters 
 ---------------------------------------
@@ -61,6 +65,8 @@ no automatic type checking or verification. Unless you want to fully document a 
 .. note::
     **Defining list inputs:** When defining an input of type ``list`` a good practice is to also specify the expected contained type (i.e. the type of its elements).
     Do this by setting the type of the input in the ``getModuleDefinition`` response using the form ``list[string]`` rather than ``list`` (which however also works).
+
+.. _common__using_inputs:
 
 Using inputs
 ------------
@@ -129,6 +135,8 @@ calling a service with ``map`` or ``list`` inputs in a standalone manner (i.e. u
     </soapenv:Body>
   </soapenv:Envelope>
 
+.. _common__interpreting_input:
+
 Interpreting an input value
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -148,6 +156,8 @@ The default encoding if none is provided is assumed to be UTF-8.
     one input for the content and another for the type of validation to perform you may always assume that the content is provided as ``BASE64`` whereas the validation type 
     is always a ``STRING``. If you choose to do so make sure you document this appropriately in the inputs' description in the ``getModuleDefinition`` operation. If you 
     don't specify this it may be assumed that the input in question may be provided using any of the supported embedding methods.
+
+.. _common__returning_output:
 
 Returning outputs
 -----------------
@@ -212,6 +222,8 @@ Note that the final part of this example (setting the report's context) applies 
     values added to the validation report's context are used to enrich the display of the validation step (the ``verify`` [REF] step in GITB TDL terms) by displaying to
     the user additional information such as the validated input. These output values cannot currently be further leveraged in the calling test session.
 
+.. _common__using_output:
+
 Using service outputs in a test session
 ---------------------------------------
 
@@ -253,6 +265,8 @@ with this value that refers to the returned output. In the subsequent ``process`
 more details on GITB TDL expressions) when this is passed as the "inputFile" input of the "convert" operation. The result of the ``process`` [REF] step, in this case a ``map``
 with a key "convertedData" pointing to the converted bytes, is stored in the test session context under key "processOutput" (the ``id`` of the ``process`` [REF] step). Finally, 
 this converted data is used in the ``verify`` [REF] step where using the expression ``$processOutput{convertedData}`` it is passed as the expected "inputFile" input.
+
+.. _common__tar:
 
 Constructing a validation report (TAR)
 --------------------------------------
@@ -397,6 +411,8 @@ for the report are to complete its ``result`` and ``date``.
         report.setDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
         return report;
     }
+
+.. _common__errors:
 
 Reporting service errors
 ------------------------

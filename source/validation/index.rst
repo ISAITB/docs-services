@@ -1,3 +1,5 @@
+.. _validation:
+
 Validation services
 ===================
 
@@ -5,6 +7,8 @@ Validation services
 of test service given their specific use which is reflected in the limited operations such a service needs to implement. 
 Considering their focus on validation and the simplicity of their API, validation services are also easily used as standalone
 services for one-off validation calls.
+
+.. _validation__implementing:
 
 Implementing the service
 ------------------------
@@ -30,6 +34,8 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
 For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
+.. _validation__operations:
+
 Service operations
 ------------------
 
@@ -39,6 +45,8 @@ The following figure illustrates the operations that a validation service needs 
   :align: center
 
   Use of the validation service operations
+
+.. _validation__operations__getModuleDefinition:
 
 getModuleDefinition
 ~~~~~~~~~~~~~~~~~~~
@@ -89,6 +97,8 @@ The metadata set for a validation service (identifier, name, version and operati
 information that needs to be defined are the input parameters. In the above example these are created by calling a custom ``createParameter`` method.
 Full details on how these parameters need to be defined are provided in [REF].
 
+.. _validation__operations__validate:
+
 validate
 ~~~~~~~~
 
@@ -135,6 +145,8 @@ The above example illustrates the key steps that are taking place but decouples 
     or foresee an intermediate GITB-agnostic structure as the result of your validation that you will then convert to the expected ``TAR`` report. These are all points
     to consider when designing your validation service. Details on how the ``TAR`` validation report itself should be populated are provided in [REF].
 
+.. _validation__configuring:
+
 Configuring the web service endpoint
 ------------------------------------
 
@@ -161,6 +173,8 @@ could be done in a Spring [REF] implementation using CXF [REF]:
         }
     }
 
+.. _validation__using_test_case:
+
 Using the service through a test case
 -------------------------------------
 
@@ -180,6 +194,8 @@ When the ``verify`` step is executed the following actions take place:
   #. The inputs are constructed based on the GITB TDL expressions in the test case (in the example the single ``aDocument`` input is populated 
      from the ``document`` context variable).
   #. The ``validate`` operation is called to validate the content and retrieve the report.
+
+.. _validation__using_standalone:
 
 Using the service standalone
 ----------------------------
