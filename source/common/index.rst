@@ -9,7 +9,7 @@ concepts that make their use by the test bed consistent. The following points su
 * All services are capable of receiving **input** in the form of parameters and configuration and returning arbitrary **output**.
 * All service APIs foresee a ``getModuleDefinition`` operation that is used to **document its use**, notably how it should be called and what it returns.
 * All services can be called **through the test bed** or **directly via a SOAP web service client**.
-* Services are **web applications** that can be as simple or complicated as needed.
+* Services are **web applications** that can be as simple or as complicated as needed.
 * **Template services** exist per case to facilitate service development (see [REF]).
 
 The sub-sections that follow address additional common concerns of a more detailed nature.
@@ -18,7 +18,7 @@ Documenting input and output parameters
 ---------------------------------------
 
 The ``getModuleDefinition`` operation of each service is used to primarily define the inputs the service expects as well as its outputs. Of these, defining 
-the input parameters is of most importance as this defines how the service should be called and, in case it is called by the test bed, serves to proactively
+the input parameters is of most importance as this determines how the service should be called and, in case it is called by the test bed, serves to proactively
 check for missing required input. The following example illustrates a service where two inputs are defined:
 
 .. code-block:: java
@@ -51,8 +51,8 @@ a parameter is summarised in the following table.
 
     name, The name of the parameter. This will be used to identify it both when calling via the test bed as well as in standalone calls.
     type, The type of the parameter corresponding to one of the GITB types [REF] that can be used in test cases.
-    use, Whether or not the parameter is required (``UsageEnumeration.R``  or ``R``) or optional (``UsageEnumeration.O``  or ``O``).
-    kind, The way in which the input parameter is configured. This can always be set to ``ConfigurationType.SIMPLE`` (``SIMPLE``).
+    use, Whether or not the parameter is required (``UsageEnumeration.R``) or optional (``UsageEnumeration.O``).
+    kind, The way in which the input parameter is configured. This can always be set to ``ConfigurationType.SIMPLE``.
     desc, The description of the parameter to be displayed in the result of a ``getModuleDefinition`` call.
 
 Finally, note that output parameters may also be defined in ``getModuleDefinition`` using the same construct. This however is purely done for documentation purposes as there is
@@ -67,9 +67,9 @@ Using inputs
 
 All service types expect inputs to be passed to them. Inputs are used in the following operations:
 
-  * Operation ``validate`` of validation services.
-  * Operations ``send`` and ``receive`` of messaging services.
-  * Operation ``process`` of processing services.
+  * Operation ``validate`` [REF] of validation services.
+  * Operations ``send`` [REF] and ``receive`` [REF] of messaging services.
+  * Operation ``process`` [REF] of processing services.
 
 In each case inputs are received as a ``List`` of ``AnyContent`` objects. The ``AnyContent`` class provides a representation of the passed input including the 
 metadata needed to determine its value. It includes the following properties:
@@ -87,8 +87,8 @@ metadata needed to determine its value. It includes the following properties:
 
 As you see, regarding ``list`` and ``map`` types, the ``value`` property is empty, giving place to the ``item`` which contains the list of contained values. In case of
 a ``map`` the contained ``AnyContent`` objects' ``name`` property corresponds to their ``map`` key value. No ``name`` is present for the objects of a ``list``. Note that
-both ``map`` objects may contained further ``list`` and ``map`` objects at an arbitrary depth using the approach explained. Note that this structure is reflected when 
-calling a service with ``map`` or ``list`` inputs in a standalone manner (i.e. using a SOAP client) as the following service call example illustrates:
+``map`` objects may contain further ``list`` and ``map`` objects at an arbitrary depth using the approach explained. This structure is reflected when 
+calling a service with ``map`` or ``list`` inputs in a standalone manner (i.e. using a SOAP client) as illustrated in the following example.
 
 .. code-block:: xml
 
@@ -154,16 +154,16 @@ Returning outputs
 
 All services are used to return outputs to the test session that is calling them. Specifically:
 
-  * Validation services return a validation report from their ``validate`` operation that may contain an arbitrary set of outputs as its context [REF].
-  * Processing services receive input and produce output through their ``process`` operation.
-  * Messaging services receive output in the case of the ``send`` operation which corresponds to any synchronously received messaging response. In addition, when 
-    the ``receive`` operation signals a wait for a received message, this is provided as output through the ``notifyForMessage`` call-back operation.
+  * Validation services return a validation report from their ``validate`` [REF] operation that may contain an arbitrary set of outputs as its context [REF].
+  * Processing services receive input and produce output through their ``process`` [REF] operation.
+  * Messaging services receive output in the case of the ``send`` [REF] operation which corresponds to any synchronously received messaging response. In addition, when 
+    the ``receive`` [REF] operation signals a wait for a received message, this is provided as output through the ``notifyForMessage`` call-back operation (see [REF]).
 
-Service outputs are provided using the same ``AnyContent`` class used to process inputs [REF]. In the case of processing services this a ``List`` of ``AnyContent``
-objects that is provided directly on the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through a ``TAR`` report's
-``context`` property [REF].
+Service outputs are provided using the same ``AnyContent`` class used to process inputs [REF]. In the case of processing services this is a ``List`` of ``AnyContent``
+objects that is provided directly on the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through the ``TAR``
+report's ``context`` property [REF].
 
-The most flexible way of returning output is by defining a first ``AnyContent`` object of type ``map``. This acts a root under which you can add additional arbitrary named 
+The most flexible way of returning output is by defining a first ``AnyContent`` object of type ``map``. This acts as a root under which you can add additional arbitrary named 
 values with one or more outputs you want to return. Moreover, this map can contain nested ``list`` or ``map`` ``AnyContent`` objects allowing you to organise and group outputs
 as you wish. Constructing each ``AnyContent`` object follows the same principles in terms of e.g. values and embedding methods as described in the case of inputs [REF].
 
@@ -205,13 +205,11 @@ The following example illustrates the construction of a complex output structure
     report.setContext(output);
 
 Note that the final part of this example (setting the report's context) applies to validation and messaging services. In the case of processing services, the 
-``output`` object would be set directly on the ``ProcessResponse`` class. This difference is due to earlier updates to support returning output from messaging 
-operations  that were implemented through the ``TAR`` report to ensure backwards compatibility. Given that processing services are a later addition, their design 
-foresees a cleaner output mechanism.
+``output`` object would be set directly on the ``ProcessResponse`` class.
 
 .. note::
     **Validation service outputs:** Validation services are not meant to return output values apart from the validation result itself (a ``boolean``). The output
-    values added to the validation report's context are used to enrich the display of the validation step (the ``verify`` step in GITB TDL terms) by displaying to
+    values added to the validation report's context are used to enrich the display of the validation step (the ``verify`` [REF] step in GITB TDL terms) by displaying to
     the user additional information such as the validated input. These output values cannot currently be further leveraged in the calling test session.
 
 Using service outputs in a test session
@@ -226,9 +224,9 @@ these output values can be used in the calling test session. In terms of usable 
 In all service cases a service call's output is stored in the test session context using the key of the corresponding test case step's ``id`` attribute.
 Specifically:
 
-    * **Validation services:** The overall true/false validation result of the ``verify`` step is stored as a ``boolean`` value.
-    * **Processing services:** The output of the ``process`` step is stored as a ``map``.
-    * **Messaging services:** The output of the ``send``, ``receive`` and ``listen`` steps is stored as a ``map``.
+    * **Validation services:** The overall true/false validation result of the ``verify`` [REF] step is stored as a ``boolean`` value.
+    * **Processing services:** The output of the ``process`` [REF] step is stored as a ``map``.
+    * **Messaging services:** The output of the ``send`` [REF], ``receive`` [REF] and ``listen`` [REF] steps is stored as a ``map``.
 
 The following code sample illustrates a case where a file is received through a messaging service, processed through a processing service and then validated
 using a validation service:
@@ -249,29 +247,30 @@ using a validation service:
     </verify>
     ...
 
-In this example the ``receive`` step results in the test bed being notified by the relevant messaging service. This service has returned as output a ``map`` with one 
-element mapped to key "data" that contains the file bytes. Given that the ``receive`` step has an ``id`` of "receiveOutput" the test session context now includes a key
-with this value that refers to the returned output. In the subsequent ``process`` step the file content is referred to with the ``$receiveOutput{data}`` (see [REF] for
-more details on GITB TDL expressions) when this is passed as the "inputFile" input of the "convert" operation. The result of the ``process`` step, in this case a ``map``
-with a key "convertedData" pointing to the converted bytes, is stored in the test session context under key "processOutput" (the ``id`` of the ``process`` step). Finally, 
-this converted data is used in the ``verify`` step where using the expression ``$processOutput{convertedData}`` it is passed as the expected "inputFile" input.
+In this example the ``receive`` [REF] step results in the test bed being notified by the relevant messaging service. This service has returned as output a ``map`` with one 
+element mapped to key "data" that contains the file bytes. Given that the ``receive`` [REF] step has an ``id`` of "receiveOutput" the test session context now includes a key
+with this value that refers to the returned output. In the subsequent ``process`` [REF] step the file content is referred to with the ``$receiveOutput{data}`` (see [REF] for
+more details on GITB TDL expressions) when this is passed as the "inputFile" input of the "convert" operation. The result of the ``process`` [REF] step, in this case a ``map``
+with a key "convertedData" pointing to the converted bytes, is stored in the test session context under key "processOutput" (the ``id`` of the ``process`` [REF] step). Finally, 
+this converted data is used in the ``verify`` [REF] step where using the expression ``$processOutput{convertedData}`` it is passed as the expected "inputFile" input.
 
 Constructing a validation report (TAR)
 --------------------------------------
 
-The ``TAR`` report (short for "Test Assertion Report") is a class used to return the result of processing, typically a validation step, along with support for a success or 
-failure indication. This is used:
+The ``TAR`` report (short for "Test Assertion Report") is a class used to return the result of processing along with a "success" or 
+"failure" indication. This is used:
 
-    * By validation services to return the validation result from the ``validate`` operation (the GITB TDL ``verify`` step).
-    * By messaging services to return output from the ``send`` operation (the GITB TDL ``send`` step) as well as the asynchronously returned content relevant to the 
-      GITB TDL ``receive`` and ``listen`` steps, returned to the test bed through the ``notifyForMessage`` call-back operation.
-    * By processing services to return a "success" or "failure" status for the processing.
+    * By validation services to return the validation result from the ``validate`` [REF] operation (the GITB TDL ``verify`` [REF] step).
+    * By messaging services to return output from the ``send`` [REF] operation (the GITB TDL ``send`` [REF] step) as well as the asynchronously returned 
+      content relevant to the ``receive`` [REF] and ``listen`` [REF] steps, returned to the test bed through the ``notifyForMessage`` call-back operation
+      (see [REF]).
+    * By processing services to return a "success" or "failure" status from the ``process`` [REF] operation (the GITB TDL ``process`` [REF] step).
 
-The information included in the TAR report can be split in three main sections:
+The information included in the ``TAR`` report can be split in three main sections:
 
-    * The **context**, where arbitrary data can be added to be returned to the test bed.
-    * The **reports**, containing individual items for errors, warnings and information messages (if applicable).
-    * The general information on the report's **date**, overall **result** and report **counters** (the latter if applicable).
+    * The ``context``, where arbitrary data can be added to be returned to the test bed.
+    * The ``reports``, containing individual items for errors, warnings and information messages (if applicable).
+    * The general information on the report's ``date``, overall ``result`` and report ``counters`` (the latter if applicable).
 
 The following table documents each of these properties:
 
@@ -282,21 +281,21 @@ The following table documents each of these properties:
     counters.nrOfAssertions~ The number of information-level findings resulting from a validation.
     counters.nrOfWarnings~ The number of warning-level findings resulting from a validation.
     counters.nrOfErrors~ The number of error-level findings resulting from a validation. If at least one such finding exists the overall report should be marked as failed.
-    reports.infoOrWarningOrError~ A ``List`` of ``JAXBElement<TestAssertionReportType>`` objects, one per validation finding. In total these must match the sum of nrOfAssertions, nrOfWarnings and nrOfErrors.
+    reports.infoOrWarningOrError~ A ``List`` of ``JAXBElement<TestAssertionReportType>`` objects, one per validation finding. In total these must match the sum of ``nrOfAssertions``, ``nrOfWarnings`` and ``nrOfErrors``.
     context~ A ``AnyContent`` object that can be set to return arbitrary output to the caller (see [REF]).
     date~ The timestamp of the report's creation.
     result~ The overall result of the service call which can be ``TestResultType.SUCCESS``, ``TestResultType.FAILURE`` or ``TestResultType.UNDEFINED``.
 
-Overall when creating a TAR instance the properties you must always populate are the **date** and **result**. The **result** may at first inspection seem applicable only to
+Overall when creating a ``TAR`` instance the properties you must always populate are the ``date`` and ``result``. The ``result`` may at first inspection seem applicable only to
 validation services, however it is useful also in the case of messaging and processing services as it allows an error to be immediately signalled. An example of this
 could be a failure in the communication between a messaging service and a remote system which can be caught, reported as a result of type ``TestResultType.FAILURE``
-and further documented using values returned in the **context** property.
+and further documented using values returned in the ``context`` property.
 
-In the case of a validation service, the **infoOrWarningOrError** list is of special importance as it presents to users the detailed validation results, along with the corresponding 
-summary counters in the **nrOfAssertions**, **nrOfWarnings** and **nrOfErrors** properties. Constructing each element of the **infoOrWarningOrError** list is achieved by:
+In the case of a validation service, the ``infoOrWarningOrError`` list is of special importance as it presents to users the detailed validation results, along with the corresponding 
+summary counters in the ``nrOfAssertions``, ``nrOfWarnings`` and ``nrOfErrors`` properties. Constructing each element of the ``infoOrWarningOrError`` list is achieved by:
 
-    #. Creating the report item's content as a instance of class ``BAR``.
-    #. Creating a wrapper for this instance using the GITB JAXB ObjectFactory that identifies it as an info, warning or error message:
+    #. Creating the report item's content as an instance of class ``BAR``.
+    #. Creating a wrapper for this instance using the GITB JAXB ``ObjectFactory`` that identifies it as an info, warning or error message:
 
         * ``objectFactory.createTestAssertionGroupReportsTypeInfo`` for information messages.
         * ``objectFactory.createTestAssertionGroupReportsTypeWarning`` for warning messages.
@@ -312,15 +311,15 @@ When constructing the ``BAR`` instance for a report item you can set the propert
     location, no, An indication of the relevant location to highlight in relation to the report item. This is an arbitrary text that should make sense to the validation client.
 
 .. note::
-    **Highlighting a report item's location in the test bed:** When displaying a ``verify`` step's result, the GITB test bed leverages the **location** property of a 
-    report item to open a code editor at the specified location with the relevant message displayed in-lined. This is possible for validated content that is text, for which 
+    **Highlighting a report item's location in the test bed:** When displaying a ``verify`` [REF] step's result, the GITB test bed leverages the ``location`` property of a 
+    report item to open a code editor at the specified location with the relevant message displayed in-lined. This is possible for text-based validated content, for which 
     you need to do the following:
 
-        #. Include the content to highlight (typically the validation input) as a property in the TAR report's **context** with a given name (e.g. "INPUT").
-        #. Set the report item's **location** property with a string of the format "NAME:LINE" where "NAME" is the name of the report's context item and "LINE" is the line number.
+        #. Include the content to highlight (typically the validation input) as a property in the ``TAR`` report's ``context`` with a given name (e.g. "INPUT").
+        #. Set the report item's ``location`` property with a string of the format "NAME:LINE" where "NAME" is the name of the report's context item and "LINE" is the line number.
            Setting this for example to "INPUT:100" will link to line 100 of the "INPUT" content.
 
-The following code sample provides an example populating a report for a validation service's ``validate`` output:
+The following code sample provides an example populating a report for a validation service's ``validate`` [REF] output:
 
 .. code-block:: java
 
@@ -353,14 +352,14 @@ The following code sample provides an example populating a report for a validati
         return report;
     }
 
-This method would be called in a validation service to create a ``TAR`` object to return from the ``validate`` operation. The method is assumed to be called
+This method would be called in a validation service to create a ``TAR`` object to return from the ``validate`` [REF] operation. The method is assumed to be called
 after validation has taken place in order to build the report. Only error messages are considered for simplicity whereas the report items included contain the minimum description.
-Note how the validated content is also returned in the report's context. This is not required but provides an example of how arbitrary data can be returned. Moreover, this would
-be especially useful is each error item also included the relevant location.
+Note how the validated content is also returned in the report's ``context``. This is not required but provides an example of how arbitrary data can be returned. Moreover, this would
+be especially useful if each error item also included the relevant location.
 
 This example shows construction of the report after the actual validation has taken place. Decoupling domain-specific logic (i.e. the validation) from GITB-related code is a
-good practice as the GITB service API may only be one façade of many. In practice however it could be more tricky to achieve as report construction is often done in parallel to the validation
-(e.g. via error listener constructs used often in XML validation). Whether you choose to apply a full decoupling of domain code and GITB code is a design choice for you to make.
+good practice as the GITB service API may only be one facade of many. In practice however it could be more tricky to achieve as report construction is often done in parallel to the validation
+(e.g. via error listener constructs used in XML validation). Whether you choose to enforce a full decoupling of domain-specific code and GITB code is a design choice you will need to make.
 
 To present a simpler case of report construction you can consider the following example from a messaging service:
 
@@ -386,7 +385,7 @@ In this example we pass back the message received to the test bed along with an 
 as successful and will expose the received content in the test session context for subsequent use (see [REF] for details).
 
 Finally, the simplest kind of report is the one returned from reporting services as in this case the report itself is not used to return output. In this case the only requirements
-for the report are to complete its result and date.
+for the report are to complete its ``result`` and ``date``.
 
 .. code-block:: java
 
@@ -407,6 +406,6 @@ Unexpected service errors can be handled in two ways:
     * They can be simply left uncaught, resulting in a SOAP fault.
     * They can be caught and signalled by returning the output ``TAR`` report with result ``TestResultType.FAILURE``.
 
-In both cases the result will be that the test bed will display the relevant GITB TDL step as failed. The approach of returning a TAR report with a ``TestResultType.FAILURE`` result
-could be interesting if you want to return additional information regarding the error. This approach is possible for services relating to GITB TDL steps that are visually presented, 
-notably those of validation and messaging services.
+Both approaches will result in the test bed displaying the relevant GITB TDL step as failed. The approach of returning a ``TAR`` report with a ``TestResultType.FAILURE`` result
+could be interesting if you want to return additional information regarding the error. This approach is possible for services linked to GITB TDL steps that are visually presented, 
+i.e. those of validation and messaging services.
