@@ -1,6 +1,6 @@
-# Documentation for GITB TDL
+# Documentation for GITB services
 
-The GITB TDL documentation is built using restructured text and Sphinx. The theme used is the RTD (Read The Docs theme).
+The GITB services documentation is built using restructured text and Sphinx. The theme used is the RTD (Read The Docs theme).
 
 ## Installation
 
@@ -34,4 +34,3 @@ This is then used as "sphinx_rtd_theme"
 
 To generate the HTML documentation issue (from the current folder): `make html`. The output is stored in folder "build"
 To fully cleanup the produced documentation: `make clean`.
-
