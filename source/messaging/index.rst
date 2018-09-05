@@ -28,21 +28,21 @@ To better understand this last point consider the example of a test on asynchron
     #. System B posts this response message on the remote queue for System A (the test bed) to pick up.
     #. The test bed picks up the response message and validates its contents.
 
-An implementation of a messaging service for this type of communication would, upon reception of ``send`` calls [REF], post the message on the queue.
-When receiving a ``receive`` call [REF], the service will start polling the message queue to see if a new message has arrived from System B, and if so, 
+An implementation of a messaging service for this type of communication would, upon reception of :ref:`messaging__operations__send` calls, post the message on the queue.
+When receiving a :ref:`messaging__operations__receive` call, the service will start polling the message queue to see if a new message has arrived from System B, and if so, 
 will notify the test bed. If the queue in question is used by multiple systems concurrently and potentially in multiple concurrent test sessions, 
 we are faced with the problem of how to correlate messages with test sessions. This is a prime case where maintaining state in the messaging
 service is key. Doing so typically involves the following steps:
 
     #. When the test session starts the messaging service creates a session.
-    #. At an appropriate time, either at test session start, at transaction start, or upon receiving a ``receive`` call [REF], the messaging service
+    #. At an appropriate time, either at test session start, at transaction start, or upon receiving a :ref:`messaging__operations__receive` call, the messaging service
        records correlation metadata in the session's state (the session identifier is passed by the test bed on every call).
     #. During its polling, the messaging service checks new messages against the correlation data of its active test sessions.
     #. When a match is made, the service notifies the relevant test session passing it the received content.
 
 Overall the state recorded by the messaging service can be as simple or as complicated as needed. In certain scenarios the service may maintain even
-complete messages in memory in order to subsequently determine what should happen when the test bed signals a ``receive`` [REF]. Always keep in mind that
-when the test bed executes a ``send`` [REF] or ``receive`` [REF] step these are more logical operations whereas what actually happens and when is up to the
+complete messages in memory in order to subsequently determine what should happen when the test bed signals a :ref:`messaging__operations__receive`. Always keep in mind that
+when the test bed executes a `send`_ or `receive`_ step these are more logical operations whereas what actually happens and when is up to the
 messaging service. Such concerns represent key design decisions you need to take when implementing your service.
 
 .. _messaging__callbacks:
@@ -51,16 +51,16 @@ Test bed call-backs
 -------------------
 
 Messaging services differ from validation and processing services in that they need to support asynchronous operations. When the test bed tells the
-service to ``send`` [REF] a message the operation occurs synchronously. However, when the test bed signals a ``receive`` [REF] to the service, the corresponding
+service to :ref:`messaging__operations__send` a message the operation occurs synchronously. However, when the test bed signals a :ref:`messaging__operations__receive` to the service, the corresponding
 message will often not be available immediately; the service will typically need to wait until the remote system sends a message that it can
 then pass onto the test bed. To address this need the GITB messaging service API foresees a **call-back operation** to notify the test bed. The steps that follow
 summarise how this is used to signal received messages:
 
-    #. When the test bed initiates a test session it contacts the messaging service with operation ``initiate`` [REF]. As part of this operation it
-       passes its addressing information through WS-Addressing [REF] that adds the reply address in a specific SOAP header element. The address is 
+    #. When the test bed initiates a test session it contacts the messaging service with operation :ref:`messaging__operations__initiate`. As part of this operation it
+       passes its addressing information through `WS-Addressing`_ that adds the reply address in a specific SOAP header element. The address is 
        specifically the one for its call-back service endpoint.
-    #. In the implementation of the ``initiate`` [REF] operation the service creates a session and stores in it the received test bed call-back address.
-    #. When the test bed runs a ``receive`` [REF] step it calls the service's ``receive`` [REF] operation and blocks until the expected message is received.
+    #. In the implementation of the :ref:`messaging__operations__initiate` operation the service creates a session and stores in it the received test bed call-back address.
+    #. When the test bed runs a `receive`_ step it calls the service's :ref:`messaging__operations__receive` operation and blocks until the expected message is received.
     #. The messaging service eventually receives a message from the remote system and, by comparing appropriate correlation information in the message
        and the active sessions, detects the test session to notify.
     #. The service then constructs a ``TAR`` report containing the received information and provides it along with the session identifier in a call to the 
@@ -74,7 +74,7 @@ Exchanging configuration for a test session
 -------------------------------------------
 
 An important capability of messaging services is the possibility to provide back to the test bed configuration properties to be used in a specific test 
-session. This occurs as part of the initialisation of a test session (see operation ``initiate`` [REF]) allowing session-specific configuration to be 
+session. This occurs as part of the initialisation of a test session (see operation :ref:`messaging__operations__initiate`) allowing session-specific configuration to be 
 defined. As an example consider a messaging service that is to receive messages from a remote system, in which a session-specific token needs to be 
 included. This token can be generated when the test session initialises and presented to the tester in order to configure appropriately the remote system.
 
@@ -89,22 +89,22 @@ Overall the configuration exchange that takes place at the start of a test sessi
        in test case steps.
     #. The user can now start the test session.
 
-The exchange of configuration for a test session takes place through the ``initiate`` operation [REF]. Check its documentation to see how to manage this.
+The exchange of configuration for a test session takes place through the :ref:`messaging__operations__initiate` operation. Check its documentation to see how to manage this.
 
 .. _messaging__implementing:
 
 Implementing the service
 ------------------------
 
-A GITB messaging service is a web application that at least exposes a web service implementing the GITB messaging service API [REF].
-The easiest way to get up and running is to use the template messaging service available as a Maven Archetype [REF]::
+A GITB messaging service is a web application that at least exposes a web service implementing the `GITB messaging service API`_.
+The easiest way to get up and running is to use the template messaging service available as a Maven Archetype (see :ref:`templates`)::
 
   mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-messaging-service
 
-Once you have answered the prompts you will have a fully functioning GITB messaging service implemented using the Spring Boot framework [REF]
+Once you have answered the prompts you will have a fully functioning GITB messaging service implemented using the `Spring Boot`_ framework 
 that you can adapt to your specific needs. Alternatively of course you can implement the service from scratch in any way and technology stack you prefer.
 In this case a very useful resource is the ``gitb-types`` library that includes classes for all GITB types, service interfaces and service clients. This 
-is available on Maven Central [REF] and can be added as a Maven dependency as follows:
+is available on `Maven Central`_ and can be added as a Maven dependency as follows:
 
 .. code-block:: xml
 
@@ -114,7 +114,7 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
         <version>1.4.0</version>
     </dependency>
 
-For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
+For more details on the content and use of the template service check in :ref:`templates`. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
 .. _messaging__operations:
@@ -176,17 +176,17 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 
 The metadata set for a messaging service (identifier, name and version) are not used in practice. In addition, documentation of outputs is often skipped
 as this is purely for documentation purposes. What is important to define correctly are the input parameters, the definitions of which in this example are
-constructed with the help of a ``createParameter`` method. The full details on how each input or output parameter is defined is provided in [REF].
+constructed with the help of a ``createParameter`` method. See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.
 
 .. note::
     **Required inputs for messaging services:** Specifying an input as required (i.e. setting its ``use`` to ``UsageEnumeration.R``) allows the test bed to proactively test
-    that it is provided. This however causes a problem for messaging services that both need to ``send`` and ``receive`` content as there is no distinction between the 
-    inputs of each operation in the documentation returned by the ``getModuleDefinition`` operation. A required ``send`` input will typically not apply for a ``receive``
+    that it is provided. This however causes a problem for messaging services that both need to :ref:`messaging__operations__send` and :ref:`messaging__operations__receive` content as there is no distinction between the 
+    inputs of each operation in the documentation returned by the :ref:`messaging__operations__getModuleDefinition` operation. A required :ref:`messaging__operations__send` input will typically not apply for a :ref:`messaging__operations__receive`
     call resulting always in an error when checking them from the side of the test bed. The cause of this is a historical update of the messaging service API that, in
     favour of backwards compatibility, introduced this ambiguity as a negative side-effect.
     
     Until this issue is resolved in the specification, input parameters **should always be defined as optional** (i.e. ``UsageEnumeration.O``). The presence of not
-    of each expected input must then be checked in the service's ``receive`` and ``send`` implementations.
+    of each expected input must then be checked in the service's :ref:`messaging__operations__receive` and :ref:`messaging__operations__send` implementations.
 
 .. _messaging__operations__initiate:
 
@@ -202,7 +202,7 @@ test session is created but has not actually started yet to go through the test 
     * Provide configuration properties to the test bed.
 
 As explained in the overview section, messaging services typically need sessions to manage state in order to store configuration, message correlation data,
-as well as the call-back address for the test bed to signal received messages [REF]. The ``initiate`` operation is expected to create such a session,
+as well as the call-back address for the test bed to signal received messages (see :ref:`messaging__callbacks`). The ``initiate`` operation is expected to create such a session,
 assign it a unique identifier, and return the identifier as part of the operation's response. This identifier is then returned by the test bed on all 
 subsequent calls, thus allowing the service to correctly distinguish and handle concurrently executing test sessions. The service needs to ensure that the 
 identifier is stored in a construct that will allow state to be associated with it, allowing it to be subsequently read and (most likely) updated. In terms 
@@ -214,7 +214,7 @@ The initial data to store in the session are:
     * The generated session identifier (to enable subsequent lookups).
     * The test bed's call-back address.
 
-The following example illustrates an ``initiate`` implementation (using the Spring framework [REF]) that uses a separate component to manage session state:
+The following example illustrates an ``initiate`` implementation (using the `Spring framework`_) that uses a separate component to manage session state:
 
 .. code-block:: java
 
@@ -252,7 +252,7 @@ The following example illustrates an ``initiate`` implementation (using the Spri
     }    
 
 Extraction of the "ReplyTo" header in ``getReplyToAddress()`` is critical as it is this address that allows the service to provide received messages to the
-test bed. You could skip this if the service is only ever going to be used to send messages (i.e. the relevant test cases never contain a ``receive`` [REF] step).
+test bed. You could skip this if the service is only ever going to be used to send messages (i.e. the relevant test cases never contain a `receive`_ step).
 Alternatively you could configure a fixed value for the call-back address although this is a bad practice: it ties the service to a specific test bed instance
 and it does not automatically handle address changes. With respect to session management, the above example uses a custom ``SessionManager`` component the main code of 
 which is provided in the following code block:
@@ -298,11 +298,11 @@ which is provided in the following code block:
 
 Decoupling session management into a separate component is a good practice as it allows session state to be accessed by any component involved in the
 service's processing. In addition it hides implementation details allowing e.g. a switch to using a database to take place without impacting other code.
-A fully functioning implementation of call-back and session management is provided through the available template messaging service [REF].
+A fully functioning implementation of call-back and session management is provided through the available template messaging service (see :ref:`templates`).
 
 The second main concern of the ``initiate`` operation is the management of **configuration** to address values received from the test bed and also 
 provided to the test bed as a response. To understand how configuration is managed you need to be familiar with the GITB concepts of **actors** and **endpoints**
-which are discussed in detail in the GITB TDL documentation on Test Suites [REF] and Test Cases [REF]. In summary, what you need to know is the following:
+which are discussed in detail in the GITB TDL documentation on `Test Suites`_ and `Test Cases`_. In summary, what you need to know is the following:
 
     * Test cases are based on interactions between one or more **actors** (e.g. a "Client" and a "Server"), one of which will always be the SUT
       (System Under Test) whereas the others are simulated.
@@ -364,7 +364,7 @@ beginTransaction
 
 The exchange of messages to and from the test bed always take place within a transaction. This transaction is used to determine the messaging handler 
 implementation as well as the participating actors and the direction of the communication (the "from" and "to" actors). A transaction begins through
-the ``btxn`` GITB TDL step [REF] at which time the test bed notifies the messaging service by calling its ``beginTransaction`` operation. This call includes:
+the `btxn`_ GITB TDL step at which time the test bed notifies the messaging service by calling its ``beginTransaction`` operation. This call includes:
 
     * The "from" and "to" actor names.
     * Any configuration properties passed specifically to the transaction.
@@ -423,23 +423,23 @@ The following sample provides an example implementation:
 
 The above example illustrates key steps that are taking place but decouples certain actions into separate methods. These are specifically:
 
-    * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+    * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See :ref:`common__using_inputs` on
       what you should consider when looking up your inputs.
     * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter provides a string value which in this example is the BASE64
-      content of the content to send. See [REF] on what you should consider when retrieving an input's value.
+      content of the content to send. See :ref:`common__interpreting_input` on what you should consider when retrieving an input's value.
     * The communication implementation in method ``sendContent()``. This method would be responsible for using the provided bytes to create the actual message 
       to send and then send it to the remote system.
-    * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check [REF].
+    * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check :ref:`common__tar`.
 
 One important point to highlight is the use of the session identifier that is passed into method ``sendContent()``. It is assumed that in the session we have
-already recorded the destination address of the remote system (e.g. passed as configuration in operation ``initiate`` [REF]). Alternatively, the received input 
+already recorded the destination address of the remote system (e.g. passed as configuration in operation :ref:`messaging__operations__initiate`). Alternatively, the received input 
 parameters could also include addressing information that would be used here. Determining how exactly the remote system is addressed and the communication 
 implementation is a domain-specific concern that you will need to handle when implementing your service.
 
 Finally, note that when sending the actual message to the remote system we may receive important information such as acknowledgements, identifiers or even a
 synchronous reply. This information can be passed to the test bed as the context of the ``TAR`` report that is returned in the ``send`` call's response
-(see [REF] for details on this). The returned output will subsequently be displayed as the output of the ``send`` [REF] step and may leveraged in subsequent
-test steps (see [REF]).
+(see :ref:`common__tar` for details on this). The returned output will subsequently be displayed as the output of the `send`_ step and may leveraged in subsequent
+test steps (see :ref:`common__using_output`).
 
 .. _messaging__operations__receive:
 
@@ -454,17 +454,17 @@ simulated actor receiving a message from a SUT or another simulated actor. The p
     * The session identifier.
     * A call identifier to identify a thread in case of a test case with parallel threads.
 
-As described in [REF], the test bed receives messages through asynchronous call-backs. The ``receive`` operation is called by the test bed to let the 
+As described in :ref:`messaging__callbacks`, the test bed receives messages through asynchronous call-backs. The ``receive`` operation is called by the test bed to let the 
 service know it is expecting a message and to potentially pass information pertinent to the expected message. Given that messages will be received 
 asynchronously, any such information would need to be stored in the relevant session for later use.
 
-One special case of such information is the **call identifier** mentioned above. This is used only when a test case defines a ``receive`` [REF] step within 
-a ``flow`` step [REF]. The ``flow`` [REF] step is used to run sequences of test steps in parallel meaning that the test bed may be blocked for a message on 
-any of the parallel threads. The call identifier provides the means by which the test bed can determine the specific ``receive`` step [REF] the message refers
+One special case of such information is the **call identifier** mentioned above. This is used only when a test case defines a `receive`_ step within 
+a `flow`_ step. The `flow`_ step is used to run sequences of test steps in parallel meaning that the test bed may be blocked for a message on 
+any of the parallel threads. The call identifier provides the means by which the test bed can determine the specific `receive`_ step the message refers
 to. It is expected to be stored in the session in an appropriate way so that it can be matched when a message is received and provided back to the 
-test bed. Note that by default, if no call identifier is provided in the call-back, the test session will unblock any and all blocked ``receive`` [REF] steps.
+test bed. Note that by default, if no call identifier is provided in the call-back, the test session will unblock any and all blocked `receive`_ steps.
 
-Apart from the complexity of handling the call identifier (applicable only if you use ``receive`` [REF] within a ``flow`` [REF]), the ``receive`` operation is 
+Apart from the complexity of handling the call identifier (applicable only if you use `receive`_ within a `flow`_), the ``receive`` operation is 
 often left empty:
 
 .. code-block:: java
@@ -474,7 +474,7 @@ often left empty:
     }
 
 In case you need to process inputs provided you need to follow the common approach of extracting them, verifying them and determining their value 
-(see [REF] and [REF] for details).
+(see :ref:`common__using_inputs` and :ref:`common__interpreting_input` for details).
 
 What is important to discuss is the approach through which messages sent by the remote system will be actually received by the messaging service and 
 provided back to the test bed. This approach is purely domain-specific and is determined by your specific communication protocol. In effect you will 
@@ -483,9 +483,9 @@ be a SOAP web service, a REST interface or even a polling approach driven by the
 
 What is common in all cases is that once a message is received you need to match it against one of your active sessions through appropriate correlation
 data that is also domain-specific in nature. Once a match is found you use the call-back address for the test bed (typically also stored in the session)
-and call its ``notifyForMessage`` operation. The steps you need to follow are summarised in [REF].
+and call its ``notifyForMessage`` operation. The steps you need to follow are summarised in :ref:`messaging__callbacks`.
 
-The following example (using the Spring framework [REF]) illustrates how communication received through a REST service can be processed and transferred to the test bed:
+The following example (using the `Spring framework`_) illustrates how communication received through a REST service can be processed and transferred to the test bed:
 
 .. code-block:: java
 
@@ -561,7 +561,7 @@ Key points for you to consider with respect to this example are:
 endTransaction
 ~~~~~~~~~~~~~~
 
-The ``endTransaction`` operation is the counterpart of ``beginTransaction`` and is called when the test bed executes the ``etxn`` [REF] GITB TDL step to signal
+The ``endTransaction`` operation is the counterpart of :ref:`messaging__operations__beginTransaction` and is called when the test bed executes the `etxn`_ GITB TDL step to signal
 the end of a transaction. The call receives the session identifier but in terms of implementation can typically be left empty.
 
 .. code-block:: java
@@ -602,7 +602,7 @@ Apart from fully implementing the expected web service operations, the messaging
   * The namespace must be set to "http://www.gitb.com/ms/v1/".
 
 Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
-could be done in a Spring [REF] implementation using CXF [REF]:
+could be done in a `Spring`_ implementation using `CXF`_:
 
 .. code-block:: java
 
@@ -623,7 +623,7 @@ could be done in a Spring [REF] implementation using CXF [REF]:
 Using the service through a test case
 -------------------------------------
 
-A messaging service is used by a test case whenever content is sent (step ``send`` [REF]) or received (step ``receive`` [REF]). The following example illustrates
+A messaging service is used by a test case whenever content is sent (step `send`_) or received (step `receive`_). The following example illustrates
 a test case that is using a messaging service to send a message from System1 (simulated) to System2 (the SUT), subsequently receiving from it a message
 that is validated with the help of a validation service.
 
@@ -658,24 +658,24 @@ In terms of mapping the test session lifecycle and GITB TDL steps to service cal
 
     #. Before the test session starts, the test bed detects that a messaging transaction is taking place of which the 
        service is identified from the WSDL address provided through the transaction's ``handler`` attribute. The 
-       ``initiate`` [REF] operation is called on the messaging service passing it the configuration recorded for System2. The
+       :ref:`messaging__operations__initiate` operation is called on the messaging service passing it the configuration recorded for System2. The
        messaging service creates a session and stores in it the call-back address for the test bed as well as the metadata
        needed to link received messages to the session.
     #. The test session starts.
-    #. The ``btxn`` [REF] step results in the ``beginTransaction`` [REF] operation to be called.
-    #. The ``send`` [REF] step results in the ``send`` [REF] operation to be called. This receives the message to send (provided from the 
+    #. The `btxn`_ step results in the :ref:`messaging__operations__beginTransaction` operation to be called.
+    #. The `send`_ step results in the :ref:`messaging__operations__send` operation to be called. This receives the message to send (provided from the 
        test session after evaluating ``$requestToSend``) and handles the communication to System2. The output is passed
        back to the test bed and is stored in the test session context under key ``step1``.
-    #. The ``receive`` [REF] step results in the ``receive`` [REF] operation to be called and the test bed blocking until a message is received.
+    #. The `receive`_ step results in the :ref:`messaging__operations__receive` operation to be called and the test bed blocking until a message is received.
     #. The messaging service receives from System2 the response. This is used to locate the corresponding session and call the 
        test bed's ``notifyForMessage`` call-back operation on the previously stored call-back address. The returned ``TAR`` report
        includes a ``message`` property in its context set with the received message's content.
-    #. The test bed is unblocked, it completes the ``receive`` [REF] step and places the received output in the test session context under
+    #. The test bed is unblocked, it completes the `receive`_ step and places the received output in the test session context under
        key ``step2``.
-    #. The ``verify`` [REF] step is used to validated the received content, loaded from the test session context by evaluating 
+    #. The `verify`_ step is used to validated the received content, loaded from the test session context by evaluating 
        ``$step2{message}``.
-    #. The ``etxn`` [REF] step results in calling the ``endTransaction`` [REF] operation to signal the end of the transaction.
-    #. The test session completes at which point the ``finalize`` [REF] operation is called. The messaging service removes the relevant 
+    #. The `etxn`_ step results in calling the :ref:`messaging__operations__endTransaction` operation to signal the end of the transaction.
+    #. The test session completes at which point the :ref:`messaging__operations__finalize` operation is called. The messaging service removes the relevant 
        session from memory.
 
 .. _messaging__using_standalone:
@@ -684,5 +684,21 @@ Using the service standalone
 ----------------------------
 
 The complexity of messaging services in terms of session management and the call-back mechanism for received messages make its
-standalone use impractical. The only reasonable such use case would be calling its ``getModuleDefinition`` [REF] operation to determine the 
+standalone use impractical. The only reasonable such use case would be calling its :ref:`messaging__operations__getModuleDefinition` operation to determine the 
 service's inputs and outputs in order to correctly provide and use them in test cases.
+
+.. _send: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#send
+.. _receive: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#receive
+.. _btxn: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#btxn
+.. _etxn: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#etxn
+.. _verify: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#verify
+.. _flow: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#flow
+.. _WS-Addressing: https://www.w3.org/Submission/ws-addressing/
+.. _Spring Boot: https://spring.io/projects/spring-boot
+.. _Maven Central: https://search.maven.org/
+.. _GITB messaging service API: https://www.itb.ec.europa.eu/specs/latest/gitb_ms.wsdl
+.. _Spring framework: https://spring.io/
+.. _Test Suites: https://www.itb.ec.europa.eu/docs/tdl/latest/testsuite/index.html#actors 
+.. _Test Cases: https://www.itb.ec.europa.eu/docs/tdl/latest/testcase/index.html#actors
+.. _Spring: https://spring.io/
+.. _CXF: https://cxf.apache.org/

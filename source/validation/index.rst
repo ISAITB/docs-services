@@ -13,15 +13,15 @@ services for one-off validation calls.
 Implementing the service
 ------------------------
 
-A GITB validation service is a web application that at least exposes a web service implementing the GITB validation service API [REF].
-The easiest way to get up and running is to use the template validation service available as a Maven Archetype [REF]::
+A GITB validation service is a web application that at least exposes a web service implementing the `GITB validation service API`_.
+The easiest way to get up and running is to use the template validation service available as a Maven Archetype (see :ref:`templates`)::
 
   mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-validation-service
 
-Once you have answered the prompts you will have a fully functioning GITB validation service implemented using the Spring Boot framework [REF]
+Once you have answered the prompts you will have a fully functioning GITB validation service implemented using the `Spring Boot`_ framework
 that you can adapt to your specific needs. Alternatively of course you can implement the service from scratch in any way and technology stack you prefer.
 In this case a very useful resource is the ``gitb-types`` library that includes classes for all GITB types, service interfaces and service clients. This 
-is available on Maven Central [REF] and can be added as a Maven dependency as follows:
+is available on `Maven Central`_ and can be added as a Maven dependency as follows:
 
 .. code-block:: xml
 
@@ -31,7 +31,7 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
       <version>1.4.0</version>
   </dependency>
 
-For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
+For more details on the content and use of the template service check in :ref:`templates`. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
 .. _validation__operations:
@@ -95,7 +95,7 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 
 The metadata set for a validation service (identifier, name, version and operation) are not used in practice. The only important 
 information that needs to be defined are the input parameters. In the above example these are created by calling a custom ``createParameter`` method.
-Full details on how these parameters need to be defined are provided in [REF].
+See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.
 
 .. _validation__operations__validate:
 
@@ -117,14 +117,14 @@ These steps are illustrated in the following code example:
 
     public ValidationResponse validate(ValidateRequest parameters) {
         // First extract the parameters and check to see if they are as expected.
-        List<AnyContent> input1 = getInput1(parameters);
-        if (input1.size() != 1) {
+        List<AnyContent> input = getInput(parameters);
+        if (input.size() != 1) {
             throw new IllegalArgumentException(String.format("This service expects one input to be provided named '%s'", INPUT1_NAME));
         }
         // Retrieve the value to process.
-        String input1Value = getInputValue(input1);
+        String inputValue = getInputValue(input);
         // Validate the input and construct the report.
-        TAR validationReport = doValidation(input1Value);
+        TAR validationReport = doValidation(inputValue);
         // Return the result.
         ValidationResponse result = new ValidationResponse();
         result.setReport(validationReport);
@@ -133,17 +133,17 @@ These steps are illustrated in the following code example:
 
 The above example illustrates the key steps that are taking place but decouples certain actions into separate methods. These are specifically:
 
-  * The extraction of the input parameter in method ``getInput1()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+  * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See :ref:`common__using_inputs` on
     what you should consider when looking up your inputs.
   * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter offers a string value that may initially seem to be the 
-    one to use. This however could be BASE64 content or a remote URL that points to the actual content. See [REF] on what you should consider when retrieving 
+    one to use. This however could be BASE64 content or a remote URL that points to the actual content. See :ref:`common__interpreting_input` on what you should consider when retrieving 
     an input's value.
   * The validation and generation of the report in method ``doValidation()``. This method captures the domain-specific validation logic and is a prime candidate
     to decouple in a separate component. Keep in mind however that the report includes errors and warnings that may need to be generated on-the-fly, which also 
     may include the relevant location in the processed input (if possible). Ommiting such details is possible but diminishes the reporting power of your validator
     considering that it would otherwise only report a "success" or "failure" result. As such, it might be necessary to construct the ``TAR`` report as you validate
     or foresee an intermediate GITB-agnostic structure as the result of your validation that you will then convert to the expected ``TAR`` report. These are all points
-    to consider when designing your validation service. Details on how the ``TAR`` validation report itself should be populated are provided in [REF].
+    to consider when designing your validation service. Details on how the ``TAR`` validation report itself should be populated are provided in :ref:`common__tar`.
 
 .. _validation__configuring:
 
@@ -157,7 +157,7 @@ Apart from fully implementing the expected web service operations, the validatio
   * The namespace must be set to "http://www.gitb.com/vs/v1/".
 
 Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
-could be done in a Spring [REF] implementation using CXF [REF]:
+could be done in a `Spring`_ implementation using `CXF`_:
 
 .. code-block:: java
 
@@ -178,8 +178,8 @@ could be done in a Spring [REF] implementation using CXF [REF]:
 Using the service through a test case
 -------------------------------------
 
-Use of a validation service in a test case is achieved with the ``verify`` step. Full documentation on this is available in the step's documentation 
-in the GITB TDL documentation [REF]. The following example illustrates use of a service that validates a single ``aDocument`` input parameter.
+Use of a validation service in a test case is achieved with the `verify`_ step. The following example illustrates use of a service that 
+validates a single ``aDocument`` input parameter.
 
 .. code-block:: xml
 
@@ -187,13 +187,14 @@ in the GITB TDL documentation [REF]. The following example illustrates use of a 
         <input name="aDocument">$document</input>
     </verify>
 
-When the ``verify`` step is executed the following actions take place:
+When the `verify`_ step is executed the following actions take place:
 
   #. A client for the service is constructed based on the WSDL provided through the ``handler`` attribute.
   #. The service's ``getModuleDefinition`` operation is called to determine its input parameters.
   #. The inputs are constructed based on the GITB TDL expressions in the test case (in the example the single ``aDocument`` input is populated 
      from the ``document`` context variable).
-  #. The ``validate`` operation is called to validate the content and retrieve the report.
+  #. The :ref:`validation__operations__validate` operation is called to validate the content and retrieve the report.
+
 
 .. _validation__using_standalone:
 
@@ -233,3 +234,10 @@ The example above should be for the most part self-evident. Points that merit hi
     * ``STRING``: The value is used as-is.
     * ``BASE64``: The value is considered as BASE64-encoded bytes.
     * ``URI``: The value is considered to be the content retrieved from a remote URI reference.
+
+.. _verify: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#verify
+.. _Spring Boot: https://spring.io/projects/spring-boot
+.. _Maven Central: https://search.maven.org/
+.. _GITB validation service API: https://www.itb.ec.europa.eu/specs/latest/gitb_vs.wsdl
+.. _Spring: https://spring.io/
+.. _CXF: https://cxf.apache.org/

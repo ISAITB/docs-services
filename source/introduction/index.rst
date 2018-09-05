@@ -40,8 +40,6 @@ Currently three types of services are defined:
     *GITB-compliant service* of the specific type. For example, if the service in question implements the GITB validation 
     service API it would be termed a *GITB-compliant validation service*.
 
-.. _GITB project: http://www.cen.eu/work/areas/ict/ebusiness/pages/ws-gitb.aspx
-
 .. _introduction__specifications__usage:
 
 Where are they used?
@@ -69,8 +67,6 @@ maintenance with regular releases. Regarding the GITB test service specification
 in a backwards-compatible manner, adding capabilities rather than changing existing ones. Releases of the GITB service specifications 
 and its version numbers currently follow the versioning of the GITB software.
 
-.. _Interoperability Test Bed Action: https://joinup.ec.europa.eu/solution/interoperability-test-bed/about
-
 .. _introduction__concepts:
 
 Core concepts
@@ -86,8 +82,6 @@ Test case
 
 A **test case** represents a set of steps and assertions that form a cohesive scenario for testing purposes. 
 These are captured in a single XML file authored in the `GITB TDL`_ (GITB Test Description Language).
-
-.. _GITB TDL: https://www.itb.ec.europa.eu/docs/tdl/latest/
 
 .. index:: Test suite
 .. _introduction__concepts__test_suite:
@@ -165,8 +159,6 @@ called locally. Such embedded implementations are of course limited to truly gen
 
 More information on service handlers and embedded ones in particular can be looked up in the `GITB TDL documentation`_.
 
-.. _GITB TDL documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/
-
 .. _introduction__test_service_architecture:
 
 Test service architecture
@@ -180,7 +172,7 @@ This is illustrated in the following diagram:
 
   Use of test services by the test bed
 
-Testers use the test bed through its user interface to lookup and execute one or more test cases. These test cases are authored in the GITB TDL [REF]
+Testers use the test bed through its user interface to lookup and execute one or more test cases. These test cases are authored in the `GITB TDL`_
 and capture the testing logic as a sequence of steps, certain of which may need validation, processing or messaging that is not natively supported by 
 the test bed. The test case developer may delegate the implementation of such a step to an external service that implements the relevant interface by
 providing the service's WSDL file address as the value for the step's ``handler`` attribute.
@@ -226,25 +218,25 @@ Test services as part of a testing campaign
 To better understand how test services fit within the test bed it is useful to consider how they would be approached as part of the overall setup of a project's 
 testing campaign. From a high-level perspective, setting up the conformance testing for a project would involve the following steps:
 
-  #. Create and customise the project's domain, specification(s) and community in the test bed (see [REF] for details).
+  #. Create and customise the project's domain, specification(s) and community in the test bed (see the `domain management`_ and `community management`_ user guide sections for details).
   #. Determine what the project's users are expected to test for. This will help identify the specification actors and notably the actors to be simulated and 
      the one(s) representing the System Under Test (SUT).
   #. Determine the overall structure of test cases (e.g. what messaging is involved, what is validated), the different types of test cases (e.g. tests where the SUT
      sends messages versus tests where it receives them) and their organisation in test suites.
-  #. Check the existing capabilities of the test bed and the GITB TDL (by consulting [REF] and [REF]) to see if all identified testing needs can be covered.
+  #. Check the existing capabilities of the test bed and the GITB TDL (by consulting `available TDL constructs`_ and `embedded service handlers`_) to see if all identified testing needs can be covered.
   #. Address missing capabilities by designing GITB-compliant test services. Implement and test these services to ensure they fully match the project's testing needs and
      actual specifications.
   #. Develop the GITB TDL test cases making use of the implemented test services and deploy them to the test bed in appropriate test suites.
   #. Create organisation accounts for the project's users to begin testing.
 
 It is important to consider test services as a tool rather than a requirement. The fact that a project foresees the exchange of messages between different parties does not
-mean that it needs a custom-built messaging service. If your project uses an already supported messaging protocol such as SOAP web service calls where a ``SoapMessaging``
-messaging handler would be used [REF] then you don't need to implement your own. Similarly if your validation needs are limited to e.g. XML validation, you could use
-the existing ``XSDValidator`` [REF] and ``SchematronValidator`` [REF] in validation steps.
+mean that it needs a custom-built messaging service. If your project uses an already supported messaging protocol such as SOAP web service calls where a `SoapMessaging`_
+messaging handler would be used then you don't need to implement your own. Similarly if your validation needs are limited to e.g. XML validation, you could use
+the existing `XSDValidator`_ and `SchematronValidator`_ in validation steps.
 
 A similar argument could however also be made in the other direction. Even if an existing embedded service handler is available, you could opt to implement a custom replacement
 if it facilitates testing for you and your users. As an example consider validation of XML content that includes validation against a XSD file and separate
-validations against multiple Schematron files. Using existing embedded validators you would need to add multiple ``verify`` [REF] steps to your test case: one for the XSD
+validations against multiple Schematron files. Using existing embedded validators you would need to add multiple `verify`_ steps to your test case: one for the XSD
 validation and one per Schematron file. You could choose to replace these with a single custom validator that would display a single validation step to your users and allow
 easier updating of the validation artefacts through the single centralised service.
 
@@ -283,17 +275,34 @@ Documentation structure
 
 The chapters that follow this introduction provide details for each service type, specifically on their purpose, concepts, implementation and use:
 
-  * [REF] to validate arbitrary content.
-  * [REF] to send and receive messages or simulate communication.
-  * [REF] to process input and produce output.
+  * :ref:`validation` to validate arbitrary content.
+  * :ref:`messaging` to send and receive messages or simulate communication.
+  * :ref:`processing` to process input and produce output.
 
-[REF] complements the above chapters by documenting common concepts that are shared across all service types. Finally, [REF] provides information on the
-available [REF], that facilitate the creation of new service instances and serve as rich working examples.
+The :ref:`common` chapter complements the above by documenting common concepts that are shared across all service types. Finally, the :ref:`templates` chapter 
+provides information on the available templates that facilitate the creation of new service instances and serve as rich working examples.
 
 .. note::
-    **Code samples:** The code samples included in this documentation are written in Java [REF] and use the Spring framework [REF], with web service 
-    implementations specifically using Apache CXF [REF]. Moreover, the available template services [REF] are themselves designed as Spring Boot [REF] 
+    **Code samples:** The code samples included in this documentation are written in `Java`_ and use the `Spring framework`_, with web service 
+    implementations specifically using `Apache CXF`_. Moreover, the available template services :ref:`templates` are themselves designed as `Spring Boot`_ 
     applications, based on the same technology stack.
 
     This design choice reflects a popular Industry approach but is by no means binding. You may choose to use the development framework and language 
     of your choice as long as it supports the implementation of SOAP web services.
+
+.. _Java: https://www.java.com
+.. _Spring framework: https://spring.io/
+.. _Apache CXF: https://cxf.apache.org/
+.. _Spring Boot: https://spring.io/projects/spring-boot
+.. _GITB project: http://www.cen.eu/work/areas/ict/ebusiness/pages/ws-gitb.aspx
+.. _Interoperability Test Bed Action: https://joinup.ec.europa.eu/solution/interoperability-test-bed/about
+.. _GITB TDL: https://www.itb.ec.europa.eu/docs/tdl/latest/
+.. _GITB TDL documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/
+.. _domain management: https://www.itb.ec.europa.eu/docs/itb-ca/latest/domainDashboard/
+.. _community management: https://www.itb.ec.europa.eu/docs/itb-ca/latest/communityDashboard/
+.. _available TDL constructs: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/
+.. _embedded service handlers: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#embedded-handlers
+.. _SoapMessaging: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#soapmessaging
+.. _XSDValidator: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#xsdvalidator
+.. _SchematronValidator: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#schematronvalidator
+.. _verify: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#verify

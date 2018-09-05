@@ -35,15 +35,15 @@ manage session state is up to you.
 Implementing the service
 ------------------------
 
-A GITB processing service is a web application that at least exposes a web service implementing the GITB processing service API [REF].
-The easiest way to get up and running is to use the template processing service available as a Maven Archetype [REF]::
+A GITB processing service is a web application that at least exposes a web service implementing the `GITB processing service API`_.
+The easiest way to get up and running is to use the template processing service available as a Maven Archetype (see :ref:`templates`)::
 
   mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-processing-service
 
-Once you have answered the prompts you will have a fully functioning GITB processing service implemented using the Spring Boot framework [REF]
+Once you have answered the prompts you will have a fully functioning GITB processing service implemented using the `Spring Boot`_ framework
 that you can adapt to your specific needs. Alternatively of course you can implement the service from scratch in any way and technology stack you prefer.
 In this case a very useful resource is the ``gitb-types`` library that includes classes for all GITB types, service interfaces and service clients. This 
-is available on Maven Central [REF] and can be added as a Maven dependency as follows:
+is available on `Maven Central`_ and can be added as a Maven dependency as follows:
 
 .. code-block:: xml
 
@@ -53,7 +53,7 @@ is available on Maven Central [REF] and can be added as a Maven dependency as fo
         <version>1.4.0</version>
     </dependency>
 
-For more details on the content and use of the template service check [REF]. The remaining documentation here focuses on the web service operations that
+For more details on the content and use of the template service check in :ref:`templates`. The remaining documentation here focuses on the web service operations that
 need to be implemented.
 
 .. _processing__operations:
@@ -125,7 +125,7 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
 operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
-(done here by calling a ``createParameter`` method) is documented in [REF].
+(done here by calling a ``createParameter`` method) is documented in :ref:`common__documenting_input_output`.
 
 .. _processing__operations__beginTransaction:
 
@@ -226,13 +226,13 @@ These steps are illustrated in the following code example:
 
 The above example illustrates key steps that are taking place but decouples certain actions into separate methods. These are specifically:
 
-  * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See [REF] on
+  * The extraction of the input parameter in method ``getInput()``. Multiple input parameters may be present including ones with the same name. See :ref:`common__using_inputs` on
     what you should consider when looking up your inputs.
   * The retrieval of the input value(s) to process in method ``getInputValue()``. An input parameter offers a string value that may initially seem to be the 
-    one to use. This however could be BASE64 content or a remote URL that points to the actual content. See [REF] on what you should consider when retrieving 
+    one to use. This however could be BASE64 content or a remote URL that points to the actual content. See :ref:`common__interpreting_input` on what you should consider when retrieving 
     an input's value.
-  * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check [REF].
-  * The generation of the output parameter using method ``createAnyContent()``. For details on how output values are represented check [REF].
+  * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check :ref:`common__tar`.
+  * The generation of the output parameter using method ``createAnyContent()``. For details on how output values are represented check :ref:`common__returning_output`.
 
 Another point to consider from this example is that the actual processing operations (simple string manipulations in this case) are taking place within the
 implementation of the ``process`` operation. A cleaner approach for non-trivial cases would be to decouple the processing into a separate component that is not
@@ -284,7 +284,7 @@ previously mentioned ZIP archive processing service. From a high-level perspecti
 
 Parts of this implementation are abstracted (e.g. the session management details, the reading of ZIP entries through a ``zipReader`` component) but the use of 
 sessions should be clear. Basically in each ``process`` call you receive the session identifier that you can leverage to associate different calls and to cache shared
-state. Finally, note that in such a service implementation it would be important to have a correct implementation of the ``endTransaction`` [REF] operation to correctly
+state. Finally, note that in such a service implementation it would be important to have a correct implementation of the :ref:`processing__operations__endTransaction` operation to correctly
 clear obsolete state.
 
 .. _processing__operations__endTransaction:
@@ -292,7 +292,7 @@ clear obsolete state.
 endTransaction
 ~~~~~~~~~~~~~~
 
-The ``endTransaction`` operation is the counterpart of ``beginTransaction`` [REF]. It is used when a processing transaction is considered as completed, either because it
+The ``endTransaction`` operation is the counterpart of :ref:`processing__operations__beginTransaction`. It is used when a processing transaction is considered as completed, either because it
 was explicitly ended or because the relevant test session was terminated.
 
 The processing service here is not expected to do much except from cleaning up any state that was being maintained for the session. If of course the service was not 
@@ -324,7 +324,7 @@ Apart from fully implementing the expected web service operations, the processin
   * The namespace must be set to "http://www.gitb.com/ps/v1/".
 
 Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
-could be done in a Spring [REF] implementation using CXF [REF]:
+could be done in a `Spring`_ implementation using `CXF`_:
 
 .. code-block:: java
 
@@ -345,7 +345,7 @@ could be done in a Spring [REF] implementation using CXF [REF]:
 Using the service through a test case
 -------------------------------------
 
-Use of a processing service in a test case is achieved with the ``process`` step [REF] including the ``bptxn`` [REF] and ``eptxn`` [REF] steps to 
+Use of a processing service in a test case is achieved with the `process`_ step including the `bptxn`_ and `eptxn`_ steps to 
 start or stop respectively a processing transaction. The following example illustrates use of a processing service to read a ZIP archive:
 
 .. code-block:: xml
@@ -384,11 +384,11 @@ start or stop respectively a processing transaction. The following example illus
 
 In terms of mapping GITB TDL steps to service calls the following take place:
 
-  #. The ``bptxn`` [REF] step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
-     ``beginTransaction`` [REF] operation is subequently called to create a new processing transaction/session.
-  #. The ``process`` [REF] steps each trigger a ``process`` [REF] operation call, passing each time the operation name as well as the expected inputs.
+  #. The `bptxn`_ step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
+     :ref:`processing__operations__beginTransaction` operation is subequently called to create a new processing transaction/session.
+  #. The `process`_ steps each trigger a :ref:`processing__operations__process` operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
-  #. The ``eptxn`` [REF] step results in the ``endTransaction`` [REF] operation to be called to clean-up the service's session state.
+  #. The `eptxn`_ step results in the :ref:`processing__operations__endTransaction` operation to be called to clean-up the service's session state.
 
 .. _processing__using_standalone:
 
@@ -409,8 +409,8 @@ In case your service makes use of transactions/sessions you will first need to c
         </soapenv:Body>
     </soapenv:Envelope>
 
-The response to this will provide you with a session identifier to use. You will need to copy this in each ``process`` [REF] call as well as signal it in the final 
-``endTransaction`` [REF] call as follows:
+The response to this will provide you with a session identifier to use. You will need to copy this in each :ref:`processing__operations__process` call as well as signal it in the final 
+:ref:`processing__operations__endTransaction` call as follows:
 
 .. code-block:: xml
 
@@ -424,9 +424,9 @@ The response to this will provide you with a session identifier to use. You will
     </soapenv:Envelope>
 
 Note that if your service does not make use of transactions/sessions you could simply skip these calls and pass an arbitrary string as the session identifier for
-``process`` [REF] calls.
+:ref:`processing__operations__process` calls.
 
-A call to the ``process`` [REF] operation is illustrated in the following example:
+A call to the :ref:`processing__operations__process` operation is illustrated in the following example:
 
 .. code-block:: xml
 
@@ -451,3 +451,13 @@ The example above should be for the most part self-evident. Points that merit hi
     * ``STRING``: The value is used as-is.
     * ``BASE64``: The value is considered as BASE64-encoded bytes.
     * ``URI``: The value is considered to be the content retrieved from a remote URI reference.
+
+
+.. _Spring Boot: https://spring.io/projects/spring-boot
+.. _Maven Central: https://search.maven.org/
+.. _GITB processing service API: https://www.itb.ec.europa.eu/specs/latest/gitb_ps.wsdl
+.. _bptxn: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#bptxn
+.. _eptxn: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#eptxn
+.. _process: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#process
+.. _Spring: https://spring.io/
+.. _CXF: https://cxf.apache.org/
