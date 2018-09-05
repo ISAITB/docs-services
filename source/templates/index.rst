@@ -3,7 +3,7 @@
 Template services
 =================
 
-To facilitate the development of test services, a set of executable templates are available for you to use. These templates are packaged
+A set of executable templates are available to facilitate the development of test services. These templates are packaged
 as `Maven Archetypes`_ enabling you to generate a complete new service with a single command.
 
 Using the templates is not mandatory but doing so will save you significant effort. The GITB-specific code provided should be
@@ -12,9 +12,10 @@ you would need to address (e.g. session management, call-backs). In addition, an
 service based on the templates, they provide a valuable learning resource to understand GITB test service development.
 
 To avoid providing simply an empty shell, each template service has been built as a fully functioning web application that is 
-already setup to address simple scenarios. The scenario for each case is selected to be very simple allowing you to understand
-what is going on without needing additional context and to replace the sample implementations with your actual domain-specific needs.
-The code should be self-explanatory but is nonetheless accompanied by comprehensive step-by-step documentation.
+already setup to address simple scenarios. The scenario for each case is selected to be straightforward allowing you to understand
+what is going on without needing additional context, and to replace the included sample implementations 
+with your actual domain-specific needs. The code should be self-explanatory but is nonetheless accompanied by comprehensive 
+step-by-step documentation.
 
 .. _templates__using:
 
@@ -28,7 +29,7 @@ The sections below provide the information you need to use the templates.
 Prerequisites
 ~~~~~~~~~~~~~
 
-To run and use the services you will need the following:
+To use the templates and run the resulting services you will need the following:
 
     * A `Java Development Kit`_ (version 8 or higher).
     * `Apache Maven`_ (version 3 or higher).
@@ -73,10 +74,10 @@ To generate a new service follow these steps:
 
     3. Provide values for the requested properties (in sequence):
 
-        * ``groupId``: This is the Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
-        * ``artifactId``: This is the Maven artefact ID for your service (e.g. "simple-service").
-        * ``version``: This is the version number to set for your project ("1.0-SNAPSHOT" being the default).
-        * ``package``: This is the root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
+        * ``groupId``: The Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
+        * ``artifactId``: The Maven artefact ID for your service (e.g. "simple-service").
+        * ``version``: The version number to set for your project ("1.0-SNAPSHOT" being the default).
+        * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
 
     4. Review your input and confirm with ``Y`` (for "Yes").
 
@@ -119,7 +120,9 @@ To build and run the service:
     1. Open a command prompt to the root of the generated service's project (where file ``pom.xml`` is located).
     2. Issue ``mvn spring-boot:run``. Note that this command may take a while upon first execution as it downloads all required dependencies. 
 
-Following this command you should see output from the build and start-up of your service. The service will be successfully up and running once you see::
+Following this command you should see output from the build and start-up of your service. The service will be successfully up and running once you see:
+
+.. code-block:: none
 
     ...
     2018-08-31 15:39:02.225  INFO 17040 --- [  restartedMain] com.organisation.Application: Started Application in 4.093 seconds (JVM running for 4.565)
@@ -185,7 +188,7 @@ The sample implementation offers the following behaviour:
       it considers an empty string, whereas when the "session" parameter is missing it will trigger all active sessions.
 
 Using the default configuration, the WSDL of the service is available at: http://localhost:8080/services/messaging?WSDL. The REST service that is used
-to provide a text for the test bed to receive is available at http://localhost:8080/input (called for example as http://localhost:8080/input?session=SESSION_ID&message=text).
+to provide a text for the test bed to receive is available at http://localhost:8080/input (called for example as http://localhost:8080/input?session=SESSION_ID&message=TEXT).
 
 .. _templates__samples__processing:
 
@@ -265,15 +268,16 @@ If you want to run this on a local test bed instance you will need to first setu
 
     #. Use the template services to generate a sample validation, processing and messaging service.
     #. Adapt each service's ``application.properties`` configuration file (in ``src/main/resources``) to change its server's listen port (using property ``server.port``).
-    #. In different command consoles start each service.
+       You need to do this since all services by default bind to port 8080.
+    #. Start each service in separate command consoles.
 
 Once each service is up, you need to setup the test bed (documentation links provided for each step):
 
     #. `Log in`_ as the test bed admin.
     #. `Create a domain`_ and then `create a specification`_.
-    #. In the created domain, `define parameters`_ named ``messagingServiceAddress``, ``processingServiceAddress`` and ``validationServiceAddress`` with the 
+    #. In the created domain, `create parameters`_ named ``messagingServiceAddress``, ``processingServiceAddress`` and ``validationServiceAddress`` with the 
        address to the WSDLs of each respective service.
-    #. `Upload the test suite`_ including this test case (available here [:download:`test_suite.zip`]).
+    #. `Upload the test suite`_ including the test case (available here [:download:`test_suite.zip`]).
     #. `Create a System`_.
     #. `Create a conformance statement`_ selecting the created domain, specification and the test case's SUT actor "Actor 1".
     #. `Execute the test case`_.
@@ -288,7 +292,7 @@ Once each service is up, you need to setup the test bed (documentation links pro
 .. _auto-reload capabilities: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-devtools.html#using-boot-devtools-restart
 .. _Create a domain: https://www.itb.ec.europa.eu/docs/itb-ta/latest/domainDashboard/index.html#create-domain
 .. _create a specification: https://www.itb.ec.europa.eu/docs/itb-ta/latest/domainDashboard/index.html#create-specification
-.. _define parameters: https://www.itb.ec.europa.eu/docs/itb-ta/latest/domainDashboard/index.html#create-parameter
+.. _create parameters: https://www.itb.ec.europa.eu/docs/itb-ta/latest/domainDashboard/index.html#create-parameter
 .. _Upload the test suite: https://www.itb.ec.europa.eu/docs/itb-ta/latest/domainDashboard/index.html#upload-test-suite
 .. _Create a System: https://www.itb.ec.europa.eu/docs/itb-ta/latest/validateTestSetup/index.html#create-a-new-system
 .. _Create a conformance statement: https://www.itb.ec.europa.eu/docs/itb-ta/latest/validateTestSetup/index.html#create-a-conformance-statement

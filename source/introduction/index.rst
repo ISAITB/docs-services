@@ -7,6 +7,7 @@ The goal of the current documentation is to explain the purpose of GITB test ser
 as well as guide you in creating your own service. It is meant as a comprehensive reference but also an easy to follow guide
 to help you get started.
 
+.. index:: GITB
 .. _introduction__specifications:
 
 What are the GITB service specifications?
@@ -65,7 +66,7 @@ by the European Commission, specifically the `Interoperability Test Bed Action`_
 and specifications based on the needs of the testing community and carries out evolutive
 maintenance with regular releases. Regarding the GITB test service specifications, effort is made to always introduce changes 
 in a backwards-compatible manner, adding capabilities rather than changing existing ones. Releases of the GITB service specifications 
-and its version numbers currently follow the versioning of the GITB software.
+and their version numbers currently follow the releases and versioning of the GITB software.
 
 .. _introduction__concepts:
 
@@ -146,7 +147,7 @@ Once actors are defined they play an important role in the testing process as fo
 * Each test case foresees that actors are either simulated by the test bed or are the focus of the test. In the latter case
   they are referred to as having a role of **SUT** (System Under Test).
 
-.. index:: Messaging handlers
+.. index:: Service handlers
 .. _introduction__concepts__service_handlers:
 
 Service handlers
@@ -196,7 +197,7 @@ providing the service's WSDL file address as the value for the step's ``handler`
     </verify>
 
 From the test case's perspective there is no difference between an embedded and remote handler apart from the value for the ``handler`` attribute.
-The actions to prepare, call, and post-process the relevant step (``verify`` in the above example) are identical. The only difference is 
+The actions to prepare, call, and post-process the relevant step (`verify`_ in the above example) are identical. The only difference is 
 that the test bed, when executing the step, calls the same method signatures replacing what would be local method invocations with remote SOAP web 
 service calls.
 
@@ -223,7 +224,7 @@ testing campaign. From a high-level perspective, setting up the conformance test
      the one(s) representing the System Under Test (SUT).
   #. Determine the overall structure of test cases (e.g. what messaging is involved, what is validated), the different types of test cases (e.g. tests where the SUT
      sends messages versus tests where it receives them) and their organisation in test suites.
-  #. Check the existing capabilities of the test bed and the GITB TDL (by consulting `available TDL constructs`_ and `embedded service handlers`_) to see if all identified testing needs can be covered.
+  #. Check the existing capabilities of the test bed and the GITB TDL (by consulting the `available TDL constructs`_ and `embedded service handlers`_) to see if all identified testing needs can be covered.
   #. Address missing capabilities by designing GITB-compliant test services. Implement and test these services to ensure they fully match the project's testing needs and
      actual specifications.
   #. Develop the GITB TDL test cases making use of the implemented test services and deploy them to the test bed in appropriate test suites.
@@ -240,6 +241,13 @@ validations against multiple Schematron files. Using existing embedded validator
 validation and one per Schematron file. You could choose to replace these with a single custom validator that would display a single validation step to your users and allow
 easier updating of the validation artefacts through the single centralised service.
 
+.. note::
+    **XML validation:** Given the frequent need of validating XML content using XSDs and Schematrons (and the frequent mistakes that come up in custom validator implementations),
+    the test bed offers an existing GITB-compliant XML validation service that can be easily setup to cover your needs. Make sure you contact the test bed team at 
+    DIGIT-ITB@ec.europa.eu before implementing your own. This service is used in almost all cases, with the simpler `XSDValidator`_ and `SchematronValidator`_ used only
+    for very simple scenarios.
+
+.. index:: GITB
 .. _introduction__specification_links:
 
 Specification links
@@ -284,7 +292,7 @@ provides information on the available templates that facilitate the creation of 
 
 .. note::
     **Code samples:** The code samples included in this documentation are written in `Java`_ and use the `Spring framework`_, with web service 
-    implementations specifically using `Apache CXF`_. Moreover, the available template services :ref:`templates` are themselves designed as `Spring Boot`_ 
+    implementations specifically using `Apache CXF`_. Moreover, the available :ref:`templates` are themselves designed as `Spring Boot`_ 
     applications, based on the same technology stack.
 
     This design choice reflects a popular Industry approach but is by no means binding. You may choose to use the development framework and language 

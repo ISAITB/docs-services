@@ -11,18 +11,18 @@ through one or more defined operations.
 Processing services foresee the definition of **processing transactions**, which can be considered as potentially long-running
 conversations that provide context to individual operations. These transactions allow processing services to maintain state relevant to 
 a given session through which they can build upon previous work or implement important performance benefits. As an example consider a 
-processing service used to selectively retrieve the contents of a ZIP archive. If each interaction with the service was isolated the 
+processing service used to selectively retrieve the contents of a ZIP archive. If each interaction with the service was isolated, the 
 full ZIP archive would need to be passed to the service with each call and the service implementation would need to extract and read it
 for every file access. By maintaining state with processing transactions the service can be provided with the ZIP archive as part of one
 operation and then reuse it when looking up individual files. The processing service API foresees appropriate lifecycle operations to signal 
 the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes). Note that support for
 transactions is optional and in cases where it is not needed can be fully skipped.
 
-The above description mentions the concept of processing **operations**. This is the way in which processing services organise
+The above description mentions the concept of **processing operations**. This is the way in which processing services organise
 their work, by defining a set of supported operations, each with distinct inputs and outputs, that form a cohesive whole. You may thus consider
 a processing service as a utility library of related operations that can be called as part of a specific transaction. Continuing the previous 
 example of a ZIP archive processing service, potential operations could be "initialise" to pass the archive to process, "checkExists" to check if a 
-given file exists but not return it, "extract" to lookup and return a file, and "printContents" to return a representation of the archive's contents. 
+given file exists (but not actually return it), "extract" to lookup and return a file, and "printContents" to return a representation of the archive's contents. 
 For an operation to take place a processing transaction must first be established although whether this is actually handled within the service to 
 manage session state is up to you.
 
@@ -53,8 +53,8 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
         <version>1.4.0</version>
     </dependency>
 
-For more details on the content and use of the template service check in :ref:`templates`. The remaining documentation here focuses on the web service operations that
-need to be implemented.
+Check the :ref:`templates` description for more details on the content and use of the sample processing service. 
+The remaining documentation here focuses on the web service operations that need to be implemented.
 
 .. _processing__operations:
 
@@ -68,6 +68,8 @@ The following figure illustrates the operations that a processing service needs 
 
   Use of the processing service operations
 
+.. index:: ProcessingOperation
+.. index:: getModuleDefinition (Processing)
 .. _processing__operations__getModuleDefinition:
 
 getModuleDefinition
@@ -77,14 +79,14 @@ The ``getModuleDefinition`` operation is used to return information on how the s
 
     * The identification **metadata** of the service.
     * The **configuration** parameters it expects.
-    * The **operations** that is supports as well as their individual **inputs** and **outputs**.
+    * The **operations** that it supports as well as their individual **inputs** and **outputs**.
 
 Configuration parameters can be seen as parameterisation of the complete service addressing all its operations. Regarding the operations,
 each contains:
 
     * A **name** that serves to identify it and request its execution.
     * A set of zero or more **inputs** that need to be provided for the operation.
-    * A set of zero or more **outputs** that the operation will return and made available in the test session context.
+    * A set of zero or more **outputs** that the operation will return and be made available in the test session context.
 
 The following example shows a complete implementation of the ``getModuleDefinition`` operation.
 
@@ -125,14 +127,15 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
 operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
-(done here by calling a ``createParameter`` method) is documented in :ref:`common__documenting_input_output`.
+(done here by calling a ``createParameter()`` method) is documented in :ref:`common__documenting_input_output`.
 
+.. index:: beginTransaction (Processing)
 .. _processing__operations__beginTransaction:
 
 beginTransaction
 ~~~~~~~~~~~~~~~~
 
-The ``beginTransaction`` operation is used to signal to the processing service that a new transaction (or session) is to be started. This operation may also receive 
+The ``beginTransaction`` operation is used to signal to the processing service that a new transaction/session is to be started. This operation may also receive 
 zero or more configuration properties that could be specific to the transaction in question.
 
 The processing service is expected to create a session and return its identifier as part of the operation's response. This session is not related
@@ -154,7 +157,7 @@ An example implementation from a session-aware processing service is provided in
 
     /*
      * Define a thread-safe map to store session identifiers and data.
-     * Session data is recorded using a map or String keys to Objects.
+     * Session data is recorded using a map of String keys to Objects.
      */
     private Map<String, Map<String, Object>> sessions = new ConcurrentHashMap<>();
 
@@ -172,6 +175,7 @@ An example implementation from a session-aware processing service is provided in
 From this point on, subsequent operations relevant to the specific session can look it up using its identifier and either add data to its state or read existing
 values.
 
+.. index:: process
 .. _processing__operations__process:
 
 process
@@ -203,7 +207,7 @@ These steps are illustrated in the following code example:
         // Retrieve the name of the operation to execute.
         String operation = processRequest.getOperation();
         String result;
-        // Execute the operation.
+        // Execute the operation. Could also be decoupled in a separate component.
         switch (operation) {
             case "uppercase":
                 result = inputValue.toUpperCase();
@@ -215,7 +219,6 @@ These steps are illustrated in the following code example:
                 // Fail for an unknown operation name.
                 throw new IllegalArgumentException(String.format("Unexpected operation [%s]. Expected [%s] or [%s].", operation, "uppercase", "lowercase"));
         }
-        // The actual processing is decoupled and occurs via the processHandler component.
         ProcessResponse response = new ProcessResponse();
         // Construct a successful status report.
         response.setReport(createReport(TestResultType.SUCCESS));
@@ -284,9 +287,10 @@ previously mentioned ZIP archive processing service. From a high-level perspecti
 
 Parts of this implementation are abstracted (e.g. the session management details, the reading of ZIP entries through a ``zipReader`` component) but the use of 
 sessions should be clear. Basically in each ``process`` call you receive the session identifier that you can leverage to associate different calls and to cache shared
-state. Finally, note that in such a service implementation it would be important to have a correct implementation of the :ref:`processing__operations__endTransaction` operation to correctly
+state. Finally, note that in such a session-aware service it would be important to have a correct implementation of the :ref:`processing__operations__endTransaction` operation to correctly
 clear obsolete state.
 
+.. index:: endTransaction (Processing)
 .. _processing__operations__endTransaction:
 
 endTransaction
@@ -317,7 +321,7 @@ An ``endTransaction`` implementation for a service that is designed to work with
 Configuring the web service endpoint
 ------------------------------------
 
-Apart from fully implementing the expected web service operations, the processing service needs to correctly publish its service endpoint. Specifically:
+Apart from implementing the expected web service operations, the processing service needs to correctly publish its service endpoint. Specifically:
 
   * The name of the service must be "ProcessingServiceService".
   * The name of the service port must be "ProcessingServicePort".
@@ -363,10 +367,10 @@ start or stop respectively a processing transaction. The following example illus
         <input name="zip">$zipContent</input>
     </process>
     <!-- 
-        Call the "checkExistence" operation to see if a given entry exists.
+        Call the "checkExists" operation to see if a given entry exists.
     -->
     <process id="exists" txnId="t1">
-        <operation>checkExistence</operation>
+        <operation>checkExists</operation>
         <input name="path">'file1.xml'</input>
     </process>
     <!-- 
@@ -385,7 +389,7 @@ start or stop respectively a processing transaction. The following example illus
 In terms of mapping GITB TDL steps to service calls the following take place:
 
   #. The `bptxn`_ step results in constructing a client for the service based on the WSDL provided through the ``handler`` attribute. The 
-     :ref:`processing__operations__beginTransaction` operation is subequently called to create a new processing transaction/session.
+     :ref:`processing__operations__beginTransaction` operation is subsequently called to create a new processing transaction/session.
   #. The `process`_ steps each trigger a :ref:`processing__operations__process` operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
   #. The `eptxn`_ step results in the :ref:`processing__operations__endTransaction` operation to be called to clean-up the service's session state.
@@ -446,7 +450,7 @@ A call to the :ref:`processing__operations__process` operation is illustrated in
 The example above should be for the most part self-evident. Points that merit highlighting are:
 
   * The possibility to pass inputs as-is or in ``CDATA`` blocks (actually this is simply a XML feature).
-  * The ``embeddingMethod`` that is set to ``STRING``. This tells the validation service how the text value should be interpreted. Possible values are:
+  * The ``embeddingMethod`` that is set to ``STRING``. This tells the processing service how the text value should be interpreted. Possible values are:
 
     * ``STRING``: The value is used as-is.
     * ``BASE64``: The value is considered as BASE64-encoded bytes.

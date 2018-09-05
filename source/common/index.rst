@@ -9,13 +9,17 @@ concepts that make their use by the test bed consistent. The following points su
 * All services are **triggered by test bed calls** that are captured with appropriate GITB TDL steps.
 * A service is identified by setting in the test case its **WSDL URL in a handler attribute**.
 * All services are capable of receiving **input** in the form of parameters and configuration and returning arbitrary **output**.
-* All service APIs foresee a ``getModuleDefinition`` operation that is used to **document its use**, notably how it should be called and what it returns.
+* All service APIs foresee a ``getModuleDefinition`` operation that is used to **document the services' use**, notably how to call them and what they return.
 * All services can be called **through the test bed** or **directly via a SOAP web service client**.
 * Services are **web applications** that can be as simple or as complicated as needed.
 * **Template services** exist per case to facilitate service development (see :ref:`templates`).
 
 The sub-sections that follow address additional common concerns of a more detailed nature.
 
+.. index:: UsageEnumeration
+.. index:: ConfigurationType
+.. index:: getModuleDefinition
+.. index:: TypedParameter
 .. _common__documenting_input_output:
 
 Documenting input and output parameters 
@@ -66,6 +70,8 @@ no automatic type checking or verification. Unless you want to fully document a 
     **Defining list inputs:** When defining an input of type ``list`` a good practice is to also specify the expected contained type (i.e. the type of its elements).
     Do this by setting the type of the input in the ``getModuleDefinition`` response using the form ``list[string]`` rather than ``list`` (which however also works).
 
+.. index:: ValueEmbeddingEnumeration
+.. index:: AnyContent
 .. _common__using_inputs:
 
 Using inputs
@@ -135,13 +141,15 @@ calling a service with ``map`` or ``list`` inputs in a standalone manner (i.e. u
     </soapenv:Body>
   </soapenv:Envelope>
 
+.. index:: AnyContent
+.. index:: ValueEmbeddingEnumeration
 .. _common__interpreting_input:
 
 Interpreting an input value
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The value of a simple input (i.e. not a ``list`` or ``map``) is provided through the ``value`` property of its ``AnyContent`` object. In order to determine how 
-this value should be considered you need to make use of the ``embeddingMethod`` and ``encoding`` properties as follows:
+this value should be considered you need to make use of the ``embeddingMethod`` (enumeration ``ValueEmbeddingEnumeration``) and ``encoding`` properties as follows:
 
     * ``STRING``: The input to consider is the ``value`` property as-is. It is already directly provided.
     * ``BASE64``: The ``value`` property is a sequence of bytes provided as an escaped BASE64 string. This needs to be decoded to retrieve the actual byte content.
@@ -157,6 +165,9 @@ The default encoding if none is provided is assumed to be UTF-8.
     is always a ``STRING``. If you choose to do so make sure you document this appropriately in the inputs' description in the ``getModuleDefinition`` operation. If you 
     don't specify this it may be assumed that the input in question may be provided using any of the supported embedding methods.
 
+.. index:: ValueEmbeddingEnumeration
+.. index:: TAR
+.. index:: AnyContent
 .. _common__returning_output:
 
 Returning outputs
@@ -166,15 +177,15 @@ All services are used to return outputs to the test session that is calling them
 
   * Validation services return a validation report from their :ref:`validation__operations__validate` operation that may contain an arbitrary set of outputs as its context (see :ref:`common__tar`).
   * Processing services receive input and produce output through their :ref:`processing__operations__process` operation.
-  * Messaging services receive output in the case of the :ref:`messaging__operations__send` operation which corresponds to any synchronously received messaging response. In addition, when 
-    the :ref:`messaging__operations__receive` operation signals a wait for a received message, this is provided as output through the ``notifyForMessage`` call-back operation (see :ref:`messaging__callbacks`).
+  * Messaging services return output in the case of the :ref:`messaging__operations__send` operation for any information that is useful to report (e.g. the message sent, a synchronous response).
+    The :ref:`messaging__operations__receive` operation does not return output itself but received content is returned to the test bed asynchronously through the ``notifyForMessage`` call-back (see :ref:`messaging__callbacks`).
 
 Service outputs are provided using the same ``AnyContent`` class used to process inputs (see :ref:`common__using_inputs`). In the case of processing services this is a ``List`` of ``AnyContent``
 objects that is provided directly on the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through the ``TAR``
 report's ``context`` property (see :ref:`common__tar`).
 
 The most flexible way of returning output is by defining a first ``AnyContent`` object of type ``map``. This acts as a root under which you can add additional arbitrary named 
-values with one or more outputs you want to return. Moreover, this map can contain nested ``list`` or ``map`` ``AnyContent`` objects allowing you to organise and group outputs
+values with one or more outputs you want to return. Moreover, this map can contain nested ``AnyContent`` objects of type ``list`` or ``map`` allowing you to organise and group outputs
 as you wish. Constructing each ``AnyContent`` object follows the same principles in terms of e.g. values and embedding methods as described in the case of inputs (see :ref:`common__using_inputs`).
 
 The following example illustrates the construction of a complex output structure, including a simple output string and a ``map`` with two properties:
@@ -233,8 +244,8 @@ these output values can be used in the calling test session. In terms of usable 
     * The output values of processing and messaging services can be fully leveraged in the test session after the relevant service call.
     * The output values of a validation service are used only for display purposes. What can be leveraged is the service's true/false validation outcome.
 
-In all service cases a service call's output is stored in the test session context using the key of the corresponding test case step's ``id`` attribute.
-Specifically:
+In all cases a service call's output is stored in the test session context, with a key value that matches the corresponding 
+test case step's ``id`` attribute. Specifically:
 
     * **Validation services:** The overall true/false validation result of the `verify`_ step is stored as a ``boolean`` value.
     * **Processing services:** The output of the `process`_ step is stored as a ``map``.
@@ -260,12 +271,18 @@ using a validation service:
     ...
 
 In this example the `receive`_ step results in the test bed being notified by the relevant messaging service. This service has returned as output a ``map`` with one 
-element mapped to key "data" that contains the file bytes. Given that the `receive`_ step has an ``id`` of "receiveOutput" the test session context now includes a key
+element named "data" that contains the file bytes. Given that the `receive`_ step has an ``id`` of "receiveOutput" the test session context now includes a key
 with this value that refers to the returned output. In the subsequent `process`_ step the file content is referred to with the ``$receiveOutput{data}`` expression (see 
 the `GITB TDL expression documentation`_ for details) when this is passed as the "inputFile" input of the "convert" operation. The result of the `process`_ step, in this case a ``map``
 with a key "convertedData" pointing to the converted bytes, is stored in the test session context under key "processOutput" (the ``id`` of the `process`_ step). Finally, 
 this converted data is used in the `verify`_ step where using the expression ``$processOutput{convertedData}`` it is passed as the expected "inputFile" input.
 
+.. index:: TestResultType
+.. index:: TAR
+.. index:: BAR
+.. index:: ObjectFactory 
+.. index:: TestAssertionReportType
+.. index:: JAXBElement<TestAssertionReportType>
 .. _common__tar:
 
 Constructing a validation report (TAR)
@@ -305,15 +322,15 @@ validation services, however it is useful also in the case of messaging and proc
 could be a failure in the communication between a messaging service and a remote system which can be caught, reported as a result of type ``TestResultType.FAILURE``
 and further documented using values returned in the ``context`` property.
 
-In the case of a validation service, the ``infoOrWarningOrError`` list is of special importance as it presents to users the detailed validation results, along with the corresponding 
+For validation services, the ``infoOrWarningOrError`` list is of special importance as it presents to users the detailed validation results, along with the corresponding 
 summary counters in the ``nrOfAssertions``, ``nrOfWarnings`` and ``nrOfErrors`` properties. Constructing each element of the ``infoOrWarningOrError`` list is achieved by:
 
     #. Creating the report item's content as an instance of class ``BAR``.
     #. Creating a wrapper for this instance using the GITB JAXB ``ObjectFactory`` that identifies it as an info, warning or error message:
 
-        * ``objectFactory.createTestAssertionGroupReportsTypeInfo`` for information messages.
-        * ``objectFactory.createTestAssertionGroupReportsTypeWarning`` for warning messages.
-        * ``objectFactory.createTestAssertionGroupReportsTypeError`` for error messages.
+        * ``objectFactory.createTestAssertionGroupReportsTypeInfo()`` for information messages.
+        * ``objectFactory.createTestAssertionGroupReportsTypeWarning()`` for warning messages.
+        * ``objectFactory.createTestAssertionGroupReportsTypeError()`` for error messages.
 
 When constructing the ``BAR`` instance for a report item you can set the properties as defined in the following table:
 
@@ -322,7 +339,7 @@ When constructing the ``BAR`` instance for a report item you can set the propert
 
     description, yes, The message to display in the report as the report item's description.
     test, no, The test that resulted in this report item (e.g. a regular expression or a Schematron assertion).
-    location, no, An indication of the relevant location to highlight in relation to the report item. This is an arbitrary text that should make sense to the validation client.
+    location, no, An indication of the relevant location in the validated content to highlight in relation to the report item. This is an arbitrary text that should make sense to the validation client.
 
 .. note::
     **Highlighting a report item's location in the test bed:** When displaying a `verify`_ step's result, the GITB test bed leverages the ``location`` property of a 
@@ -369,11 +386,11 @@ The following code sample provides an example populating a report for a validati
 This method would be called in a validation service to create a ``TAR`` object to return from the :ref:`validation__operations__validate` operation. The method is assumed to be called
 after validation has taken place in order to build the report. Only error messages are considered for simplicity whereas the report items included contain the minimum description.
 Note how the validated content is also returned in the report's ``context``. This is not required but provides an example of how arbitrary data can be returned. Moreover, this would
-be especially useful if each error item also included the relevant location.
+be especially useful if each error item also included its relevant ``location``.
 
 This example shows construction of the report after the actual validation has taken place. Decoupling domain-specific logic (i.e. the validation) from GITB-related code is a
 good practice as the GITB service API may only be one facade of many. In practice however it could be more tricky to achieve as report construction is often done in parallel to the validation
-(e.g. via error listener constructs used in XML validation). Whether you choose to enforce a full decoupling of domain-specific code and GITB code is a design choice you will need to make.
+(e.g. via error listener constructs). Whether you choose to enforce a full decoupling of domain-specific code from GITB code is a design choice you will need to make.
 
 To present a simpler case of report construction you can consider the following example from a messaging service:
 
@@ -412,6 +429,7 @@ for the report are to complete its ``result`` and ``date``.
         return report;
     }
 
+.. index:: TestResultType
 .. _common__errors:
 
 Reporting service errors

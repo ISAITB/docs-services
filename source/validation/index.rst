@@ -31,8 +31,8 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
       <version>1.4.0</version>
   </dependency>
 
-For more details on the content and use of the template service check in :ref:`templates`. The remaining documentation here focuses on the web service operations that
-need to be implemented.
+Check the :ref:`templates` description for more details on the content and use of the sample validation service. 
+The remaining documentation here focuses on the web service operations that need to be implemented.
 
 .. _validation__operations:
 
@@ -46,6 +46,7 @@ The following figure illustrates the operations that a validation service needs 
 
   Use of the validation service operations
 
+.. index:: getModuleDefinition (Validation)
 .. _validation__operations__getModuleDefinition:
 
 getModuleDefinition
@@ -67,7 +68,7 @@ inputs it expects. The validation service API defines generally how inputs are p
 name and value of each one. When used by the test bed this operation is also important as it determines:
 
   * The types of expected inputs. This enables automatic type conversions when passing the call's parameters.
-  * The mandatory inputs. The test bed checks that all required inputs are accounted for before calling the ``validate`` operation
+  * The mandatory inputs. The test bed checks that all required inputs are accounted for before calling the :ref:`validation__operations__validate` operation
     to fail quickly without an unnecessary service call.
 
 The following example shows a complete implementation of the ``getModuleDefinition`` operation.
@@ -94,16 +95,18 @@ The following example shows a complete implementation of the ``getModuleDefiniti
     }
 
 The metadata set for a validation service (identifier, name, version and operation) are not used in practice. The only important 
-information that needs to be defined are the input parameters. In the above example these are created by calling a custom ``createParameter`` method.
+information that needs to be defined are the input parameters. In the above example these are created by calling a custom ``createParameter()`` method.
 See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.
 
+.. index:: TAR
+.. index:: validate
 .. _validation__operations__validate:
 
 validate
 ~~~~~~~~
 
-The ``validate`` operation is used to carry out the validation that this service is meant to perform. Implementation of the validation logic is 
-entirely domain-specific, however all ``validate`` methods follow a common sequence of steps:
+The ``validate`` operation is used to carry out the validation that this service is meant to perform. The specific validation logic is 
+entirely domain-specific, however all ``validate`` implementations follow a common sequence of steps:
 
   #. Verify the received inputs to ensure validation can proceed.
   #. Extract the values of the inputs.
@@ -190,7 +193,7 @@ validates a single ``aDocument`` input parameter.
 When the `verify`_ step is executed the following actions take place:
 
   #. A client for the service is constructed based on the WSDL provided through the ``handler`` attribute.
-  #. The service's ``getModuleDefinition`` operation is called to determine its input parameters.
+  #. The service's :ref:`validation__operations__getModuleDefinition` operation is called to determine its input parameters.
   #. The inputs are constructed based on the GITB TDL expressions in the test case (in the example the single ``aDocument`` input is populated 
      from the ``document`` context variable).
   #. The :ref:`validation__operations__validate` operation is called to validate the content and retrieve the report.
