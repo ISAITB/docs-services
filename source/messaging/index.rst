@@ -503,6 +503,9 @@ The following example (using the `Spring framework`_) illustrates how communicat
     @RestController
     public class ServiceInputController {
 
+        /** Logger. */
+        private static final Logger LOG = LoggerFactory.getLogger(ServiceInputController.class);
+
         @Autowired
         private SessionManager sessionManager = null;
 
@@ -524,31 +527,39 @@ The following example (using the `Spring framework`_) illustrates how communicat
         }
 
         private void notifyTestBed(String sessionId, TAR report){
-            // Get the test bed's callback address from the session.
-            String callback = (String)(sessionManager.getSessionInfo(sessionId, SessionData.CALLBACK_URL));
-            // Build the callback's web service client.
-            MessagingClientService client;
-            try {
-                client = new MessagingClientService(new URI(callback).toURL());
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to call callback URL ["+callback+"] for session ["+sessionId+"]", e);
-            }
-            try {
-                // Notify the test bed for the received message.
-                NotifyForMessageRequest request = new NotifyForMessageRequest();
-                request.setSessionId(sessionId);
-                request.setReport(report);
-                client.getMessagingClientPort().notifyForMessage(request);
-            } catch (Exception e) {
-                // Notify the test bed of an error.
-                NotifyForMessageRequest request = new NotifyForMessageRequest();
-                request.setSessionId(sessionId);
-                request.setReport(Utils.createReport(TestResultType.FAILURE));
-                client.getMessagingClientPort().notifyForMessage(request);
-                throw new IllegalStateException(e);
+            String callback = (String)getSessionInfo(sessionId, SessionData.CALLBACK_URL);
+            if (callback == null) {
+                LOG.warn("Could not find callback URL for session [{}]", sessionId);
+            } else {
+                try {
+                    LOG.info("Notifying test bed for session [{}]", sessionId);
+                    callTestBed(sessionId, report, callback);
+                } catch (Exception e) {
+                    LOG.warn("Error while notifying test bed for session [{}]", sessionId, e);
+                    callTestBed(sessionId, Utils.createReport(TestResultType.FAILURE), callback);
+                    throw new IllegalStateException("Unable to call callback URL ["+callback+"] for session ["+sessionId+"]", e);
+                }
             }
         }
-    }
+
+        private void callTestBed(String sessionId, TAR report, String callbackAddress) {
+            /*
+             * First setup the service client. This is not created once and reused since the address to call
+             * is determined dynamically from the WS-Addressing information (passed here as the callback address).
+             */
+            JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
+            proxyFactoryBean.setServiceClass(MessagingClient.class);
+            proxyFactoryBean.setAddress(callbackAddress);
+            MessagingClient serviceProxy = (MessagingClient)proxyFactoryBean.create();
+            Client client = ClientProxy.getClient(serviceProxy);
+            HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+            httpConduit.getClient().setAutoRedirect(true);
+            // Make the call.
+            NotifyForMessageRequest request = new NotifyForMessageRequest();
+            request.setSessionId(sessionId);
+            request.setReport(report);
+            serviceProxy.notifyForMessage(request);
+        }
 
 Key points for you to consider with respect to this example are:
 
