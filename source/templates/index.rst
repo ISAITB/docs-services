@@ -31,7 +31,7 @@ Prerequisites
 
 To use the templates and run the resulting services you will need the following:
 
-    * A `Java Development Kit`_ (version 8 or higher).
+    * A `Java Development Kit`_ (version 11 or higher).
     * `Apache Maven`_ (version 3 or higher).
     * Your ``PATH`` environment variable set to include the Java and Maven executables.
     * An internet connection (to read the templates and download dependencies).
@@ -45,8 +45,8 @@ to view output similar to the example):
 
     Apache Maven 3.5.2 (138edd61fd100ec658bfa2d307c43b76940a5d7d; 2017-10-18T09:58:13+02:00)
     Maven home: D:\tools\apache-maven-3.5.2\bin\..
-    Java version: 1.8.0_152, vendor: Oracle Corporation
-    Java home: D:\tools\jdk1.8.0_152\jre
+    Java version: 11.0.2, vendor: Oracle Corporation
+    Java home: D:\tools\jdk-11.0.2
     Default locale: en_GB, platform encoding: Cp1252
     OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 
@@ -87,7 +87,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.5.0
+    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.6.0
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.organisation
     [INFO] Parameter: artifactId, Value: simple-service
