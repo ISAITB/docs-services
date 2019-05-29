@@ -15,13 +15,15 @@ processing service used to selectively retrieve the contents of a ZIP archive. I
 full ZIP archive would need to be passed to the service with each call and the service implementation would need to extract and read it
 for every file access. By maintaining state with processing transactions the service can be provided with the ZIP archive as part of one
 operation and then reuse it when looking up individual files. The processing service API foresees appropriate lifecycle operations to signal 
-the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes). Note that support for
-transactions is optional and in cases where it is not needed can be fully skipped.
+the creation of a new transaction and the finalisation of an existing one (for e.g. clean-up purposes).
+
+Note that support for transactions is **optional** and in cases where it is not needed can be fully skipped. This would be interesting for 
+processing actions that are inherently stateless, such as utility functions to generate or manipulate data where each operation is independent. 
 
 The above description mentions the concept of **processing operations**. This is the way in which processing services organise
 their work, by defining a set of supported operations, each with distinct inputs and outputs, that form a cohesive whole. You may thus consider
-a processing service as a utility library of related operations that can be called as part of a specific transaction. Continuing the previous 
-example of a ZIP archive processing service, potential operations could be "initialise" to pass the archive to process, "checkExists" to check if a 
+a processing service as a utility library of related operations that can be called as part of a specific transaction (when state is important) or independently. 
+Continuing the previous example of a ZIP archive processing service, potential operations could be "initialise" to pass the archive to process, "checkExists" to check if a 
 given file exists (but not actually return it), "extract" to lookup and return a file, and "printContents" to return a representation of the archive's contents. 
 For an operation to take place a processing transaction must first be established although whether this is actually handled within the service to 
 manage session state is up to you.
@@ -50,7 +52,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. 

@@ -8,7 +8,7 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.5.0
+What's new in release 1.6.0
 ---------------------------
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest
@@ -18,8 +18,7 @@ GITB services release. References are provided to the relevant sections for more
     :header: "Description", "Relevant sections"
     :delim: ~
 
-    The messaging services' callbacks are now implemented using the more flexible Apache CXF~ :ref:`messaging`, :ref:`templates`
-    The template messaging service now also includes configurable proxy settings for test bed call-backs~ :ref:`messaging`, :ref:`templates`
+    All template services are now adapted to use Java 11, with Docker images based on the ``openjdk:11-jre`` base image.~ :ref:`templates`
 
 Previous documentation versions
 -------------------------------
@@ -30,5 +29,6 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
-    1.4.1, Global maintenance release with no specific changes to the documentation, https://www.itb.ec.europa.eu/docs/services/1.4.1/
-    1.4.0, First release of the GITB services documentation, https://www.itb.ec.europa.eu/docs/services/1.4.0/
+    1.5.0, Updates to messaging services to support more flexibility in callbacks and proxy settings., https://www.itb.ec.europa.eu/docs/services/1.5.0/
+    1.4.1, Global maintenance release with no specific changes to the documentation., https://www.itb.ec.europa.eu/docs/services/1.4.1/
+    1.4.0, First release of the GITB services documentation., https://www.itb.ec.europa.eu/docs/services/1.4.0/

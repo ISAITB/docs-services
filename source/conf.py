@@ -20,13 +20,13 @@
 # -- Project information -----------------------------------------------------
 
 project = 'GITB Services Documentation'
-copyright = '2018, European Commission, DIGIT ISA'
+copyright = '2019, European Commission, DIGIT ISA'
 author = 'European Commission, DIGIT ISA'
 
 # The short X.Y version
-version = 'GITB services version 1.5.0'
+version = 'GITB services version 1.6.0'
 # The full version, including alpha/beta/rc tags
-release = 'GITB services version 1.5.0'
+release = 'GITB services version 1.6.0'
 
 html_show_sourcelink = False
 html_show_sphinx = False
