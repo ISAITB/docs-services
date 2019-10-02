@@ -87,7 +87,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.6.1
+    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.7.0
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.organisation
     [INFO] Parameter: artifactId, Value: simple-service
@@ -103,7 +103,7 @@ You should now see output similar to the following:
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
     [INFO] Total time: 07:26 min
-    [INFO] Finished at: 2018-08-31T15:31:33+02:00
+    [INFO] Finished at: 2019-10-08T15:31:33+02:00
     [INFO] Final Memory: 15M/220M
     [INFO] ------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ Following this command you should see output from the build and start-up of your
 .. code-block:: none
 
     ...
-    2018-08-31 15:39:02.225  INFO 17040 --- [  restartedMain] com.organisation.Application: Started Application in 4.093 seconds (JVM running for 4.565)
+    2019-10-08 15:39:02.225  INFO 17040 --- [  restartedMain] com.organisation.Application: Started Application in 4.093 seconds (JVM running for 4.565)
 
 To shut down the service simply issue a ``CTRL-C`` on the console.
 
