@@ -24,9 +24,9 @@ copyright = '2019, European Commission, DIGIT ISA'
 author = 'European Commission, DIGIT ISA'
 
 # The short X.Y version
-version = 'GITB services version 1.7.2'
+version = 'GITB services version 1.8.0'
 # The full version, including alpha/beta/rc tags
-release = 'GITB services version 1.7.2'
+release = 'GITB services version 1.8.0'
 
 html_show_sourcelink = False
 html_show_sphinx = False

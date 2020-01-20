@@ -315,7 +315,7 @@ The following table documents each of these properties:
     reports.infoOrWarningOrError~ A ``List`` of ``JAXBElement<TestAssertionReportType>`` objects, one per validation finding. In total these must match the sum of ``nrOfAssertions``, ``nrOfWarnings`` and ``nrOfErrors``.
     context~ A ``AnyContent`` object that can be set to return arbitrary output to the caller (see :ref:`common__returning_output`).
     date~ The timestamp of the report's creation.
-    result~ The overall result of the service call which can be ``TestResultType.SUCCESS``, ``TestResultType.FAILURE`` or ``TestResultType.UNDEFINED``.
+    result~ The overall result of the service call which can be ``TestResultType.SUCCESS``, ``TestResultType.WARNING``, ``TestResultType.FAILURE`` or ``TestResultType.UNDEFINED``.
 
 Overall when creating a ``TAR`` instance the properties you must always populate are the ``date`` and ``result``. The ``result`` may at first inspection seem applicable only to
 validation services, however it is useful also in the case of messaging and processing services as it allows an error to be immediately signalled. An example of this
