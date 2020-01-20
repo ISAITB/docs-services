@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'GITB Services Documentation'
-copyright = '2019, European Commission, DIGIT ISA'
+copyright = '2020, European Commission, DIGIT ISA'
 author = 'European Commission, DIGIT ISA'
 
 # The short X.Y version
