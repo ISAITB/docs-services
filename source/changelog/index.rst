@@ -8,17 +8,11 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.8.0
+What's new in release 1.9.0
 ---------------------------
 
-The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services release.
-References are provided to the relevant sections for more information.
-
-.. csv-table::
-    :header: "Description", "Relevant sections"
-    :delim: |
-
-    TAR validation reports can now be set with an overall result of ``TestResultType.WARNING``. | :ref:`common__tar`
+Release 1.9.0 is a maintenance release that did not change the GITB service APIs. For changes introduced in 
+previous releases check the specific documentation links below.
 
 Previous documentation versions
 -------------------------------
@@ -31,6 +25,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.8.0, TAR validation reports can be set as resulting in an overall warning., https://www.itb.ec.europa.eu/docs/services/1.8.0/
     1.7.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.2/
     1.7.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.1/
     1.7.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.0/
