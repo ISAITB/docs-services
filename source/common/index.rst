@@ -347,8 +347,8 @@ When constructing the ``BAR`` instance for a report item you can set the propert
     you need to do the following:
 
         #. Include the content to highlight (typically the validation input) as a property in the ``TAR`` report's ``context`` with a given name (e.g. "INPUT").
-        #. Set the report item's ``location`` property with a string of the format "NAME:LINE" where "NAME" is the name of the report's context item and "LINE" is the line number.
-           Setting this for example to "INPUT:100" will link to line 100 of the "INPUT" content.
+        #. Set the report item's ``location`` property with a string of the format "NAME:LINE:COLUMN" where "NAME" is the name of the report's context item, "LINE" is the line number and "COLUMN" is the column.
+           Setting this for example to "INPUT:100:0" will link to line 100 of the "INPUT" content.
 
 The following code sample provides an example populating a report for a validation service's :ref:`validation__operations__validate` output:
 
