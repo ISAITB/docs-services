@@ -8,10 +8,10 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.9.0
+What's new in release 1.9.1
 ---------------------------
 
-Release 1.9.0 is a maintenance release that did not change the GITB service APIs. For changes introduced in 
+Release 1.9.1 is a maintenance release that did not change the GITB service APIs. For changes introduced in
 previous releases check the specific documentation links below.
 
 Previous documentation versions
@@ -25,6 +25,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.9.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.9.0/
     1.8.0, TAR validation reports can be set as resulting in an overall warning., https://www.itb.ec.europa.eu/docs/services/1.8.0/
     1.7.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.2/
     1.7.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.1/
