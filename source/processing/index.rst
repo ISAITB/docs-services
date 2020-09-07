@@ -52,7 +52,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.9.1</version>
+        <version>1.10.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. 
@@ -129,7 +129,8 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
 operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
-(done here by calling a ``createParameter()`` method) is documented in :ref:`common__documenting_input_output`.
+(done here by calling a ``createParameter()`` method) is documented in :ref:`common__documenting_input_output`. Note that as of release 1.10.0, you are no longer obliged 
+to define service inputs and output (i.e. both are optional), although doing so remains a best practice as it allows client-side input verification.
 
 .. index:: beginTransaction (Processing)
 .. _processing__operations__beginTransaction:

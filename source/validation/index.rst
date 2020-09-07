@@ -28,7 +28,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
   <dependency>
       <groupId>eu.europa.ec.itb</groupId>
       <artifactId>gitb-types</artifactId>
-      <version>1.9.1</version>
+      <version>1.10.0</version>
   </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample validation service. 
@@ -96,7 +96,8 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 
 The metadata set for a validation service (identifier, name, version and operation) are not used in practice. The only important 
 information that needs to be defined are the input parameters. In the above example these are created by calling a custom ``createParameter()`` method.
-See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.
+See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.  Note that as of release 1.10.0, you are no longer obliged 
+to define service inputs (i.e. they are optional), although doing so remains a best practice as it allows client-side input verification.
 
 .. index:: TAR
 .. index:: validate
@@ -143,7 +144,7 @@ The above example illustrates the key steps that are taking place but decouples 
     an input's value.
   * The validation and generation of the report in method ``doValidation()``. This method captures the domain-specific validation logic and is a prime candidate
     to decouple in a separate component. Keep in mind however that the report includes errors and warnings that may need to be generated on-the-fly, which also 
-    may include the relevant location in the processed input (if possible). Ommiting such details is possible but diminishes the reporting power of your validator
+    may include the relevant location in the processed input (if possible). Omitting such details is possible but diminishes the reporting power of your validator
     considering that it would otherwise only report a "success" or "failure" result. As such, it might be necessary to construct the ``TAR`` report as you validate
     or foresee an intermediate GITB-agnostic structure as the result of your validation that you will then convert to the expected ``TAR`` report. These are all points
     to consider when designing your validation service. Details on how the ``TAR`` validation report itself should be populated are provided in :ref:`common__tar`.
