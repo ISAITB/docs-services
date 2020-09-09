@@ -8,11 +8,17 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.9.1
----------------------------
+What's new in release 1.10.0
+----------------------------
 
-Release 1.9.1 is a maintenance release that did not change the GITB service APIs. For changes introduced in
-previous releases check the specific documentation links below.
+The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services 
+release. References are provided to the relevant sections for more information.
+
+.. csv-table::
+    :header: "Description", "Relevant sections"
+    :delim: |
+
+    Defining inputs and output in the ``getModuleDefinition`` operation is now optional. | :ref:`getModuleDefinition (messaging)<messaging__operations__getModuleDefinition>`, :ref:`getModuleDefinition (processing)<processing__operations__getModuleDefinition>`, :ref:`getModuleDefinition (validation)<validation__operations__getModuleDefinition>`
 
 Previous documentation versions
 -------------------------------
@@ -25,6 +31,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.9.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.9.1/
     1.9.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.9.0/
     1.8.0, TAR validation reports can be set as resulting in an overall warning., https://www.itb.ec.europa.eu/docs/services/1.8.0/
     1.7.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.7.2/

@@ -112,7 +112,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.9.1</version>
+        <version>1.10.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample messaging service. 
@@ -179,6 +179,8 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a messaging service (identifier, name and version) are not used in practice. In addition, definition of outputs is often skipped
 as this is purely for documentation purposes. What is important to define correctly are the input parameters, the definitions of which in this example are
 constructed with the help of a ``createParameter()`` method. See :ref:`common__documenting_input_output` for full details on how these parameters need to be defined.
+Note that as of release 1.10.0, you are no longer obliged to define service inputs and output (i.e. both are optional), although doing so remains a best practice as
+it allows client-side input verification.
 
 .. note::
     **Required inputs for messaging services:** Specifying an input as required (i.e. setting its ``use`` to ``UsageEnumeration.R``) allows the test bed to proactively test
@@ -187,7 +189,7 @@ constructed with the help of a ``createParameter()`` method. See :ref:`common__d
     call resulting always in an error when checking them from the side of the test bed. The cause of this is a historical update of the messaging service API that, in
     favour of backwards compatibility, introduced this ambiguity as a negative side-effect.
     
-    Until this issue is resolved in the specification, input parameters **should always be defined as optional** (i.e. ``UsageEnumeration.O``). The presence or not
+    Until this issue is resolved in the specification, input parameters should either be **skipped** or defined as **optional** (i.e. ``UsageEnumeration.O``). The presence or not
     of each expected input must then be checked in the service's :ref:`messaging__operations__receive` and :ref:`messaging__operations__send` implementations.
 
 .. index:: initiate
