@@ -1,0 +1,4 @@
+table > thead > tr > th > p,
+table > tbody > tr > th > p {
+    margin-bottom: 0px;
+}

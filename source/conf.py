@@ -158,3 +158,6 @@ texinfo_documents = [
      author, 'GITB Services', 'The GITB Services',
      'Miscellaneous'),
 ]
+
+def setup(app):
+    app.add_css_file('css/custom.css')
