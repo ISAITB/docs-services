@@ -481,6 +481,12 @@ often left empty:
 .. code-block:: java
 
     public Void receive(ReceiveRequest parameters) {
+        /*
+         * Before returning you may also want to:
+         * - Process and record any inputs (through parameters.getInput())
+         * - Record the session ID this "receive" refers to (through parameters.getSessionId())
+         * - Record the call ID  if this "receive" is part of a "flow" step's threads (through parameters.getCallId())
+         */
         return new Void();
     }
 
@@ -498,7 +504,8 @@ What is common in all cases is that once a message is received you need to match
 data that is also domain-specific in nature. Once a match is found you use the call-back address for the test bed (typically also stored in the session)
 and call its ``notifyForMessage`` operation. See :ref:`messaging__callbacks` for a summary of the steps you need to follow.
 
-The following example (using the `Spring framework`_) illustrates how communication received through a REST service can be processed and transferred to the test bed:
+The following example (using the `Spring framework`_) illustrates how communication received through a REST service can be processed and transferred to the test bed. For
+the sake of completeness, this examples also handles call identifiers, even though this is entirely optional if outside the context of a `flow`_ step:
 
 .. code-block:: java
 
@@ -515,12 +522,14 @@ The following example (using the `Spring framework`_) illustrates how communicat
         public void receiveMessage(@RequestParam(value="message") String message) {
             // Determine the session ID based on the message's contents.
             String sessionId = determineSessionId(message);
+            // Determine the call ID based on the message's contents. Needed only if using "receive" in "flow" steps.
+            String callId = determineCallId(message, sessionId);
             // Input for the test bed is provided by means of a report.
             TAR notificationReport = createReport(TestResultType.SUCCESS);
             // The report can include any properties and with any nesting (by nesting list of map types). In this case we add a simple string.
             notificationReport.getContext().getItem().add(createAnyContent("receivedContent", message, ValueEmbeddingEnumeration.STRING));
             // Notify the test bed.
-            notifyTestBed(sessionId, notificationReport);
+            notifyTestBed(sessionId, callId, notificationReport);
         }
 
         private String determineSessionId(String message) {
@@ -528,23 +537,28 @@ The following example (using the `Spring framework`_) illustrates how communicat
             ...
         }
 
-        private void notifyTestBed(String sessionId, TAR report){
+        private String determineCallId(String message, String sessionId) {
+            // Determine the relevant call ID for the session (in case of "receive" within a "flow").
+            ...
+        }
+
+        private void notifyTestBed(String sessionId, String callId, TAR report){
             String callback = (String)getSessionInfo(sessionId, SessionData.CALLBACK_URL);
             if (callback == null) {
                 LOG.warn("Could not find callback URL for session [{}]", sessionId);
             } else {
                 try {
-                    LOG.info("Notifying test bed for session [{}]", sessionId);
-                    callTestBed(sessionId, report, callback);
+                    LOG.info("Notifying test bed for session [{}] and call [{}]", sessionId, callId);
+                    callTestBed(sessionId, callId, report, callback);
                 } catch (Exception e) {
-                    LOG.warn("Error while notifying test bed for session [{}]", sessionId, e);
+                    LOG.warn("Error while notifying test bed for session [{}] and call [{}]", sessionId, callId, e);
                     callTestBed(sessionId, Utils.createReport(TestResultType.FAILURE), callback);
-                    throw new IllegalStateException("Unable to call callback URL ["+callback+"] for session ["+sessionId+"]", e);
+                    throw new IllegalStateException("Unable to call callback URL ["+callback+"] for session ["+sessionId+"] and call ["+callId+"]", e);
                 }
             }
         }
 
-        private void callTestBed(String sessionId, TAR report, String callbackAddress) {
+        private void callTestBed(String sessionId, String callId, TAR report, String callbackAddress) {
             /*
              * First setup the service client. This is not created once and reused since the address to call
              * is determined dynamically from the WS-Addressing information (passed here as the callback address).
@@ -558,7 +572,11 @@ The following example (using the `Spring framework`_) illustrates how communicat
             httpConduit.getClient().setAutoRedirect(true);
             // Make the call.
             NotifyForMessageRequest request = new NotifyForMessageRequest();
+            // Set the session ID to tell the test bed which session this refers to.
             request.setSessionId(sessionId);
+            // Set the call ID to tell the test bed which specific call within the session this refers to (only needed if "flow" steps are used).
+            request.setCallId(callId);
+            // Set the report with the outcome result and data.
             request.setReport(report);
             serviceProxy.notifyForMessage(request);
         }
@@ -567,8 +585,8 @@ Key points for you to consider with respect to this example are:
 
     * The API implemented by this component has nothing to do with the GITB specifications or the test bed. It is an implementation of the API that your remote 
       system is expected to call. The GITB-specific part of the implementation is where it notifies the test bed for a given test session.
-    * The way to determine the session identifier from the received message. For this you will need to determine the appropriate metadata that you will first
-      store in the session and then lookup for a match (illustrated here with method ``determineSessionId()``).
+    * The way to determine the session identifier (and if needed the call identifier) from the received message. For this you will need to determine the appropriate metadata that you will first
+      store in the session and then lookup for a match (illustrated here with methods ``determineSessionId()``, ``determineCallId()``).
     * The message received might need processing before being returned to the test bed. Consider that you may want to return it as-is but also 
       return e.g. its length, mime types, etc. As another example consider that often when dealing with SOAP content you would want to return the complete envelope
       and also a separate output element containing only the business payload. 
