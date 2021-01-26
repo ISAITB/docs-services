@@ -229,9 +229,9 @@ Note that the final part of this example (setting the report's context) applies 
 ``output`` object would be set directly on the ``ProcessResponse`` class.
 
 .. note::
-    **Validation service outputs:** Validation services are not meant to return output values apart from the validation result itself (a ``boolean``). The output
-    values added to the validation report's context are used to enrich the display of the validation step (the `verify`_ step in GITB TDL terms) by displaying to
-    the user additional information such as the validated input. These output values cannot currently be further leveraged in the calling test session.
+    **Validation service outputs:** When used in GITB test cases, the output of validation services will by default not be recorded
+    in the test session context (recording only a ``boolean`` flag instead). To have additional output recorded you would need to set
+    the optional ``output`` property (see :ref:`validation__using_test_case__output` for details).
 
 .. _common__using_output:
 
