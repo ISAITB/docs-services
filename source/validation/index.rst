@@ -28,7 +28,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
   <dependency>
       <groupId>eu.europa.ec.itb</groupId>
       <artifactId>gitb-types</artifactId>
-      <version>1.11.1</version>
+      <version>1.12.0</version>
   </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample validation service. 
@@ -237,8 +237,6 @@ unit testing to ensure that generated content is valid. The following example il
     <soapenv:Header/>
     <soapenv:Body>
         <v1:ValidateRequest>
-          <!-- Any value can be provided for the sessionId element. -->
-          <sessionId>12345</sessionId>
           <input name="input1" embeddingMethod="STRING">
             <!-- Provide the input as-is. -->
             <v11:value>a_value</v11:value>
@@ -253,7 +251,6 @@ unit testing to ensure that generated content is valid. The following example il
 
 The example above should be for the most part self-evident. Points that merit highlighting are:
 
-  * The fact that a ``sessionId`` value is needed but for which any value can be safely provided.
   * The possibility to pass inputs as-is or in ``CDATA`` blocks (actually this is simply a XML feature).
   * The ``embeddingMethod`` that is set to ``STRING``. This tells the validation service how the text value should be interpreted. Possible values are:
 

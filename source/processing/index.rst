@@ -52,7 +52,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.11.1</version>
+        <version>1.12.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. 
@@ -430,7 +430,7 @@ The response to this will provide you with a session identifier to use. You will
         </soapenv:Body>
     </soapenv:Envelope>
 
-Note that if your service does not make use of transactions/sessions you could simply skip these calls and pass an arbitrary string as the session identifier for
+Note that if your service does not make use of transactions/sessions you could simply skip these calls and omit the session identifier for
 :ref:`processing__operations__process` calls.
 
 A call to the :ref:`processing__operations__process` operation is illustrated in the following example:
@@ -441,6 +441,7 @@ A call to the :ref:`processing__operations__process` operation is illustrated in
         <soapenv:Header/>
         <soapenv:Body>
             <v1:ProcessRequest>
+                <!-- The sessionId can be omitted if there is no transaction -->
                 <sessionId>SESSION_ID</sessionId>
                 <operation>uppercase</operation>
                 <input name="input" embeddingMethod="STRING">

@@ -8,8 +8,18 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.11.1
+What's new in release 1.12.0
 ----------------------------
+
+The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
+release. References are provided to the relevant sections for more information.
+
+.. csv-table::
+    :header: "Description", "Relevant sections"
+    :delim: |
+
+    The session identifier is no longer a mandatory input for validation and processing services, facilitating their standalone use. | :ref:`validation`, :ref:`processing`,
+
 
 Release 1.11.1 is a maintenance release that did not change the GITB service APIs. For changes introduced in
 previous releases check the specific documentation links below.
@@ -25,6 +35,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.11.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.11.1/
     1.11.0, Support for recording the output of validation services., https://www.itb.ec.europa.eu/docs/services/1.11.0/
     1.10.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.10.2/
     1.10.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.10.1/
