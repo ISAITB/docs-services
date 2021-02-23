@@ -27,8 +27,6 @@ previous releases check the specific documentation links below.
 Previous documentation versions
 -------------------------------
 
-common__tar
-
 The following table provides the main highlights introduced in each previous documentation release as well as its access link.
 
 .. csv-table::
