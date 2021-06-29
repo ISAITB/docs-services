@@ -52,7 +52,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.12.0</version>
+        <version>1.13.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. 
@@ -193,6 +193,7 @@ all implementations follow a common sequence of steps:
     #. Extract the values of the inputs.
     #. Execute the operation.
     #. [Optional] Update the session's state with new information.
+    #. [Optional] Enrich the produced status report with additional context information.
     #. Return the result including the status report and produced outputs.
 
 These steps are illustrated in the following code example:
@@ -238,6 +239,8 @@ The above example illustrates key steps that are taking place but decouples cert
     one to use. This however could be BASE64 content or a remote URL that points to the actual content. See :ref:`common__interpreting_input` on what you should consider when retrieving 
     an input's value.
   * The generation of the ``TAR`` status report in method ``createReport()``. For details on how the report should be created check :ref:`common__tar`.
+    This report can be used to also :ref:`include context information<processing__using_test_case__visible_context>` that will be presented to users when 
+    :ref:`using the service through a test case<processing__using_test_case>`.
   * The generation of the output parameter using method ``createAnyContent()``. For details on how output values are represented check :ref:`common__returning_output`.
 
 Another point to consider from this example is that the actual processing operations (simple string manipulations in this case) are taking place within the
@@ -396,6 +399,54 @@ In terms of mapping GITB TDL steps to service calls the following take place:
   #. The `process`_ steps each trigger a :ref:`processing__operations__process` operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
   #. The `eptxn`_ step results in the :ref:`processing__operations__endTransaction` operation to be called to clean-up the service's session state.
+
+.. _processing__using_test_case__visible_context:
+
+Returning context information for visible process steps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When used in test cases via the `process`_ step, the service's operation would typically be part of internal processing that would not be
+presented to users. It could nonetheless be interesting to make certain processing steps visible in case sharing their output would provide
+useful information to the user. This is possible by defining in the relevant `process`_ step the ``hidden`` attribute as ``false`` (it's
+considered by default as ``true``).
+
+.. code-block:: xml
+
+    <!--
+        The process step will be visible given that "hidden" is set to false. Note how in this case we also specify
+        a description ("desc") to be displayed for the step.
+    -->
+    <process id="output" hidden="false" desc="Process the input file" handler="$DOMAIN{processingServiceAddress}">
+        <input name="path">$inputFile</input>
+    </process>
+
+By default when a `process`_ step is made visible it will display as its output the step's overall result (e.g. "SUCCESS")
+alongside the processing date/time. You can extend this information with any arbitrary data added as *context* to the
+returned report. For example you could return the service's inputs and outputs but also any other information that would be useful.
+
+Returning such additional information is done by :ref:`adding context data to the TAR report<common__returning_output>`. The following
+example adds to the service's report a text value corresponding to the service's output:
+
+.. code-block:: java
+
+    public ProcessResponse process(ProcessRequest processRequest) {
+        ProcessResponse response = new ProcessResponse();
+        // Carry out the service's processing ...
+        String outputValue = ...;
+        AnyContent output = createAnyContent("output", outputValue, ValueEmbeddingEnumeration.STRING);
+        // Add the output to the service's output data.
+        response.getOutput().add(output);
+        response.setReport(createReport(TestResultType.SUCCESS));
+        // Add also to the resulting report for display purposes.
+        response.getReport().getContext().getItem().add(output)
+        // Return the result.
+        return response;
+    }
+
+Notice that the output value to return (wrapped in ``output`` in the example) is added both to the response's *output* as well as its
+*report*. The output is the actual data that will be recorded and used in the test session. The report's context on the other hand is
+not subsequently used, except for the purpose of being displayed to the user. As you are developing the service you have full flexibility
+to display the service's output to users (i.e. replicating it in the report's context) or return any information you consider appropriate.
 
 .. _processing__using_standalone:
 
