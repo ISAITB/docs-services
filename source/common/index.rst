@@ -188,6 +188,13 @@ The most flexible way of returning output is by defining a first ``AnyContent`` 
 values with one or more outputs you want to return. Moreover, this map can contain nested ``AnyContent`` objects of type ``list`` or ``map`` allowing you to organise and group outputs
 as you wish. Constructing each ``AnyContent`` object follows the same principles in terms of e.g. values and embedding methods as described in the case of inputs (see :ref:`common__using_inputs`).
 
+The values returned through ``AnyContent`` instances are recorded in the test session context and displayed as part of the relevant step's report. For binary values or long texts, the display is not
+made inline but rather controls are presented to either download the content as a file or view it in a code editor. To facilitate this process you can specify on your ``AnyContent`` outputs an additional
+``mimeType`` property that is set with the content's `mime type`_ (e.g. ``text/xml``). The result of doing this is twofold:
+
+  * When downloaded, the relevant file is set with an appropriate extension and content type.
+  * When displayed in an editor, syntax highlighting is applied to improve readability.
+
 The following example illustrates the construction of a complex output structure, including a simple output string and a ``map`` with two properties:
 
 .. code-block:: java
@@ -210,11 +217,19 @@ The following example illustrates the construction of a complex output structure
     output2Property2.setValue("Value2");
     output2Property2.setEmbeddingMethod(ValueEmbeddingEnumeration.STRING);
 
-    // Add the "property1" and "property2" values under a map named "output2".
+    // Create a third string property named "property3" that holds XML content.
+    AnyContent output2Property3 = new AnyContent();
+    output2Property3.setName("property3");
+    output2Property3.setValue(xmlContent);
+    output2Property3.setMimeType("text/xml");
+    output2Property3.setEmbeddingMethod(ValueEmbeddingEnumeration.STRING);
+
+    // Add the "property1", "property2" and "property3" values under a map named "output2".
     AnyContent output2 = new AnyContent();
     output2.setName("output2");
     output2.getItem().add(output2Property1);
     output2.getItem().add(output2Property2);
+    output2.getItem().add(output2Property3);
 
     // Add both the "output1" and "output2" properties as top-level output items.
     AnyContent output = new AnyContent();
@@ -452,3 +467,4 @@ i.e. those of validation and messaging services.
 .. _GITB types: https://www.itb.ec.europa.eu/docs/tdl/latest/types/
 .. _GITB type: https://www.itb.ec.europa.eu/docs/tdl/latest/types/
 .. _GITB TDL expression documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/
+.. _mime type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
