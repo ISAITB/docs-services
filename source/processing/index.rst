@@ -29,8 +29,9 @@ For an operation to take place a processing transaction must first be establishe
 manage session state is up to you.
 
 .. note::
-    **Displaying processing steps:** Processing operations used in GITB TDL test cases are currently not displayed in the test bed. They can 
-    be used to perform internal operations but these are currently not visible to end users.
+    **Displaying processing steps:** Processing operations used in GITB TDL test cases are by default hidden as they are considered internal
+    actions. You may however choose to make such a step visible and return custom information for display to users. See :ref:`processing__using_test_case__visible_context`
+    for more details.
 
 .. _processing__implementing:
 
