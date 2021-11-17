@@ -53,7 +53,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.14.1</version>
+        <version>1.15.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. 
@@ -130,8 +130,11 @@ The following example shows a complete implementation of the ``getModuleDefiniti
 The metadata set for a processing service (identifier, name and version) are not used in practice. The important information that needs to be defined are the 
 operations as well as their input and output parameters. In this example the processing service is used to either uppercase or lowercase a provided text. As such,
 two appropriately named operations are defined, each accepting an input string named "input" and producing the string output named "output". Creation of the parameters
-(done here by calling a ``createParameter()`` method) is documented in :ref:`common__documenting_input_output`. Note that as of release 1.10.0, you are no longer obliged 
-to define service inputs and output (i.e. both are optional), although doing so remains a best practice as it allows client-side input verification.
+(done here by calling a ``createParameter()`` method) is documented in :ref:`common__documenting_input_output`.
+
+.. note::
+    As of release 1.10.0 you are no longer obliged to define service inputs and outputs (i.e. both are optional), although doing so remains a good practice as it allows
+    client-side input verification.
 
 .. index:: beginTransaction (Processing)
 .. _processing__operations__beginTransaction:
@@ -140,20 +143,22 @@ beginTransaction
 ~~~~~~~~~~~~~~~~
 
 The ``beginTransaction`` operation is used to signal to the processing service that a new transaction/session is to be started. This operation may also receive 
-zero or more configuration properties that could be specific to the transaction in question.
+zero or more configuration properties that could be specific to the transaction in question. In case your processing service does not need to maintain any state
+across operations it can completely ignore transactions, leaving the implementation of the ``beginTransaction`` operation empty.
 
-The processing service is expected to create a session and return its identifier as part of the operation's response. This session is not related
+In case maintaining state is meaningful, the processing service is expected to create a session and return its identifier as part of the operation's response. This session is not related
 to the test session running in the test bed but is rather used only for the internal purposes of the processing service. What the test bed guarantees is that the 
-identifier that is assigned to this session will be provided back to the processing service as part of every relevant call. If your processing service does not 
-require the use of transactions, this operation's implementation can be simplified to return an arbitrary string value as the session identifier (which will be
-of no further use or consequence).
+identifier that is assigned to this session will be provided back to the processing service as part of every relevant call.
 
-A more interesting scenario is when the processing service indeed wants to maintain transaction/session state in which case it typically needs to do the following:
+When the processing service wants to maintain transaction/session state it will typically do the following steps in the ``beginTransaction`` operation:
 
     #. Generate a unique session identifier.
     #. Record the identifier in a way that it can subsequently retrieve it and its associated information. Implementing this session management could be recording it 
        in-memory in a thread-safe map construct or even in a database.
     #. Return the identifier as part of the response.
+
+You also have the option of not returning a specific session identifier here in which case the test bed will consider the overall test session identifier instead. 
+The difference in this last case is that you will register new sessions during the :ref:`process<processing__operations__process>` operation when a new session ID is encountered.
 
 An example implementation from a session-aware processing service is provided in the following code block:
 
@@ -356,8 +361,9 @@ could be done in a `Spring`_ implementation using `CXF`_:
 Using the service through a test case
 -------------------------------------
 
-Use of a processing service in a test case is achieved with the `process`_ step including the `bptxn`_ and `eptxn`_ steps to 
-start or stop respectively a processing transaction. The following example illustrates use of a processing service to read a ZIP archive:
+Use of a processing service in a test case is achieved with the `process`_ step. In case the service foresees transactions, the `process`_ step
+will be complemented by the `bptxn`_ and `eptxn`_ steps to start or stop respectively a processing transaction. The following example illustrates
+use of a transaction-aware processing service to read a ZIP archive:
 
 .. code-block:: xml
 
@@ -400,6 +406,38 @@ In terms of mapping GITB TDL steps to service calls the following take place:
   #. The `process`_ steps each trigger a :ref:`processing__operations__process` operation call, passing each time the operation name as well as the expected inputs.
      The output of each call is stored in the test session context using the step's ``id`` value as a reference key.
   #. The `eptxn`_ step results in the :ref:`processing__operations__endTransaction` operation to be called to clean-up the service's session state.
+
+In case your processing service **is stateless** you have no need for the `bptxn`_ and `eptxn`_ steps, neither for the ``txnId`` attribute
+on the `process`_ step. In this case however you will need to set directly on the step the ``handler`` implementation. The following example illustrates use 
+of a stateless service to perform string manipulations:
+
+.. code-block:: xml
+
+    <!-- Call the processing service without a transaction. -->
+    <process id="lowercaseStep" handler="https://ZIP_PROCESSING_SERVICE?wsdl">
+        <operation>lowercase</operation>
+        <input name="input">$aString</input>
+    </process>
+    <!-- Access the result. We assume here that the relevant result is named "output". -->
+    <log>$lowercaseStep{output}</log>
+
+In the examples listed above you see that the `process`_ step foresees the relevant operation and inputs to be provided by means of child elements. An alternative
+to this is to make use of attributes which reduce the amount of XML you need to write for simple operations. Specifically:
+
+    * You can use the ``operation`` attribute instead of the similarly named element to identify the operation to perform.
+    * You can use the ``input`` attribute in case your service defines a single input or, in case of multiple inputs, defines a single *required* input.
+
+Considering the use of attributes we can revisit our last example to illustrate a less verbose but otherwise identical call:
+
+.. code-block:: xml
+
+    <!-- Call the processing service without a transaction. -->
+    <process id="lowercaseStep" handler="https://ZIP_PROCESSING_SERVICE?wsdl" operation="lowercase" input="$aString"/>
+    <!-- Access the result. We assume here that the service's result is named "output". -->
+    <log>$lowercaseStep{output}</log>
+
+.. note::
+    **Processing outputs:** Check :ref:`common__using_output` for details on how to leverage your service's outputs.
 
 .. _processing__using_test_case__visible_context:
 

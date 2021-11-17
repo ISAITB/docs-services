@@ -112,7 +112,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types</artifactId>
-        <version>1.14.1</version>
+        <version>1.15.0</version>
     </dependency>
 
 Check the :ref:`templates` description for more details on the content and use of the sample messaging service. 
@@ -255,6 +255,13 @@ The following example illustrates an ``initiate`` implementation (using the `Spr
         }
         return null;
     }    
+
+.. note::
+    **Session management simplification:** As of release 1.15.0 returning a session ID in the ``InitiateResponse`` is optional.
+    In this case the test bed will use the overall test session ID (as opposed to a generated messaging session ID) in all 
+    subsequent calls. The difference in this case is that you will not be aware of this ID before it is referred to in e.g. 
+    a `send`_ or `receive`_ call. As such, if you want to track sessions, your service implementation should be adapted to record 
+    a new session when a session ID is first encountered.
 
 Extraction of the "ReplyTo" header in ``getReplyToAddress()`` is critical as it is this address that allows the service to provide received messages to the
 test bed. You could skip this if the service is only ever going to be used to send messages (i.e. the relevant test cases never contain a `receive`_ step).

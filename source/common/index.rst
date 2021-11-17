@@ -84,7 +84,7 @@ All service types expect inputs to be passed to them. Inputs are used in the fol
   * Operation :ref:`processing__operations__process` of processing services.
 
 In each case inputs are received as a ``List`` of ``AnyContent`` objects. The ``AnyContent`` class provides a representation of the passed input including the 
-metadata needed to determine its value. It includes the following properties:
+metadata needed to determine its value. It includes the following properties relative to inputs:
 
 .. csv-table::
     :header: "Property", "Description"
@@ -96,6 +96,9 @@ metadata needed to determine its value. It includes the following properties:
     type~ The `GITB type`_ that corresponds to this input value.
     encoding~ The encoding to consider in case the value is a BASE64 string representing bytes.
     item~ A nested ``List`` of ``AnyContent`` objects in case this input is a ``map`` or a ``list``.
+
+.. note::
+    **AnyContent for outputs:** The ``AnyContent`` type is also used to construct service outputs. For more information see :ref:`common__returning_output`.
 
 As you see, regarding ``list`` and ``map`` types, the ``value`` property is empty, giving place to the ``item`` which contains the list of contained values. In case of
 a ``map`` the contained ``AnyContent`` objects' ``name`` property corresponds to their ``map`` key value. No ``name`` is present for the objects of a ``list``. Note that
@@ -180,9 +183,26 @@ All services are used to return outputs to the test session that is calling them
   * Messaging services return output in the case of the :ref:`messaging__operations__send` operation for any information that is useful to report (e.g. the message sent, a synchronous response).
     The :ref:`messaging__operations__receive` operation does not return output itself but received content is returned to the test bed asynchronously through the ``notifyForMessage`` call-back (see :ref:`messaging__callbacks`).
 
-Service outputs are provided using the same ``AnyContent`` class used to process inputs (see :ref:`common__using_inputs`). In the case of processing services this is a ``List`` of ``AnyContent``
-objects that is provided directly on the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through the ``TAR``
-report's ``context`` property (see :ref:`common__tar`).
+Service outputs are provided using the ``AnyContent`` class. In the case of processing services this is a ``List`` of ``AnyContent`` objects that is provided directly on 
+the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through the ``TAR`` report's ``context`` property (see :ref:`common__tar`).
+The ``AnyContent`` class includes the following properties relative to outputs:
+
+.. csv-table::
+    :header: "Property", "Description"
+    :delim: ~
+
+    name~ The name of the output, matching the documented name from the ``getModuleDefinition`` operation.
+    value~ The value of the output as a ``String`` in case this is a simple input (not a ``map`` or a ``list``).
+    embeddingMethod~ The way to process the value property (``ValueEmbeddingEnumeration.STRING``, ``ValueEmbeddingEnumeration.BASE64`` or ``ValueEmbeddingEnumeration.URI``).
+    type~ The `GITB type`_ that corresponds to this output value.
+    encoding~ The encoding to consider in case the value is a BASE64 string representing bytes.
+    item~ A nested ``List`` of ``AnyContent`` objects in case this output is a ``map`` or a ``list``.
+    mimeType~ The `mime type`_ relevant to this output, to make more appropriate its presentation to users.
+    forDisplay~ A boolean flag defining whether this output should be displayed to users (default is ``true``). See :ref:`common__returning_output__purpose` for details.
+    forContext~ A boolean flag defining whether this output should be recorded for processing by subsequent test steps (default is ``true``). See :ref:`common__returning_output__purpose` for details.
+
+.. note::
+    **AnyContent for inputs:** The ``AnyContent`` type is also used to read service inputs. For more information see :ref:`common__using_inputs`.
 
 The most flexible way of returning output is by defining a first ``AnyContent`` object of type ``map``. This acts as a root under which you can add additional arbitrary named 
 values with one or more outputs you want to return. Moreover, this map can contain nested ``AnyContent`` objects of type ``list`` or ``map`` allowing you to organise and group outputs
@@ -192,8 +212,8 @@ The values returned through ``AnyContent`` instances are recorded in the test se
 made inline but rather controls are presented to either download the content as a file or view it in a code editor. To facilitate this process you can specify on your ``AnyContent`` outputs an additional
 ``mimeType`` property that is set with the content's `mime type`_ (e.g. ``text/xml``). The result of doing this is twofold:
 
-  * When downloaded, the relevant file is set with an appropriate extension and content type.
-  * When displayed in an editor, syntax highlighting is applied to improve readability.
+  * When **downloaded**, the relevant file is set with an appropriate extension and content type.
+  * When **displayed** in an editor, syntax highlighting is applied to improve readability.
 
 The following example illustrates the construction of a complex output structure, including a simple output string and a ``map`` with two properties:
 
@@ -248,26 +268,91 @@ Note that the final part of this example (setting the report's context) applies 
     in the test session context (recording only a ``boolean`` flag instead). To have additional output recorded you would need to set
     the optional ``output`` property (see :ref:`validation__using_test_case__output` for details).
 
+.. index:: forContext
+.. index:: forDisplay
+.. _common__returning_output__purpose:
+
+Defining the purpose of outputs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Outputs returned by services are used for two purposes:
+
+    * To **set values** in the test session context for subsequent processing.
+    * To **display** to users as feedback on the service's result.
+
+By default output values defined as ``AnyContent`` instances serve both these purposes, meaning that they are displayed to users and
+also recorded in the test session context for subsequent use. When creating an ``AnyContent`` instance you can however be more specific
+by explicitly defining the output's purpose. This is done by means of two boolean flags:
+
+    * The ``forDisplay`` flag determines whether the output is displayed to users. Setting to ``false`` will hide it when displaying the
+      service's report.
+    * The ``forContext`` flag determines whether the output is recorded in the test session context. Setting to ``false`` will not record
+      it for processing in subsequent steps.
+
+Using these flags enables interesting use cases. It could be that you want to hide certain service outputs from users because they are
+internal or sensitive. Setting ``forDisplay`` to ``false`` in this case allows you to hide them while still having them available for
+processing. On the other hand, you may want to return outputs purely for presentation purposes that you will never subsequently use.
+Setting ``forContext`` to ``false`` will result in these being displayed but not stored in the test session context. Obviously, setting
+both flags to ``false`` for a given output makes little sense as it would be neither visible nor processable.
+
+The following example illustrates usage of these flags to fine-tune the purpose of service outputs:
+
+.. code-block:: java
+
+    // Create an output parameter not meant to be viewed in reports.
+    AnyContent internalStatusCode = new AnyContent();
+    internalStatusCode.setForDisplay(false)
+    internalStatusCode.setName("internalStatusCode");
+    internalStatusCode.setValue("CODE1");
+    internalStatusCode.setEmbeddingMethod(ValueEmbeddingEnumeration.STRING);
+
+    // Create an output parameter only for display purposes.
+    AnyContent userMessage = new AnyContent();
+    userMessage.setForContext(false)
+    userMessage.setName("userMessage");
+    userMessage.setValue("Your message failed to be processed");
+    userMessage.setEmbeddingMethod(ValueEmbeddingEnumeration.STRING);
+
+    // Add to the report's context.
+    TAR report = new TAR();
+    AnyContent context = new AnyContent();
+    context.getItem().add(internalStatusCode);
+    context.getItem().add(userMessage);
+    report.setContext(output);
+
+.. note::
+    **Processing services:** Using the ``forDisplay`` and ``forContext`` flags is meaningful only for :ref:`messaging services<messaging>` 
+    and :ref:`validation services<validation>`, where outputs are returned as the :ref:`TAR report<common__tar>` context.
+    In the case of :ref:`processing services<processing>` these flags are ignored, given that the produced report is distinct from the 
+    service outputs allowing you to create each one as you want. In addition, keep in mind that processing services are by default hidden from 
+    users unless they are :ref:`configured as visible<processing__using_test_case__visible_context>`.
+
 .. _common__using_output:
 
 Using service outputs in a test session
 ---------------------------------------
 
 The previous section deals with the implementation needed on the side of the service to return one or more output values. The current section deals with how
-these output values can be used in the calling test session. In terms of usable output:
+these output values can be used in the calling test session.
 
-    * The output values of processing and messaging services can be fully leveraged in the test session after the relevant service call.
-    * The output values of a validation service are used only for display purposes. What can be leveraged is the service's true/false validation outcome.
+A service call's output is stored in the test session context, with a key value that matches the corresponding test case step's ``id`` attribute. Specifically:
 
-In all cases a service call's output is stored in the test session context, with a key value that matches the corresponding 
-test case step's ``id`` attribute. Specifically:
-
-    * **Validation services:** The overall true/false validation result of the `verify`_ step is stored as a ``boolean`` value.
+    * **Validation services:** The overall true/false validation result of the `verify`_ step is stored as a ``boolean`` value. 
     * **Processing services:** The output of the `process`_ step is stored as a ``map``.
     * **Messaging services:** The output of the `send`_, `receive`_ and `listen`_ steps is stored as a ``map``.
 
-The following code sample illustrates a case where a file is received through a messaging service, processed through a processing service and then validated
-using a validation service:
+An additional ``output`` attribute is supported for the `verify`_ and `process`_ steps to enable more control over a service's results. This is used in 
+each case as follows:
+
+    * In the `verify`_ step this results in recording the validation report's context data in the test session context as a ``map`` named using the ``output``
+      attribute's value. For more details see :ref:`validation__using_test_case__output`.
+    * In the `process`_ step this overrides the default use of the ``id`` attribute, storing instead the output in the test session context as a variable named
+      using the ``output`` attribute's value. In addition, in case the service returns only a single output, this is stored directly in the session context rather
+      than be placed in a ``map``.
+
+These different approaches on using service outputs are illustrated in the following examples. In the first example we consider a case where a file is received
+through a messaging service, processed through a processing service and then validated using a validation service. The `process`_ step here uses a verbose syntax and
+the step's ``id`` to record its output. The `verify`_ step on the other hand ignores any output values produced by the validation service:
 
 .. code-block:: xml
 
@@ -275,11 +360,11 @@ using a validation service:
     <!-- Receive the file. -->
     <receive id="receiveOutput" desc="Receive file" from="Sender" to="Receiver" txnId="mt1"/>
     <!-- Process the file using the "convert" operation. -->
-    <process id="processOutput" txnId="pt1">
+    <process id="processOutput" handler="...">
         <operation>convert</operation>
         <input name="inputFile">$receiveOutput{data}</input>
     </process>
-    <!-- Validated the converted file. -->
+    <!-- Validate the converted file. -->
     <verify handler="..." desc="Validate file">
         <input name="inputFile" embeddingMethod="BASE64">$processOutput{convertedData}</input>
     </verify>
@@ -291,6 +376,50 @@ with this value that refers to the returned output. In the subsequent `process`_
 the `GITB TDL expression documentation`_ for details) when this is passed as the "inputFile" input of the "convert" operation. The result of the `process`_ step, in this case a ``map``
 with a key "convertedData" pointing to the converted bytes, is stored in the test session context under key "processOutput" (the ``id`` of the `process`_ step). Finally, 
 this converted data is used in the `verify`_ step where using the expression ``$processOutput{convertedData}`` it is passed as the expected "inputFile" input.
+
+The second example that follows considers the same scenario but adapts to make use of the `process`_ step's more succinct attribute syntax. In addition, we store the
+service's output directly without wrapping it in a ``map``:
+
+.. code-block:: xml
+
+    ...
+    <!-- Receive the file. -->
+    <receive id="receiveOutput" desc="Receive file" from="Sender" to="Receiver" txnId="mt1"/>
+    <!-- Process the file using the "convert" operation. -->
+    <process output="dataToValidate" handler="..." operation="convert" input="$receiveOutput{data}"/>
+    <!-- Validate the converted file. -->
+    <verify handler="..." desc="Validate file">
+        <input name="inputFile" embeddingMethod="BASE64">$dataToValidate</input>
+    </verify>
+    ...
+
+The `receive`_ step is identical in this case. What changes is the how the `process`_ step is used, by using attributes versus elements and by explicitly naming the resulting 
+output variable. In addition, the result is no longer recorded in a ``map`` but rather set as-is. This is reflected by the update in the `verify`_ step where we refer to the
+processing output with ``$dataToValidate``. Although such naming may seem trivial it could be helpful in making test cases more straightforward. In addition, it allows you to
+directly use values in `templates`_ where the naming of session context variables needs to match the template's placeholders.
+
+The third example that follows assumes that the validation service returns alongside its validation report a calculated digest value and size for the validated file. These
+can be leveraged in the test by setting the ``output`` attribute on the `verify`_ step. Doing this instructs the test bed to record the returned validation report's context in
+the session context apart from just using it for display purposes:
+
+.. code-block:: xml
+
+    ...
+    <!-- Receive the file. -->
+    <receive id="receiveOutput" desc="Receive file" from="Sender" to="Receiver" txnId="mt1"/>
+    <!-- Process the file using the "convert" operation. -->
+    <process output="dataToValidate" handler="..." operation="convert" input="$receiveOutput{data}"/>
+    <!-- Validate the converted file and record the file's metadata. -->
+    <verify output="metadata" handler="..." desc="Validate file">
+        <input name="inputFile" embeddingMethod="BASE64">$dataToValidate</input>
+    </verify>
+    <!-- Use the values returned by the validation service. -->
+    <log>$metadata{digest}</log>
+    <log>$metadata{size}</log>
+    ...
+
+As you can see, the `verify`_ step is adapted here to record its output under a variable named "metadata". This results in the validation report's context values (assumed to be
+named "digest" and "size") to be recorded in the session context for subsequent use (referred to as ``$metadata{digest}`` and ``$metadata{size}`` respectively).
 
 .. index:: TestResultType
 .. index:: TAR
@@ -468,3 +597,4 @@ i.e. those of validation and messaging services.
 .. _GITB type: https://www.itb.ec.europa.eu/docs/tdl/latest/types/
 .. _GITB TDL expression documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/
 .. _mime type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+.. _templates: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/index.html#expressions-and-templates

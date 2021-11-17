@@ -243,9 +243,8 @@ easier updating of the validation artefacts through the single centralised servi
 
 .. note::
     **XML validation:** Given the frequent need of validating XML content using XSDs and Schematrons (and the frequent mistakes that come up in custom validator implementations),
-    the test bed offers an existing GITB-compliant XML validation service that can be easily setup to cover your needs. Make sure you contact the test bed team at 
-    DIGIT-ITB@ec.europa.eu before implementing your own. This service is used in almost all cases, with the simpler `XSDValidator`_ and `SchematronValidator`_ used only
-    for very simple scenarios.
+    the test bed offers an existing GITB-compliant XML validation service that can be easily setup to cover your needs. More information on setting up this service and a
+    comparison with the embedded `XSDValidator`_ and `SchematronValidator`_ are available in the test bed's `XML validation guide`_.
 
 .. index:: GITB
 .. _introduction__specification_links:
@@ -314,3 +313,4 @@ provides information on the available templates that facilitate the creation of 
 .. _XSDValidator: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#xsdvalidator
 .. _SchematronValidator: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/index.html#schematronvalidator
 .. _verify: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#verify
+.. _XML validation guide: https://www.itb.ec.europa.eu/docs/guides/latest/validatingXML/
