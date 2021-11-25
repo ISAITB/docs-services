@@ -62,7 +62,7 @@ How are they maintained?
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Following the initial work from the CEN GITB workgroup, the maintenance and evolution of the GITB specifications has been taken over 
-by the European Commission, specifically the `Interoperability Test Bed Action`_ of DIGIT ISA. The Action maintains the GITB software 
+by the European Commission, specifically the `Interoperability Test Bed Team`_ of DIGIT D.2. DIGIT D.2 maintains the GITB software 
 and specifications based on the needs of the testing community and carries out evolutive
 maintenance with regular releases. Regarding the GITB test service specifications, effort is made to always introduce changes 
 in a backwards-compatible manner, adding capabilities rather than changing existing ones. Releases of the GITB service specifications 
@@ -302,7 +302,7 @@ provides information on the available templates that facilitate the creation of 
 .. _Apache CXF: https://cxf.apache.org/
 .. _Spring Boot: https://spring.io/projects/spring-boot
 .. _GITB project: http://www.cen.eu/work/areas/ict/ebusiness/pages/ws-gitb.aspx
-.. _Interoperability Test Bed Action: https://joinup.ec.europa.eu/solution/interoperability-test-bed/about
+.. _Interoperability Test Bed Team: https://joinup.ec.europa.eu/solution/interoperability-test-bed/about
 .. _GITB TDL: https://www.itb.ec.europa.eu/docs/tdl/latest/
 .. _GITB TDL documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/handlers/
 .. _domain management: https://www.itb.ec.europa.eu/docs/itb-ca/latest/domainDashboard/
