@@ -8,18 +8,11 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.15.0
+What's new in release 1.15.1
 ----------------------------
 
-The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
-release. References are provided to the relevant sections for more information.
-
-.. csv-table::
-    :header: "Description", "Relevant sections"
-    :delim: |
-
-    Support for the ``forDisplay`` and ``forContext`` flags on service outputs to define their purpose. | :ref:`common__returning_output__purpose`
-    Returning a session identifier in the ``initiate`` operation of messaging services is now optional. | :ref:`messaging__operations__initiate`
+Release 1.15.1 is a maintenance release that did not change the GITB service APIs. For changes introduced in
+previous releases check the specific documentation links below.
 
 Previous documentation versions
 -------------------------------
@@ -30,6 +23,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.15.0, Service outputs now support flags defining whether they are for display or for recording in the session context., https://www.itb.ec.europa.eu/docs/services/1.15.0/
     1.14.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.14.1/
     1.14.0, Services can now set a mime type on return values to facilitate their post-processing and display., https://www.itb.ec.europa.eu/docs/services/1.14.0/
     1.13.0, Processing services can now return data to be displayed to users when used in GITB test cases., https://www.itb.ec.europa.eu/docs/services/1.13.0/
