@@ -87,7 +87,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.15.1
+    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.16.0
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.organisation
     [INFO] Parameter: artifactId, Value: simple-service
@@ -103,7 +103,7 @@ You should now see output similar to the following:
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
     [INFO] Total time: 07:26 min
-    [INFO] Finished at: 2021-11-02T15:31:33+02:00
+    [INFO] Finished at: 2022-03-15T15:31:33+02:00
     [INFO] Final Memory: 15M/220M
     [INFO] ------------------------------------------------------------------------
 

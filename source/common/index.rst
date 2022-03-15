@@ -588,6 +588,121 @@ Both approaches will result in the test bed displaying the relevant GITB TDL ste
 could be interesting if you want to return additional information regarding the error. This approach is possible for services linked to GITB TDL steps that are visually presented, 
 i.e. those of validation and messaging services.
 
+.. _common__logging:
+
+Contributing to test session logs
+---------------------------------
+
+Test services, apart from :ref:`returning outputs<common__returning_output>` and :ref:`reports<common__tar>` to test sessions, can also contribute entries 
+to their **log outputs**. Each test session generates a log consisting of progress messages that complement its test execution diagram as a means of providing
+additional feedback to testers. Logged messages are generated automatically by the test bed but can also be explicitly added by means of the 
+`GITB TDL log step`_. All messages come with a severity level, ranging from debug and information messages to warnings and errors.
+
+As an alternative or complement to using the `GITB TDL log step`_ you can also have your custom test services contribute log entries. This could be done to 
+add additional information on processing taking place within the test service, or to provide feedback to the user in case the test execution
+diagram is not sufficient. Contributing log entries is supported for all types of custom test services (:ref:`validation<validation>`, :ref:`messaging<messaging>` and 
+:ref:`processing<processing>` services) and is achieved by making a web service call on the **log operation** of the test bed's SOAP API.
+
+The **log operation**, is separately defined per type of service but in all cases expects as parameters:
+
+    * The **session ID** for which the log entry is to be added.
+    * The **message** to add as a text.
+    * The message's severity **level** (``ERROR``, ``WARNING``, ``INFO`` or ``DEBUG``).
+
+It is important to note that the session ID is not necessarily the ID of the test session as defined within the test bed, but rather the session ID that the
+test service uses to manage its state. Specifically, this is:
+
+    * For :ref:`validation services<validation>` the actual test session ID used in the test bed.
+    * For :ref:`messaging services<messaging>` the session ID returned with the output of the :ref:`initiate<messaging__operations__initiate>` operation.
+    * For :ref:`processing services<processing>` the session ID returned with the output of the :ref:`beginTransaction<processing__operations__beginTransaction>` operation.
+
+This session ID is included in all calls made by the test bed to the test service, allowing the test service to use it when making the call to add log entries
+to the test session. It is the test bed that then maps these session IDs to the test sessions that are to be updated.
+
+Regarding the content log message to add, this is a simple text that will be added as-is to the test session log. It is interesting to note that when using the 
+`GITB TDL log step`_ within a test case, you can use `expressions`_ to dynamically produce the log entry, referring for example to variables recorded in the test
+session's context. Using similar expressions in logging via test services is not supported. In other words, the provided message is considered as a simple text, 
+not as an expression to evaluate.
+
+Finally, it is important to explain how to determine the address of the test bed's endpoint that receives log contents. The test service needs to determine this
+given that log entries are not communicated as synchronous responses to received test bed calls. In fact, log entries should ideally be handled in an asynchronous
+manner to avoid blocking the service's main processing (e.g. the validation of inputs for a validation service). The approach followed to determine the test bed's
+logging endpoint is to use `WS-Addressing`_ whereby the test bed includes a specific SOAP header with a reply address whenever it calls the test service. When 
+developing the test service you thus have two approaches available to determine the test bed's endpoint address:
+
+    * Lookup the `WS-Addressing`_ header and use its value as the endpoint address.
+    * Skip the dynamic lookup by simply adding the test bed's endpoint address to the service's configuration.
+
+Using `WS-Addressing`_ makes this process transparent and never needs updates for address changes. In addition, it permits the same test service instance to be 
+used at the same time by multiple test bed instances if this is needed. If you choose to simply define the test bed callback address as part of the service's
+configuration, you need to ensure that the configured value is the final address to be used by the service, catering for things such as reverse proxies and Docker
+container names. Assuming the test bed is running without a proxy, on your localhost and with default port mappings (i.e. its a development instance) the default
+endpoints are:
+
+    * http://localhost:8080/itbsrv/ValidationClient when called from a validation service.
+    * http://localhost:8080/itbsrv/MessagingClient when called from a messaging service.
+    * http://localhost:8080/itbsrv/ProcessingClient when called from a processing service.
+
+In case your test service is not of a single service type (e.g. it is used both for validation and messaging, implementing both service APIs) you can use any
+of these endpoints to send log messages. You need to make sure however that the endpoint you use corresponds to the operation for which you are adding a log entry
+and the session ID communicated as input to that operation. For example, if you want to log something relevant to a validation call you should use the session ID
+received in the validation call's inputs and pass it to the test bed's endpoint for validation services. Not doing so, e.g. using the validation input's session ID
+with the test bed's endpoint for messaging services, will most likely result in the log message being ignored due to the target test session not being found.
+
+.. note::
+    Using `WS-Addressing`_ to determine the test bed's endpoint address is also done when :ref:`messaging services<messaging>` make 
+    :ref:`asynchronous callbacks<messaging__callbacks>` to signal received messages to test sessions.
+
+Illustrating the above, the following example considers a processing service for which we log the requested operations of **process** calls. 
+
+.. code-block:: java
+
+    @Resource
+    private WebServiceContext wsContext;
+
+    public ProcessResponse process(ProcessRequest request) {
+        // Log the requested operation in the test session log.
+        String message = "Service carrying out " + request.getOperation() + " operation...";
+        log(message, LogLevel.INFO, request.getSessionId())
+        // Prepare the response.
+        ProcessResponse response = new ProcessResponse();
+        // ...
+        return response;
+    }
+
+    private void log(String message, LogLevel level, String sessionId) {
+        LogRequest logRequest = new LogRequest();
+        logRequest.setSessionId(sessionId);
+        logRequest.setMessage(message);
+        logRequest.setLevel(level);
+        // Use WS Addressing to determine the endpoint address.
+        String callbackAddress = getReplyToAddress();
+        createClient(callbackAddress).log(logRequest);
+    }
+
+    private String getReplyToAddress() {
+        List<Header> headers = (List<Header>) wsContext.getMessageContext().get(Header.HEADER_LIST);
+        for (Header header: headers) {
+            if (header.getName().equals(REPLY_TO_QNAME)) {
+                String replyToAddress = ((Element)header.getObject()).getTextContent().trim();
+                if (!replyToAddress.toLowerCase().endsWith("?wsdl")) {
+                    replyToAddress += "?wsdl";
+                }
+                return replyToAddress;
+            }
+        }
+        return null;
+    }
+
+    private ProcessingClient createClient(String callbackAddress) {
+        JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
+        proxyFactoryBean.setServiceClass(ProcessingClient.class);
+        proxyFactoryBean.setAddress(callbackAddress);
+        ProcessingClient serviceProxy = (ProcessingClient)proxyFactoryBean.create();
+        return serviceProxy;
+    }
+
+.. _WS-Addressing: https://www.w3.org/Submission/ws-addressing/
 .. _verify: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#verify
 .. _process: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#process
 .. _send: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#send
@@ -598,3 +713,5 @@ i.e. those of validation and messaging services.
 .. _GITB TDL expression documentation: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/
 .. _mime type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 .. _templates: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/index.html#expressions-and-templates
+.. _GITB TDL log step: https://www.itb.ec.europa.eu/docs/tdl/latest/constructs/index.html#log
+.. _expressions: https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/index.html

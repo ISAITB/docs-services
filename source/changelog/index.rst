@@ -8,11 +8,17 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.15.1
+What's new in release 1.16.0
 ----------------------------
 
-Release 1.15.1 is a maintenance release that did not change the GITB service APIs. For changes introduced in
-previous releases check the specific documentation links below.
+The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
+release. References are provided to the relevant sections for more information.
+
+.. csv-table::
+    :header: "Description", "Relevant sections"
+    :delim: |
+
+    Test services can now contribute log entries to the test session's log. | :ref:`common__logging`
 
 Previous documentation versions
 -------------------------------
@@ -23,6 +29,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.15.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.15.1/
     1.15.0, Service outputs now support flags defining whether they are for display or for recording in the session context., https://www.itb.ec.europa.eu/docs/services/1.15.0/
     1.14.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.14.1/
     1.14.0, Services can now set a mime type on return values to facilitate their post-processing and display., https://www.itb.ec.europa.eu/docs/services/1.14.0/
