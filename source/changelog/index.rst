@@ -8,8 +8,12 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.16.0
+What's new in release 1.16.1
 ----------------------------
+
+.. note::
+    **Maintenance release:** Release 1.16.1 is a global maintenance release that did not change the GITB TDL. The latest features presented
+    in this section correspond to the latest release that did introduce changes, i.e. release 1.16.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
@@ -29,6 +33,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.16.0, Extension of the test bed callback API to allow session log contributions from test services., https://www.itb.ec.europa.eu/docs/services/1.16.0/
     1.15.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.15.1/
     1.15.0, Service outputs now support flags defining whether they are for display or for recording in the session context., https://www.itb.ec.europa.eu/docs/services/1.15.0/
     1.14.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.14.1/
