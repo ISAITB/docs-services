@@ -123,6 +123,9 @@ The remaining documentation here focuses on the web service operations that need
 Service operations
 ------------------
 
+.. note::
+    **Service WSDLs and XSDs:** The WSDL and XSD for messaging services are listed in the :ref:`specification reference section<introduction__specification_links>`.
+
 The following figure illustrates the operations that a messaging service needs to implement and their use by the test bed. In addition, the call-back operations
 that the messaging service calls on the test bed are also presented.
 
