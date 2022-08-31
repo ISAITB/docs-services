@@ -527,6 +527,15 @@ The following code sample provides an example populating a report for a validati
         return report;
     }
 
+    public AnyContent createAnyContent(String name, String value, ValueEmbeddingEnumeration embeddingMethod) {
+        AnyContent input = new AnyContent();
+        input.setName(name);
+        input.setValue(value);
+        input.setType("string");
+        input.setEmbeddingMethod(embeddingMethod);
+        return input;
+    }
+
 This method would be called in a validation service to create a ``TAR`` object to return from the :ref:`validation__operations__validate` operation. The method is assumed to be called
 after validation has taken place in order to build the report. Only error messages are considered for simplicity whereas the report items included contain the minimum description.
 Note how the validated content is also returned in the report's ``context``. This is not required but provides an example of how arbitrary data can be returned. Moreover, this would
