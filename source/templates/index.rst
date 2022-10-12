@@ -87,7 +87,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.16.1
+    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.18.0
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.organisation
     [INFO] Parameter: artifactId, Value: simple-service
