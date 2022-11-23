@@ -767,7 +767,7 @@ To illustrate how this information is passed in service calls, consider the foll
         <gitb:TestSessionIdentifier xmlns:gitb="http://www.gitb.com">0f8f5da0-3a6b-4adb-9b5a-c5383c000178</gitb:TestSessionIdentifier>
         <gitb:TestCaseIdentifier xmlns:gitb="http://www.gitb.com">testCase1</gitb:TestCaseIdentifier>
         <gitb:TestStepIdentifier xmlns:gitb="http://www.gitb.com">receiveMessage1</gitb:TestStepIdentifier>
-        <gitb:TestEngineVersion xmlns:gitb="http://www.gitb.com">1.18.0</gitb:TestEngineVersion>
+        <gitb:TestEngineVersion xmlns:gitb="http://www.gitb.com">1.18.1</gitb:TestEngineVersion>
     </soap:Header>
     <soap:Body>
         <ns4:ReceiveRequest xmlns:ns2="http://www.gitb.com/core/v1/" xmlns:ns3="http://www.gitb.com/tr/v1/" xmlns:ns4="http://www.gitb.com/ms/v1/">
