@@ -277,6 +277,8 @@ The complete set of latest GITB specifications can be downloaded from https://ww
   **Prebuilt Java classes for WSDLs and XSDs:** The test bed maintains the `gitb-types Java library on Maven Central <https://search.maven.org/artifact/eu.europa.ec.itb/gitb-types>`_
   which includes the classes and service stubs corresponding to the WSDLs and XSDs. The WSDLs and XSDs themselves are also included in this library.
 
+  For more information on this library and its available variants, check :ref:`common__gitb-types`.
+
 
 The final GITB workgroup report can be downloaded here [:download:`CEN_WS_GITB3_CWA_Final.pdf`].
 

@@ -28,8 +28,12 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
   <dependency>
       <groupId>eu.europa.ec.itb</groupId>
       <artifactId>gitb-types</artifactId>
-      <version>1.18.1</version>
+      <version>1.19.0</version>
   </dependency>
+
+.. note::
+
+  The ``gitb-types`` library is also available in a variant with classes using the Jakarta EE APIs. See :ref:`common__gitb-types` for details.
 
 Check the :ref:`templates` description for more details on the content and use of the sample validation service. 
 The remaining documentation here focuses on the web service operations that need to be implemented.

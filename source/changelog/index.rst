@@ -8,12 +8,8 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.18.1
+What's new in release 1.19.0
 ----------------------------
-
-.. note::
-    **Maintenance release:** Release 1.18.1 is a global maintenance release that did not change the GITB TDL. The latest features presented
-    in this section correspond to the latest release that did introduce changes, i.e. release 1.18.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
@@ -22,7 +18,7 @@ release. References are provided to the relevant sections for more information.
     :header: "Description", "Relevant sections"
     :delim: |
 
-    Test services can now access test session metadata as SOAP header elements (test session ID, test case ID, test step ID, engine version). | :ref:`common__session_metadata`
+    The ``gitb-types`` library is now available in three variants (XSDs and WSDLs only, javax APIs and Jakarta API). | :ref:`common__gitb-types`
 
 Previous documentation versions
 -------------------------------
@@ -33,6 +29,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.18.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.18.1/
     1.18.0, Test session metadata made available as SOAP header elements., https://www.itb.ec.europa.eu/docs/services/1.18.0/
     1.17.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.17.0/
     1.16.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.16.1/
