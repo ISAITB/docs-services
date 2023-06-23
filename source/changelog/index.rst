@@ -8,8 +8,8 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.20.1-M1
--------------------------------
+What's new in release 1.20.1
+----------------------------
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
