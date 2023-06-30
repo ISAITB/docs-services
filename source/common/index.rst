@@ -666,6 +666,8 @@ Illustrating the above, the following example considers a processing service for
 
 .. code-block:: java
 
+    private static final QName REPLY_TO_QNAME = new QName("http://www.w3.org/2005/08/addressing", "ReplyTo");
+
     @Resource
     private WebServiceContext wsContext;
 

@@ -69,6 +69,10 @@ summarise how this is used to signal received messages:
     #. The test bed, in the implementation of the ``notifyForMessage`` operation, extracts the information, stores it in the session context and signals the 
        relevant test session to proceed.
 
+.. note::
+    Using `WS-Addressing`_ to determine the reply-to address for the test bed is not strictly necessary. You can also define the address as part of the
+    service's configuration if this is not expected to change. It's value would be ``http://[GITB_SRV_HOST]:[GITB_SRV_PORT]/itbsrv/MessagingClient``.
+
 .. _messaging__configuration:
 
 Exchanging configuration for a test session
