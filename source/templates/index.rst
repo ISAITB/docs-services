@@ -31,8 +31,8 @@ Prerequisites
 
 To use the templates and run the resulting services you will need the following:
 
-    * A `Java Development Kit`_ (version 11 or higher).
-    * `Apache Maven`_ (version 3 or higher).
+    * A `Java Development Kit`_ (version 17 or higher).
+    * `Apache Maven`_ (version 3.8 or higher).
     * Your ``PATH`` environment variable set to include the Java and Maven executables.
     * An internet connection (to read the templates and download dependencies).
 
@@ -43,12 +43,11 @@ to view output similar to the example):
 
     D:\test>mvn -version
 
-    Apache Maven 3.5.2 (138edd61fd100ec658bfa2d307c43b76940a5d7d; 2017-10-18T09:58:13+02:00)
-    Maven home: D:\tools\apache-maven-3.5.2\bin\..
-    Java version: 11.0.2, vendor: Oracle Corporation
-    Java home: D:\tools\jdk-11.0.2
+    Apache Maven 3.8.1 (05c21c65bdfed0f71a2f2ada8b84da59348c4c5d)
+    Maven home: C:\tools\apache-maven-3.8.1\bin\..
+    Java version: 17.0.6, vendor: Oracle Corporation, runtime: C:\tools\jdk-17.0.6
     Default locale: en_GB, platform encoding: Cp1252
-    OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+    OS name: "windows 11", version: "10.0", arch: "amd64", family: "windows"
 
 .. _templates__using__generating:
 
@@ -87,7 +86,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.20.0
+    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.21.0
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.organisation
     [INFO] Parameter: artifactId, Value: simple-service
@@ -103,7 +102,7 @@ You should now see output similar to the following:
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
     [INFO] Total time: 07:26 min
-    [INFO] Finished at: 2023-05-10T15:31:33+02:00
+    [INFO] Finished at: 2023-09-10T15:31:33+02:00
     [INFO] Final Memory: 15M/220M
     [INFO] ------------------------------------------------------------------------
 
@@ -125,7 +124,7 @@ Following this command you should see output from the build and start-up of your
 .. code-block:: none
 
     ...
-    2019-10-08 15:39:02.225  INFO 17040 --- [  restartedMain] com.organisation.Application: Started Application in 4.093 seconds (JVM running for 4.565)
+    2023-09-10 15:39:02.225  INFO 17040 --- [  restartedMain] com.organisation.Application: Started Application in 4.093 seconds (JVM running for 4.565)
 
 To shut down the service simply issue a ``CTRL-C`` on the console.
 

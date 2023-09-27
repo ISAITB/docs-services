@@ -874,7 +874,7 @@ documentation. The implementations of such APIs are typically defined in the fra
 across your libraries.
 
 .. note::
-    The :ref:`archetypes for template services<templates>` define the ``gitb-types`` library as a dependency. Currently the Javax API variant
+    The :ref:`archetypes for template services<templates>` define the ``gitb-types-jakarta`` library as a dependency. Currently the Jakarta API variant
     is used as this aligns with the included version of CXF and Spring Boot.
 
 .. _WS-Addressing: https://www.w3.org/Submission/ws-addressing/

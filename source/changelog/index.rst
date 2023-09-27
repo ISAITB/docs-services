@@ -8,8 +8,12 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.20.1
+What's new in release 1.21.0
 ----------------------------
+
+.. note::
+    **Maintenance release:** Release 1.21.0 is a global maintenance release that did not change the GITB test services. The latest features presented
+    in this section correspond to the latest release that did introduce changes, i.e. release 1.19.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
@@ -29,6 +33,8 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.21.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.21.0/
+    1.20.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.20.1/
     1.20.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.20.0/
     1.19.0, New ``gitb-types`` variants (XSDs and WSDLs only as well as javax APIs and Jakarta API)., https://www.itb.ec.europa.eu/docs/services/1.19.0/
     1.18.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.18.1/
