@@ -8,7 +8,7 @@ to extend the test bed's capabilities when executing test cases. This documentat
 services, as well as best practices to consider during development.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Table of contents
    :includehidden:
 
