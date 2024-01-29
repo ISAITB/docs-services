@@ -75,6 +75,7 @@ The following figure illustrates the operations that a processing service needs 
 
 .. figure:: ProcessingService.png
   :align: center
+  :figclass: no-bottom-margin
 
   Use of the processing service operations
 

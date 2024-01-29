@@ -50,6 +50,7 @@ The following figure illustrates the operations that a validation service needs 
 
 .. figure:: ValidationService.png
   :align: center
+  :figclass: no-bottom-margin
 
   Use of the validation service operations
 

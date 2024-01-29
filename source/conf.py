@@ -90,6 +90,7 @@ pygments_style = 'sphinx'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = ['css/custom_2024.01.29.css']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -134,7 +135,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'GITBServices.tex', 'GITB Services Documentation',
-     'DIGIT D.2', 'manual'),
+     'DIGIT B.2', 'manual'),
 ]
 
 
@@ -158,6 +159,3 @@ texinfo_documents = [
      author, 'GITB Services', 'The GITB Services',
      'Miscellaneous'),
 ]
-
-def setup(app):
-    app.add_css_file('css/custom.css')

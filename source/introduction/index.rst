@@ -170,6 +170,7 @@ This is illustrated in the following diagram:
 
 .. figure:: SOA.png
   :align: center
+  :figclass: no-bottom-margin
 
   Use of test services by the test bed
 

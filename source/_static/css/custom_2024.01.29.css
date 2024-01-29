@@ -1,0 +1,12 @@
+table > thead > tr > th > p,
+table > tbody > tr > th > p {
+    margin-bottom: 0px;
+}
+
+.rst-content figure.align-center {
+    margin-bottom: 24px;
+}
+
+.rst-content figure.align-center.no-bottom-margin {
+    margin-bottom: auto;
+}

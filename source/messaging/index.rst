@@ -139,6 +139,7 @@ that the messaging service calls on the test bed are also presented.
 
 .. figure:: MessagingService.png
   :align: center
+  :figclass: no-bottom-margin
 
   Use of the messaging service operations
 
