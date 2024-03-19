@@ -57,7 +57,7 @@ Generating a new service
 To generate a new service follow these steps:
 
     1. Create or select a folder in which you will store your service's project files.
-    2. Open a command prompt to the selected folder and issue::
+    2. Open a command prompt to the selected folder and issue:
 
         mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=TEMPLATE_ID
 
@@ -79,6 +79,10 @@ To generate a new service follow these steps:
         * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
 
     4. Review your input and confirm with ``Y`` (for "Yes").
+
+.. note::
+    If executing in Windows Powershell you need to quote the "-D" arguments for them to be correctly picked up. For example to
+    generate a validation service you would issue ``mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-validation-service"``.
 
 You should now see output similar to the following:
 
