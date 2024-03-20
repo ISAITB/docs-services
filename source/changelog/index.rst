@@ -8,11 +8,11 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.21.1
+What's new in release 1.22.0
 ----------------------------
 
 .. note::
-    **Maintenance release:** Release 1.21.1 is a global maintenance release that did not change the GITB test services. The latest features presented
+    **Maintenance release:** Release 1.22.0 is a global maintenance release that did not change the GITB test services. The latest features presented
     in this section correspond to the latest release that did introduce changes, i.e. release 1.19.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
