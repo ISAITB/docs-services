@@ -60,7 +60,18 @@ The following figure illustrates the operations that a validation service needs 
 getModuleDefinition
 ~~~~~~~~~~~~~~~~~~~
 
-The ``getModuleDefinition`` operation is used to return information on how the service is expected to be used. It documents:
+The ``getModuleDefinition`` operation is used to return information on how the service is expected to be used. In case
+the service is specific to a given project and not meant to be published and reused, you can provide an empty implementation
+as follows:
+
+.. code-block:: java
+
+    public GetModuleDefinitionResponse getModuleDefinition(Void parameters) {
+        return new GetModuleDefinitionResponse();
+    }
+
+If you plan to publish a reusable and well-documented service for others to use, it is meaningful to provide a complete implementation.
+In this case, this method is used to document:
 
   * The identification **metadata** of the service.
   * The **configuration** parameters it expects.
