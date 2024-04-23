@@ -287,7 +287,7 @@ Once each service is up, you need to setup the test bed (documentation links pro
     #. `Create a domain`_ and then `create a specification`_.
     #. In the created domain, `create parameters`_ named ``messagingServiceAddress``, ``processingServiceAddress`` and ``validationServiceAddress`` with the 
        address to the WSDLs of each respective service.
-    #. `Upload the test suite`_ including the test case (available here [:download:`test_suite.zip`]).
+    #. `Upload the test suite`_ including the test case (available here [:download:`sample_test_suite.zip`]).
     #. `Create a System`_.
     #. `Create a conformance statement`_ selecting the created domain, specification and the test case's SUT actor "Actor 1".
     #. `Execute the test case`_.
