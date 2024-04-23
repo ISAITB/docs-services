@@ -1,35 +1,36 @@
 .. _templates:
 
-Template services
-=================
+Service template
+================
 
-A set of executable templates are available to facilitate the development of test services. These templates are packaged
-as `Maven Archetypes`_ enabling you to generate a complete new service with a single command.
+An executable project template is available to facilitate the development of test support services. This template is packaged
+as a `Maven Archetype`_ enabling you to generate a complete new service with a single command.
 
-Using the templates is not mandatory but doing so will save you significant effort. The GITB-specific code provided should be
+Using the template is not mandatory but doing so will save you significant effort. The GITB-specific code provided should be
 complete to address your needs, whereas you will also find working implementations to handle certain of the more complex aspects
 you would need to address (e.g. session management, call-backs). In addition, and regardless or whether you wish to build a 
-service based on the templates, they provide a valuable learning resource to understand GITB test service development.
+service based on the template, it provides a valuable learning resource to understand GITB test service development.
 
-To avoid providing simply an empty shell, each template service has been built as a fully functioning web application that is 
-already setup to address simple scenarios. The scenario for each case is selected to be straightforward allowing you to understand
-what is going on without needing additional context, and to replace the included sample implementations 
-with your actual domain-specific needs. The code should be self-explanatory but is nonetheless accompanied by comprehensive 
-step-by-step documentation.
+To avoid providing simply an empty shell, the template service project has been built as a fully functioning web application that is
+already setup to address simple demo scenarios. The scenario for each type of service API is selected to be straightforward allowing you
+to understand what is going on without needing additional context, and to replace the included sample implementations
+with your actual domain-specific needs. You can nonetheless skip these sample implementations and directly create empty operations.
+
+In all cases included code should be self-explanatory but is nonetheless accompanied by comprehensive step-by-step documentation.
 
 .. _templates__using:
 
-Using the templates
--------------------
+Using the template
+------------------
 
-The sections below provide the information you need to use the templates.
+The sections below provide the information you need to use the template.
 
 .. _templates__using__prerequisites:
 
 Prerequisites
 ~~~~~~~~~~~~~
 
-To use the templates and run the resulting services you will need the following:
+To use the template and run the resulting service app you will need the following:
 
     * A `Java Development Kit`_ (version 17 or higher).
     * `Apache Maven`_ (version 3.8 or higher).
@@ -59,13 +60,7 @@ To generate a new service follow these steps:
     1. Create or select a folder in which you will store your service's project files.
     2. Open a command prompt to the selected folder and issue:
 
-        mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=TEMPLATE_ID
-
-       replacing ``TEMPLATE_ID`` depending on the service type you want as follows:
-
-           * ``template-validation-service`` for a validation service.
-           * ``template-processing-service`` for a processing service.
-           * ``template-messaging-service`` for a messaging service.
+       ``mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-test-service``
 
        .. note::
            You may also specify ``-DarchetypeVersion=VERSION`` (where ``VERSION`` is a specific template version). Not specifying
@@ -73,16 +68,16 @@ To generate a new service follow these steps:
 
     3. Provide values for the requested properties (in sequence):
 
-        * ``groupId``: The Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
-        * ``artifactId``: The Maven artefact ID for your service (e.g. "simple-service").
-        * ``version``: The version number to set for your project ("1.0-SNAPSHOT" being the default).
-        * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
+     * ``addMessagingService``: Whether to add a :ref:`messaging service endpoint <messaging>` (Y/N).
+     * ``addValidationService``: Whether to add a :ref:`validation service endpoint <validation>` (Y/N).
+     * ``addProcessingService``: Whether to add a :ref:`processing service endpoint <processing>` (Y/N).
+     * ``addSampleImplementation``: Whether to add demo code for the included endpoints (Y/N).
+     * ``groupId``: The Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
+     * ``artifactId``: The Maven artefact ID for your service (e.g. "test-services").
+     * ``version``: The version number for your project (default is "1.0-SNAPSHOT").
+     * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
 
-    4. Review your input and confirm with ``Y`` (for "Yes").
-
-.. note::
-    If executing in Windows Powershell you need to quote the "-D" arguments for them to be correctly picked up. For example to
-    generate a validation service you would issue ``mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-validation-service"``.
+    4. Review your input and confirm (Y).
 
 You should now see output similar to the following:
 
@@ -90,35 +85,49 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-processing-service:1.22.0
+    [INFO] Using following parameters for creating project from Archetype: template-test-service:1.22.0
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Parameter: groupId, Value: com.organisation
-    [INFO] Parameter: artifactId, Value: simple-service
+    [INFO] Parameter: groupId, Value: org.test
+    [INFO] Parameter: artifactId, Value: test-services
     [INFO] Parameter: version, Value: 1.0-SNAPSHOT
-    [INFO] Parameter: package, Value: com.organisation
-    [INFO] Parameter: packageInPathFormat, Value: com/organisation
-    [INFO] Parameter: package, Value: com.organisation
+    [INFO] Parameter: package, Value: org.test
+    [INFO] Parameter: packageInPathFormat, Value: org/test
+    [INFO] Parameter: package, Value: org.test
+    [INFO] Parameter: addMessagingService, Value: y
+    [INFO] Parameter: addProcessingService, Value: y
+    [INFO] Parameter: groupId, Value: org.test
+    [INFO] Parameter: addValidationService, Value: y
+    [INFO] Parameter: addSampleImplementation, Value: y
+    [INFO] Parameter: artifactId, Value: test-services
     [INFO] Parameter: version, Value: 1.0-SNAPSHOT
-    [INFO] Parameter: groupId, Value: com.organisation
-    [INFO] Parameter: artifactId, Value: simple-service
-    [INFO] Project created from Archetype in dir: D:\test\simple-service
+    [INFO] Executing META-INF/archetype-post-generate.groovy post-generation script
+    [INFO] Project created from Archetype in dir: C:\workspace\test-services
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
-    [INFO] Total time: 07:26 min
-    [INFO] Finished at: 2024-03-10T15:31:33+02:00
-    [INFO] Final Memory: 15M/220M
+    [INFO] Total time:  24.956 s
+    [INFO] Finished at: 2024-04-23T11:42:06+02:00
     [INFO] ------------------------------------------------------------------------
 
-Your new service's project files are located in a subfolder named using the value you provided for ``artifactId``. Everything you need to know about 
+Your new app's project files are located in a subfolder named using the value you provided for ``artifactId``. Everything you need to know about
 building, packaging and running your service is provided in file ``README.md`` at the root of the generated project.
+
+.. note::
+    **Troubleshooting tips**
+
+    If executing in Windows Powershell you need to quote the "-D" arguments for them to be correctly picked up:
+
+    ``mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-test-service"``
+
+    If you see an error stating incompatible APIs it could mean your Maven plugins need an update. Re-run the ``mvn`` command
+    passing it also the ``-U`` flag (``mvn -U archetype:generate ...``).
 
 .. _templates__using__building:
 
 Building and running the service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To build and run the service:
+To build and run the test service application:
 
     1. Open a command prompt to the root of the generated service's project (where file ``pom.xml`` is located).
     2. Issue ``mvn spring-boot:run``. Note that this command may take a while upon first execution as it downloads all required dependencies. 
@@ -143,13 +152,13 @@ Descriptions on how to access and use the running services are provided per case
 Template service architecture and stack
 ---------------------------------------
 
-All services produced by the available templates are web applications built using the `Spring Boot`_ framework. In terms of design it is interesting to highlight
+Using the template project produces a web application built using the `Spring Boot`_ framework. In terms of design it is interesting to highlight
 certain key points:
 
-    * Each service decouples as much as possible the GITB-specific code from the domain-specific logic you will want to implement.
     * Supporting components are already provided to address e.g. session management.
     * Configuration of the service uses the standard Spring Boot `application.properties`_ file.
     * Web services are implemented using the `Apache CXF`_ framework.
+    * A series of useful utility methods are made available that would cover most basic GITB-specific coding needs.
 
 In terms of development tools:
 
@@ -162,7 +171,7 @@ In terms of development tools:
 Description of sample implementations
 -------------------------------------
 
-The following sections briefly describe the existing sample implementations for each service and how to use them.
+The following sections briefly describe the existing sample implementations for each service type and how to use them.
 
 .. _templates__samples__validation:
 
@@ -217,7 +226,7 @@ The following simple test case makes use of the template services' sample implem
     <?xml version="1.0" encoding="UTF-8"?>
     <testcase id="sample_test_case" xmlns="http://www.gitb.com/tdl/v1/" xmlns:gitb="http://www.gitb.com/core/v1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gitb.com/tdl/v1/ ../../gitb_tdl.xsd">
         <metadata>
-            <gitb:name>sample_test_case</gitb:name>
+            <gitb:name>Sample test case</gitb:name>
             <gitb:version>1.0</gitb:version>
             <gitb:description>Test case illustrating a sample use of the template service sample implementations.</gitb:description>
         </metadata>
@@ -226,7 +235,7 @@ The following simple test case makes use of the template services' sample implem
         </variables>
         <actors>
             <gitb:actor id="actor1" name="Actor 1" role="SUT"/>
-            <gitb:actor id="actor2" name="Actor 2" role="SIMULATED"/>
+            <gitb:actor id="actor2" name="Actor 2"/>
         </actors>
         <steps>
             <!-- 
@@ -251,12 +260,10 @@ The following simple test case makes use of the template services' sample implem
             <!-- 
                 Convert the received message to uppercase.
             -->
-            <bptxn txnId="pt1" handler="$DOMAIN{processingServiceAddress}"/>
-            <process id="result" txnId="pt1">
+            <process id="result" handler="$DOMAIN{processingServiceAddress}">
                 <operation>uppercase</operation>
                 <input name="input">$step2{messageReceived}</input>
             </process>
-            <eptxn txnId="pt1"/>
             <!--
                 Check to see that the uppercased message matches "HELLO!"
             -->
@@ -285,7 +292,7 @@ Once each service is up, you need to setup the test bed (documentation links pro
     #. `Create a conformance statement`_ selecting the created domain, specification and the test case's SUT actor "Actor 1".
     #. `Execute the test case`_.
 
-.. _Maven Archetypes: https://maven.apache.org/guides/introduction/introduction-to-archetypes.html
+.. _Maven Archetype: https://maven.apache.org/guides/introduction/introduction-to-archetypes.html
 .. _Java Development Kit: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 .. _Apache Maven: https://maven.apache.org/
 .. _Docker: https://www.docker.com/
