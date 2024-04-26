@@ -60,24 +60,21 @@ To generate a new service follow these steps:
     1. Create or select a folder in which you will store your service's project files.
     2. Open a command prompt to the selected folder and issue:
 
-       ``mvn archetype:generate -DarchetypeGroupId=eu.europa.ec.itb -DarchetypeArtifactId=template-test-service``
+.. code-block:: none
 
-       .. note::
-           You may also specify ``-DarchetypeVersion=VERSION`` (where ``VERSION`` is a specific template version). Not specifying
-           it will result in the latest version to be used.
+    mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-test-service" "-DarchetypeVersion=1.22.0"
 
-    3. Provide values for the requested properties (in sequence):
+This will download and run the project generation process. Provide the following values for the requested properties:
 
-     * ``addMessagingService``: Whether to add a :ref:`messaging service endpoint <messaging>` (Y/N).
-     * ``addValidationService``: Whether to add a :ref:`validation service endpoint <validation>` (Y/N).
-     * ``addProcessingService``: Whether to add a :ref:`processing service endpoint <processing>` (Y/N).
-     * ``addSampleImplementation``: Whether to add demo code for the included endpoints (Y/N).
-     * ``groupId``: The Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
-     * ``artifactId``: The Maven artefact ID for your service (e.g. "test-services").
-     * ``version``: The version number for your project (default is "1.0-SNAPSHOT").
-     * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
-
-    4. Review your input and confirm (Y).
+    * ``addMessagingService``: Whether to add a :ref:`messaging service endpoint <messaging>` (Y/N).
+    * ``addValidationService``: Whether to add a :ref:`validation service endpoint <validation>` (Y/N).
+    * ``addProcessingService``: Whether to add a :ref:`processing service endpoint <processing>` (Y/N).
+    * ``addSampleImplementation``: Whether to add demo code for the included endpoints (Y/N).
+    * ``groupId``: The Maven group ID for your service, typically matching your organisation's reverse domain name (e.g. "com.organisation").
+    * ``artifactId``: The Maven artefact ID for your service (e.g. "test-services").
+    * ``version``: The version number for your project (default is "1.0-SNAPSHOT").
+    * ``package``: The root package under which all source code will be generated (the value provided for ``groupId`` is considered the default).
+    * Review and confirm (Y).
 
 You should now see output similar to the following:
 
@@ -113,13 +110,7 @@ Your new app's project files are located in a subfolder named using the value yo
 building, packaging and running your service is provided in file ``README.md`` at the root of the generated project.
 
 .. note::
-    **Troubleshooting tips**
-
-    If executing in Windows Powershell you need to quote the "-D" arguments for them to be correctly picked up:
-
-    ``mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-test-service"``
-
-    If you see an error stating incompatible APIs it could mean your Maven plugins need an update. Re-run the ``mvn`` command
+    **Troubleshooting:** If you see an error stating incompatible APIs it could mean your Maven plugins need an update. Re-run the command
     passing it also the ``-U`` flag (``mvn -U archetype:generate ...``).
 
 .. _templates__using__building:
