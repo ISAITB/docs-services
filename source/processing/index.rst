@@ -50,13 +50,13 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
 
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
-        <artifactId>gitb-types</artifactId>
+        <artifactId>gitb-types-jakarta</artifactId>
         <version>1.22.0</version>
     </dependency>
 
 .. note::
 
-    The ``gitb-types`` library is also available in a variant with classes using the Jakarta EE APIs. See :ref:`common__gitb-types` for details.
+    The ``gitb-types`` library is also available in a variant with classes using the Javax APIs. See :ref:`common__gitb-types` for details.
 
 Check the :ref:`templates` description for more details on the content and use of the sample processing service. In terms of its initial definition,
 a processing service needs to be defined as an implementation of the ``com.gitb.ps.ProcessingService`` interface:
