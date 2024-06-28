@@ -706,7 +706,6 @@ could be done in a `Spring`_ implementation using `CXF`_:
 
     **Default service address:** Using the above displayed endpoint mapping, and considering (a) no app context path,
     (b) the default port mapping of 8080, and (c) the default CXF root of ``/services``, the full WSDL address would be:
-
     ``http://localhost:8080/services/messaging?wsdl``
 
 .. _messaging__using_test_case:
