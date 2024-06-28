@@ -383,6 +383,13 @@ could be done in a `Spring`_ implementation using `CXF`_:
         }
     }
 
+.. note::
+
+    **Default service address:** Using the above displayed endpoint mapping, and considering (a) no app context path,
+    (b) the default port mapping of 8080, and (c) the default CXF root of ``/services``, the full WSDL address would be:
+
+    ``http://localhost:8080/services/process?wsdl``
+
 .. _processing__using_test_case:
 
 Using the service through a test case
