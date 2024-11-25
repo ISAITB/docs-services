@@ -8,11 +8,11 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.24.3
+What's new in release 1.24.4
 ----------------------------
 
 .. note::
-    **Maintenance release:** Release 1.24.3 is a global maintenance release that did not change the GITB test services. The latest features presented
+    **Maintenance release:** Release 1.24.4 is a global maintenance release that did not change the GITB test services. The latest features presented
     in this section correspond to the latest release that did introduce changes, i.e. release 1.24.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
@@ -33,6 +33,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.24.3, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.3/
     1.24.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.2/
     1.24.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.1/
     1.24.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.0/
