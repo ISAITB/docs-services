@@ -8,12 +8,8 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.24.4
+What's new in release 1.25.0
 ----------------------------
-
-.. note::
-    **Maintenance release:** Release 1.24.4 is a global maintenance release that did not change the GITB test services. The latest features presented
-    in this section correspond to the latest release that did introduce changes, i.e. release 1.24.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
@@ -22,7 +18,7 @@ release. References are provided to the relevant sections for more information.
     :header: "Description", "Relevant sections"
     :delim: |
 
-    The GITB software will not timeout when calling messaging, validation and processing services, if the service is busy completing its response. | 
+    Detailed validation reports from external messaging and processing handlers are displayed even when counters not defined. | :ref:`common__tar`
 
 Previous documentation versions
 -------------------------------
@@ -33,6 +29,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.24.4, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.4/
     1.24.3, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.3/
     1.24.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.2/
     1.24.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.1/
