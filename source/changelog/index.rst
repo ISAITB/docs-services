@@ -8,8 +8,12 @@ as well as access to all previous documentation versions.
 
 .. _changelog__new:
 
-What's new in release 1.25.0
+What's new in release 1.25.1
 ----------------------------
+
+.. note::
+    **Maintenance release:** Release 1.25.1 is a global maintenance release that did not change the GITB test services. The latest features presented
+    in this section correspond to the latest release that did introduce changes, i.e. release 1.25.0.
 
 The table that follows summarises the notable changes in the latest documentation release that matches the latest GITB services
 release. References are provided to the relevant sections for more information.
@@ -29,6 +33,7 @@ The following table provides the main highlights introduced in each previous doc
     :header: "Release", "Key highlights", "Documentation link"
     :stub-columns: 1
 
+    1.25.0, Display of detailed validation reports when counters not displayed., https://www.itb.ec.europa.eu/docs/services/1.25.0/
     1.24.4, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.4/
     1.24.3, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.3/
     1.24.2, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.24.2/
