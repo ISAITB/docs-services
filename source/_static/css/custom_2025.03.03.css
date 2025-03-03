@@ -1,3 +1,7 @@
+.wy-nav-content-wrap {
+    background: rgb(0 0 0 / 0%) !important;
+}
+
 table > thead > tr > th > p,
 table > tbody > tr > th > p {
     margin-bottom: 0px;
