@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const widgetSettings = {
         widgetId: "bIRIZqmxAK8HjGX-C0sOzXk8a7m3BpL86V6dI4w4oD4",
         text: "Ask AI",
-        margins: { bottom: "20px", right: "20px" }, // Optional
+        margins: { bottom: "20px", right: "34px" }, // Optional
         lightMode: true, // Optional - Force light mode
         bgColor: "#3b81bb", // Optional - Widget background color
         name: "ITB" // Optional - Widget name
