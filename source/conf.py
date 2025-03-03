@@ -91,6 +91,7 @@ pygments_style = 'sphinx'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/custom_2024.01.29.css']
+html_js_files = ['js/gurubase_2025.03.03.js']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
