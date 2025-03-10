@@ -226,9 +226,6 @@ The following simple test case makes use of the template services' sample implem
             <gitb:version>1.0</gitb:version>
             <gitb:description>Test case illustrating a sample use of the template service sample implementations.</gitb:description>
         </metadata>
-        <variables>
-            <var name="messageToSend" type="string"/>
-        </variables>
         <actors>
             <gitb:actor id="actor1" name="Actor 1" role="SUT"/>
             <gitb:actor id="actor2" name="Actor 2"/>
@@ -237,23 +234,21 @@ The following simple test case makes use of the template services' sample implem
             <!-- 
                 Request the message to send to the messaging service.
             -->
-            <interact desc="Request message" with="actor1">
-                <request desc="Enter the message to send:">$messageToSend</request>
+            <interact id="data" desc="Request message">
+                <request name="messageToSend" desc="Enter the message to send:"/>
             </interact>
-            <btxn from="actor1" to="actor2" txnId="t1" handler="$DOMAIN{messagingServiceAddress}"/>
-            <!-- 
+            <!--
                 Send the message.
             -->
-            <send id="step1" desc="Send message" from="actor1" to="actor2" txnId="t1">
-                <input name="messageToSend">$messageToSend</input>
+            <send id="step1" desc="Send message" from="actor1" to="actor2" handler="$DOMAIN{messagingServiceAddress}">
+                <input name="messageToSend">$data{messageToSend}</input>
             </send>
             <!-- 
                 Receive a response message.
                 This is provided by calling http://localhost:8080/input?message=text.
             -->
-            <receive id="step2" desc="Receive message" from="actor2" to="actor1" txnId="t1"/>
-            <etxn txnId="t1"/>
-            <!-- 
+            <receive id="step2" desc="Receive message" from="actor2" to="actor1" handler="$DOMAIN{messagingServiceAddress}"/>
+            <!--
                 Convert the received message to uppercase.
             -->
             <process id="result" handler="$DOMAIN{processingServiceAddress}">
@@ -283,7 +278,7 @@ Once each service is up, you need to setup the test bed (documentation links pro
     #. `Create a domain`_ and then `create a specification`_.
     #. In the created domain, `create parameters`_ named ``messagingServiceAddress``, ``processingServiceAddress`` and ``validationServiceAddress`` with the 
        address to the WSDLs of each respective service.
-    #. `Upload the test suite`_ including the test case (available here [:download:`sample_test_suite.zip`]).
+    #. `Upload the test suite`_ including the test case (available `on GitHub <https://github.com/ISAITB/sample-test-suites/tree/master/testSuites/usingSampleImplementationsFromTestServiceTemplate>`__ and as an `archive to download <https://github.com/ISAITB/sample-test-suites/raw/refs/heads/master/testSuites/usingSampleImplementationsFromTestServiceTemplate/testSuite.zip>`__).
     #. `Create a System`_.
     #. `Create a conformance statement`_ selecting the created domain, specification and the test case's SUT actor "Actor 1".
     #. `Execute the test case`_.
