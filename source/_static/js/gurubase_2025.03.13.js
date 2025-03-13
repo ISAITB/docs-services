@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Customize widget settings
     const widgetSettings = {
         widgetId: "bIRIZqmxAK8HjGX-C0sOzXk8a7m3BpL86V6dI4w4oD4",
+//        widgetId: "hFj-Ag2L5m4z1AdRAE4OECT9G2MIks1b4OjNr0qreF0",
         text: "Ask AI",
         iconUrl: "https://www.itb.ec.europa.eu/files/images/itb_small.png",
         margins: { bottom: "20px", right: "34px" }, // Optional
@@ -12,7 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load the GuruBase widget
     const guruScript = document.createElement("script");
-    guruScript.src = "https://widget.gurubase.io/widget.latest.min.js";
+    guruScript.src = "https://www.itb.ec.europa.eu/files/gurubase/widget.latest.min.js";
+//    guruScript.src = "https://widget.gurubase.io/widget.latest.min.js";
     guruScript.defer = true;
     guruScript.id = "guru-widget-id";
 
