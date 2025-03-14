@@ -1,0 +1,37 @@
+.wy-nav-content-wrap {
+    background: rgb(0 0 0 / 0%) !important;
+}
+
+table > thead > tr > th > p,
+table > tbody > tr > th > p {
+    margin-bottom: 0px;
+}
+
+.rst-content figure.align-center {
+    margin-bottom: 24px;
+}
+
+.rst-content figure.align-center.no-bottom-margin {
+    margin-bottom: auto;
+}
+.highlight {
+    position: relative;
+}
+.copy-code-button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 1000;
+    background-color: white;
+    color: #404040;
+    border-style: none;
+    border-bottom: 1px solid #e1e4e5;
+    border-left: 1px solid #e1e4e5;
+    border-bottom-left-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
