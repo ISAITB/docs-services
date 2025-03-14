@@ -114,7 +114,7 @@ is available on `Maven Central`_ and can be added as a Maven dependency as follo
     <dependency>
         <groupId>eu.europa.ec.itb</groupId>
         <artifactId>gitb-types-jakarta</artifactId>
-        <version>1.25.1</version>
+        <version>1.25.2</version>
     </dependency>
 
 .. note::
