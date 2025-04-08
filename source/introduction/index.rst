@@ -62,7 +62,7 @@ How are they maintained?
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Following the initial work from the CEN GITB workgroup, the maintenance and evolution of the GITB specifications has been taken over 
-by the European Commission, specifically the `Interoperability Test Bed Team`_ of DIGIT D.2. DIGIT D.2 maintains the GITB software 
+by the European Commission, specifically the `Interoperability Test Bed Team`_ of DIGIT B.2. DIGIT B.2 maintains the GITB software
 and specifications based on the needs of the testing community and carries out evolutive
 maintenance with regular releases. Regarding the GITB test service specifications, effort is made to always introduce changes 
 in a backwards-compatible manner, adding capabilities rather than changing existing ones. Releases of the GITB service specifications 
