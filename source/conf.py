@@ -89,9 +89,12 @@ pygments_style = 'sphinx'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-html_css_files = ['css/custom_2025.03.14.css']
-html_js_files = ['js/gurubase_2025.03.13.js', 'js/custom_2025.03.14.js']
+html_css_files = [
+    'https://www.itb.ec.europa.eu/files/docs-static/custom.latest.min.css',
+]
+html_js_files = [
+    'https://www.itb.ec.europa.eu/files/docs-static/custom.latest.min.js',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
