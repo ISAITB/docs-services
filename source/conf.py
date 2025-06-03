@@ -24,9 +24,9 @@ copyright = '2025, European Commission, DIGIT'
 author = 'European Commission, DIGIT'
 
 # The short X.Y version
-version = 'GITB services version 1.25.2'
+version = 'GITB services version 1.26.0'
 # The full version, including alpha/beta/rc tags
-release = 'GITB services version 1.25.2'
+release = 'GITB services version 1.26.0'
 
 html_show_sourcelink = False
 html_show_sphinx = False
@@ -95,6 +95,7 @@ html_css_files = [
 html_js_files = [
     'https://www.itb.ec.europa.eu/files/docs-static/custom.latest.min.js',
 ]
+html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
