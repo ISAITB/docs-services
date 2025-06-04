@@ -7,9 +7,26 @@ Welcome to the documentation of the **GITB Test Services**. The GITB specificati
 to extend the Test Bed's capabilities when executing test cases. This documentation provides you with details on how to implement and use such
 services, as well as best practices to consider during development.
 
+Chapter overview
+----------------
+
+.. csv-table::
+   :class: full-width   
+   :header: "Chapter", "Description"
+   :delim: |
+
+   :doc:`introduction/index` | Introducing the GITB test services and their key concepts.
+   :doc:`validation/index` | Defining a custom validation service to handle test case validation needs.
+   :doc:`messaging/index` | Defining a custom messaging service to send and receive messages.
+   :doc:`processing/index` | Defining a custom processing service for custom utility extensions.
+   :doc:`common/index` | Understanding common test service concepts and tasks.
+   :doc:`templates/index` | Using the service generation template to create your test service project.
+   :doc:`changelog/index` | Listing the highlights of the latest GITB services' release and changelog.
+
 .. toctree::
    :maxdepth: 1
    :caption: Table of contents
+   :hidden:
    :includehidden:
 
    introduction/index
