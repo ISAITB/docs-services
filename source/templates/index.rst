@@ -240,19 +240,18 @@ The following simple test case makes use of the template services' sample implem
             <!--
                 Send the message.
             -->
-            <send id="step1" desc="Send message" from="actor1" to="actor2" handler="$DOMAIN{messagingServiceAddress}">
+            <send id="step1" desc="Send message" handler="$DOMAIN{messagingServiceAddress}">
                 <input name="messageToSend">$data{messageToSend}</input>
             </send>
             <!-- 
                 Receive a response message.
                 This is provided by calling http://localhost:8080/input?message=text.
             -->
-            <receive id="step2" desc="Receive message" from="actor2" to="actor1" handler="$DOMAIN{messagingServiceAddress}"/>
+            <receive id="step2" desc="Receive message" handler="$DOMAIN{messagingServiceAddress}"/>
             <!--
                 Convert the received message to uppercase.
             -->
-            <process id="result" handler="$DOMAIN{processingServiceAddress}">
-                <operation>uppercase</operation>
+            <process id="result" handler="$DOMAIN{processingServiceAddress}" operation="uppercase">
                 <input name="input">$step2{messageReceived}</input>
             </process>
             <!--
@@ -261,7 +260,7 @@ The following simple test case makes use of the template services' sample implem
             <verify handler="$DOMAIN{validationServiceAddress}" desc="Validate text">
                 <input name="text">$result{output}</input>
                 <input name="expected">'HELLO!'</input>
-            </verify>		
+            </verify>
         </steps>
     </testcase>
 
