@@ -95,7 +95,6 @@ html_css_files = [
 html_js_files = [
     'https://www.itb.ec.europa.eu/files/docs-static/custom.latest.min.js',
 ]
-html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

@@ -31,15 +31,15 @@ Looking for other documentation related to the Interoperability Test Bed? Follow
 
 .. |case1| raw:: html
 
-   <a href="https://www.itb.ec.europa.eu/docs/tdl/latest/" target="_blank"><img src="_static/itb_gitb_tdl_documentation.png" rel="noopener noreferrer" alt="GITB TDL documentation"/></a>
+   <a href="https://www.itb.ec.europa.eu/docs/tdl/latest/" target="_blank"><img src="https://www.itb.ec.europa.eu/files/docs-static/images/itb_gitb_tdl_documentation.png" rel="noopener noreferrer" alt="GITB TDL documentation"/></a>
 
 .. |case2| raw:: html
 
-   <a href="https://www.itb.ec.europa.eu/docs/guides/latest/" target="_blank"><img src="_static/itb_guides.png" rel="noopener noreferrer" alt="ITB guides"/></a>
+   <a href="https://www.itb.ec.europa.eu/docs/guides/latest/" target="_blank"><img src="https://www.itb.ec.europa.eu/files/docs-static/images/itb_guides.png" rel="noopener noreferrer" alt="ITB guides"/></a>
 
 .. |case3| raw:: html
 
-   <a href="https://www.itb.ec.europa.eu/docs/itb-ta/latest/" target="_blank"><img src="_static/itb_guide_ta.png" rel="noopener noreferrer" alt="User guide (Test Bed administrator)"/></a>
+   <a href="https://www.itb.ec.europa.eu/docs/itb-ta/latest/" target="_blank"><img src="https://www.itb.ec.europa.eu/files/docs-static/images/itb_guide_ta.png" rel="noopener noreferrer" alt="User guide (Test Bed administrator)"/></a>
 
 .. csv-table::
     :widths: 33,33,33
