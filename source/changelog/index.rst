@@ -53,7 +53,7 @@ The following table provides the main highlights introduced in each previous doc
     1.18.0, Test session metadata made available as SOAP header elements., https://www.itb.ec.europa.eu/docs/services/1.18.0/
     1.17.0, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.17.0/
     1.16.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.16.1/
-    1.16.0, Extension of the test bed callback API to allow session log contributions from test services., https://www.itb.ec.europa.eu/docs/services/1.16.0/
+    1.16.0, Extension of the Test Bed callback API to allow session log contributions from test services., https://www.itb.ec.europa.eu/docs/services/1.16.0/
     1.15.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.15.1/
     1.15.0, Service outputs now support flags defining whether they are for display or for recording in the session context., https://www.itb.ec.europa.eu/docs/services/1.15.0/
     1.14.1, Maintenance release with no changes., https://www.itb.ec.europa.eu/docs/services/1.14.1/

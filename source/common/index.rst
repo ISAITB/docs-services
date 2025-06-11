@@ -4,13 +4,13 @@ Common service concepts
 =======================
 
 The available test service types (validation, messaging and processing) differ significantly on their purpose and use. Nonetheless they share certain common 
-concepts that make their use by the test bed consistent. The following points summarise the high-level concepts that are common across service types:
+concepts that make their use by the Test Bed consistent. The following points summarise the high-level concepts that are common across service types:
 
-* All services are **triggered by test bed calls** that are captured with appropriate GITB TDL steps.
+* All services are **triggered by Test Bed calls** that are captured with appropriate GITB TDL steps.
 * A service is identified by setting in the test case its **WSDL URL in a handler attribute**.
 * All services are capable of receiving **input** in the form of parameters and configuration and returning arbitrary **output**.
 * All service APIs foresee a ``getModuleDefinition`` operation that is used to **document the services' use**, notably how to call them and what they return.
-* All services can be called **through the test bed** or **directly via a SOAP web service client**.
+* All services can be called **through the Test Bed** or **directly via a SOAP web service client**.
 * Services are **web applications** that can be as simple or as complicated as needed.
 * **Template services** exist per case to facilitate service development (see :ref:`templates`).
 
@@ -26,7 +26,7 @@ Documenting input and output parameters
 ---------------------------------------
 
 The ``getModuleDefinition`` operation of each service is used to primarily define the inputs the service expects as well as its outputs. Of these, defining 
-the input parameters is of most importance as this determines how the service should be called and, in case it is called by the test bed, serves to proactively
+the input parameters is of most importance as this determines how the service should be called and, in case it is called by the Test Bed, serves to proactively
 check for missing required input. The following example illustrates a service where two inputs are defined:
 
 .. code-block:: java
@@ -57,7 +57,7 @@ a parameter is summarised in the following table.
 .. csv-table::
     :header: "Property", "Description"
 
-    name, The name of the parameter. This will be used to identify it both when calling via the test bed as well as in standalone calls.
+    name, The name of the parameter. This will be used to identify it both when calling via the Test Bed as well as in standalone calls.
     type, The type of the parameter corresponding to one of the `GITB types`_ that can be used in test cases.
     use, Whether or not the parameter is required (``UsageEnumeration.R``) or optional (``UsageEnumeration.O``).
     kind, The way in which the input parameter is configured. This can always be set to ``ConfigurationType.SIMPLE``.
@@ -181,7 +181,7 @@ All services are used to return outputs to the test session that is calling them
   * Validation services return a validation report from their :ref:`validation__operations__validate` operation that may contain an arbitrary set of outputs as its context (see :ref:`common__tar`).
   * Processing services receive input and produce output through their :ref:`processing__operations__process` operation.
   * Messaging services return output in the case of the :ref:`messaging__operations__send` operation for any information that is useful to report (e.g. the message sent, a synchronous response).
-    The :ref:`messaging__operations__receive` operation does not return output itself but received content is returned to the test bed asynchronously through the ``notifyForMessage`` call-back (see :ref:`messaging__callbacks`).
+    The :ref:`messaging__operations__receive` operation does not return output itself but received content is returned to the Test Bed asynchronously through the ``notifyForMessage`` call-back (see :ref:`messaging__callbacks`).
 
 Service outputs are provided using the ``AnyContent`` class. In the case of processing services this is a ``List`` of ``AnyContent`` objects that is provided directly on 
 the ``ProcessResponse`` class, whereas for messaging and validation services ``AnyContent`` objects are passed through the ``TAR`` report's ``context`` property (see :ref:`common__tar`).
@@ -370,7 +370,7 @@ the step's ``id`` to record its output. The `verify`_ step on the other hand ign
     </verify>
     ...
 
-In this example the `receive`_ step results in the test bed being notified by the relevant messaging service. This service has returned as output a ``map`` with one 
+In this example the `receive`_ step results in the Test Bed being notified by the relevant messaging service. This service has returned as output a ``map`` with one 
 element named "data" that contains the file bytes. Given that the `receive`_ step has an ``id`` of "receiveOutput" the test session context now includes a key
 with this value that refers to the returned output. In the subsequent `process`_ step the file content is referred to with the ``$receiveOutput{data}`` expression (see 
 the `GITB TDL expression documentation`_ for details) when this is passed as the "inputFile" input of the "convert" operation. The result of the `process`_ step, in this case a ``map``
@@ -399,7 +399,7 @@ processing output with ``$dataToValidate``. Although such naming may seem trivia
 directly use values in `templates`_ where the naming of session context variables needs to match the template's placeholders.
 
 The third example that follows assumes that the validation service returns alongside its validation report a calculated digest value and size for the validated file. These
-can be leveraged in the test by setting the ``output`` attribute on the `verify`_ step. Doing this instructs the test bed to record the returned validation report's context in
+can be leveraged in the test by setting the ``output`` attribute on the `verify`_ step. Doing this instructs the Test Bed to record the returned validation report's context in
 the session context apart from just using it for display purposes:
 
 .. code-block:: xml
@@ -437,13 +437,13 @@ The ``TAR`` report (short for "Test Assertion Report") is a class used to return
 
     * By validation services to return the validation result from the :ref:`validation__operations__validate` operation (the GITB TDL `verify`_ step).
     * By messaging services to return output from the :ref:`messaging__operations__send` operation (the GITB TDL `send`_ step) as well as the asynchronously returned 
-      content relevant to the `receive`_ and `listen`_ steps, returned to the test bed through the ``notifyForMessage`` call-back operation
+      content relevant to the `receive`_ and `listen`_ steps, returned to the Test Bed through the ``notifyForMessage`` call-back operation
       (see :ref:`messaging__callbacks`).
     * By processing services to return a "success" or "failure" status from the :ref:`processing__operations__process` operation (the GITB TDL `process`_ step).
 
 The information included in the ``TAR`` report can be split in three main sections:
 
-    * The ``context``, where arbitrary data can be added to be returned to the test bed.
+    * The ``context``, where arbitrary data can be added to be returned to the Test Bed.
     * The ``reports``, containing individual items for errors, warnings and information messages (if applicable).
     * The general information on the report's ``date``, overall ``result`` and report ``counters`` (the latter if applicable).
 
@@ -486,7 +486,7 @@ When constructing the ``BAR`` instance for a report item you can set the propert
     location, no, An indication of the relevant location in the validated content to highlight in relation to the report item. This is an arbitrary text that should make sense to the validation client.
 
 .. note::
-    **Highlighting a report item's location in the test bed:** When displaying a `verify`_ step's result, the GITB test bed leverages the ``location`` property of a 
+    **Highlighting a report item's location in the Test Bed:** When displaying a `verify`_ step's result, the GITB Test Bed leverages the ``location`` property of a 
     report item to open a code editor at the specified location with the relevant message displayed in-lined. This is possible for text-based validated content, for which 
     you need to do the following:
 
@@ -565,7 +565,7 @@ To present a simpler case of report construction you can consider the following 
         return report;
     }
 
-In this example we pass back the message received to the test bed along with an overall "success" result and timestamp. The test session will show the corresponding GITB TDL step 
+In this example we pass back the message received to the Test Bed along with an overall "success" result and timestamp. The test session will show the corresponding GITB TDL step 
 as successful and will expose the received content in the test session context for subsequent use (see :ref:`common__using_output` for details).
 
 Finally, the simplest kind of report is the one returned from reporting services as in this case the report itself is not used to return output. In this case the only requirements
@@ -593,7 +593,7 @@ Unexpected service errors can be handled in two ways:
     * They can be simply left uncaught, resulting in a SOAP fault.
     * They can be caught and signalled by returning the output ``TAR`` report with result ``TestResultType.FAILURE``.
 
-Both approaches will result in the test bed displaying the relevant GITB TDL step as failed. The approach of returning a ``TAR`` report with a ``TestResultType.FAILURE`` result
+Both approaches will result in the Test Bed displaying the relevant GITB TDL step as failed. The approach of returning a ``TAR`` report with a ``TestResultType.FAILURE`` result
 could be interesting if you want to return additional information regarding the error. This approach is possible for services linked to GITB TDL steps that are visually presented, 
 i.e. those of validation and messaging services.
 
@@ -604,13 +604,13 @@ Contributing to test session logs
 
 Test services, apart from :ref:`returning outputs<common__returning_output>` and :ref:`reports<common__tar>` to test sessions, can also contribute entries 
 to their **log outputs**. Each test session generates a log consisting of progress messages that complement its test execution diagram as a means of providing
-additional feedback to testers. Logged messages are generated automatically by the test bed but can also be explicitly added by means of the 
+additional feedback to testers. Logged messages are generated automatically by the Test Bed but can also be explicitly added by means of the 
 `GITB TDL log step`_. All messages come with a severity level, ranging from debug and information messages to warnings and errors.
 
 As an alternative or complement to using the `GITB TDL log step`_ you can also have your custom test services contribute log entries. This could be done to 
 add additional information on processing taking place within the test service, or to provide feedback to the user in case the test execution
 diagram is not sufficient. Contributing log entries is supported for all types of custom test services (:ref:`validation<validation>`, :ref:`messaging<messaging>` and 
-:ref:`processing<processing>` services) and is achieved by making a web service call on the **log operation** of the test bed's SOAP API.
+:ref:`processing<processing>` services) and is achieved by making a web service call on the **log operation** of the Test Bed's SOAP API.
 
 The **log operation**, is separately defined per type of service but in all cases expects as parameters:
 
@@ -618,34 +618,34 @@ The **log operation**, is separately defined per type of service but in all case
     * The **message** to add as a text.
     * The message's severity **level** (``ERROR``, ``WARNING``, ``INFO`` or ``DEBUG``).
 
-It is important to note that the session ID is not necessarily the ID of the test session as defined within the test bed, but rather the session ID that the
+It is important to note that the session ID is not necessarily the ID of the test session as defined within the Test Bed, but rather the session ID that the
 test service uses to manage its state. Specifically, this is:
 
-    * For :ref:`validation services<validation>` the actual test session ID used in the test bed.
+    * For :ref:`validation services<validation>` the actual test session ID used in the Test Bed.
     * For :ref:`messaging services<messaging>` the session ID returned with the output of the :ref:`initiate<messaging__operations__initiate>` operation.
     * For :ref:`processing services<processing>` the session ID returned with the output of the :ref:`beginTransaction<processing__operations__beginTransaction>` operation.
 
-This session ID is included in all calls made by the test bed to the test service, allowing the test service to use it when making the call to add log entries
-to the test session. It is the test bed that then maps these session IDs to the test sessions that are to be updated.
+This session ID is included in all calls made by the Test Bed to the test service, allowing the test service to use it when making the call to add log entries
+to the test session. It is the Test Bed that then maps these session IDs to the test sessions that are to be updated.
 
 Regarding the content log message to add, this is a simple text that will be added as-is to the test session log. It is interesting to note that when using the 
 `GITB TDL log step`_ within a test case, you can use `expressions`_ to dynamically produce the log entry, referring for example to variables recorded in the test
 session's context. Using similar expressions in logging via test services is not supported. In other words, the provided message is considered as a simple text, 
 not as an expression to evaluate.
 
-Finally, it is important to explain how to determine the address of the test bed's endpoint that receives log contents. The test service needs to determine this
-given that log entries are not communicated as synchronous responses to received test bed calls. In fact, log entries should ideally be handled in an asynchronous
-manner to avoid blocking the service's main processing (e.g. the validation of inputs for a validation service). The approach followed to determine the test bed's
-logging endpoint is to use `WS-Addressing`_ whereby the test bed includes a specific SOAP header with a reply address whenever it calls the test service. When 
-developing the test service you thus have two approaches available to determine the test bed's endpoint address:
+Finally, it is important to explain how to determine the address of the Test Bed's endpoint that receives log contents. The test service needs to determine this
+given that log entries are not communicated as synchronous responses to received Test Bed calls. In fact, log entries should ideally be handled in an asynchronous
+manner to avoid blocking the service's main processing (e.g. the validation of inputs for a validation service). The approach followed to determine the Test Bed's
+logging endpoint is to use `WS-Addressing`_ whereby the Test Bed includes a specific SOAP header with a reply address whenever it calls the test service. When 
+developing the test service you thus have two approaches available to determine the Test Bed's endpoint address:
 
     * Lookup the `WS-Addressing`_ header and use its value as the endpoint address.
-    * Skip the dynamic lookup by simply adding the test bed's endpoint address to the service's configuration.
+    * Skip the dynamic lookup by simply adding the Test Bed's endpoint address to the service's configuration.
 
 Using `WS-Addressing`_ makes this process transparent and never needs updates for address changes. In addition, it permits the same test service instance to be 
-used at the same time by multiple test bed instances if this is needed. If you choose to simply define the test bed callback address as part of the service's
+used at the same time by multiple Test Bed instances if this is needed. If you choose to simply define the Test Bed callback address as part of the service's
 configuration, you need to ensure that the configured value is the final address to be used by the service, catering for things such as reverse proxies and Docker
-container names. Assuming the test bed is running without a proxy, on your localhost and with default port mappings (i.e. its a development instance) the default
+container names. Assuming the Test Bed is running without a proxy, on your localhost and with default port mappings (i.e. its a development instance) the default
 endpoints are:
 
     * http://localhost:8080/itbsrv/ValidationClient when called from a validation service.
@@ -655,11 +655,11 @@ endpoints are:
 In case your test service is not of a single service type (e.g. it is used both for validation and messaging, implementing both service APIs) you can use any
 of these endpoints to send log messages. You need to make sure however that the endpoint you use corresponds to the operation for which you are adding a log entry
 and the session ID communicated as input to that operation. For example, if you want to log something relevant to a validation call you should use the session ID
-received in the validation call's inputs and pass it to the test bed's endpoint for validation services. Not doing so, e.g. using the validation input's session ID
-with the test bed's endpoint for messaging services, will most likely result in the log message being ignored due to the target test session not being found.
+received in the validation call's inputs and pass it to the Test Bed's endpoint for validation services. Not doing so, e.g. using the validation input's session ID
+with the Test Bed's endpoint for messaging services, will most likely result in the log message being ignored due to the target test session not being found.
 
 .. note::
-    Using `WS-Addressing`_ to determine the test bed's endpoint address is also done when :ref:`messaging services<messaging>` make 
+    Using `WS-Addressing`_ to determine the Test Bed's endpoint address is also done when :ref:`messaging services<messaging>` make 
     :ref:`asynchronous callbacks<messaging__callbacks>` to signal received messages to test sessions.
 
 Illustrating the above, the following example considers a processing service for which we log the requested operations of **process** calls. 
@@ -722,15 +722,15 @@ Illustrating the above, the following example considers a processing service for
 Retrieving test session metadata
 --------------------------------
 
-Calls made by the test bed to test services take place in the context of test sessions. In all service calls the
-test bed includes metadata on the relevant test session as **SOAP header elements**, making it available to the service
+Calls made by the Test Bed to test services take place in the context of test sessions. In all service calls the
+Test Bed includes metadata on the relevant test session as **SOAP header elements**, making it available to the service
 in case this is needed. Information on the test session is included in the SOAP header to avoid overburdening the operations'
 inputs, given that test session information is typically not needed in most scenarios.
 
 All metadata elements included in the SOAP header are simple text values and use the namespace ``http://www.gitb.com``.
 The included elements are as follows:
 
-* ``TestSessionIdentifier``: The session identifier as defined within the test bed. For :ref:`messaging<messaging>` 
+* ``TestSessionIdentifier``: The session identifier as defined within the Test Bed. For :ref:`messaging<messaging>` 
   and :ref:`processing<processing>` services, this will likely differ from the session identifier included as input in
   operations given that the value of this is generated by the service itself.
 * ``TestCaseIdentifier``: The identifier of the test case that relates to the test session that can serve to
@@ -748,7 +748,7 @@ The included elements are as follows:
     or for all services' :ref:`getModuleDefinition<messaging__operations__getModuleDefinition>` operation.
 
 The use cases for such metadata are varied. For example using the ``TestSessionIdentifier`` could be interesting for
-logging purposes if you would want to match the identifiers used within the test bed itself. On the other hand using 
+logging purposes if you would want to match the identifiers used within the Test Bed itself. On the other hand using 
 the ``TestCaseIdentifier`` and ``TestStepIdentifier`` could prove useful if your service uses them to determine the
 operations to carry out (e.g. a data generation template defined as a resource within the test service).
 
@@ -839,7 +839,7 @@ implementing your service's operations as as follows:
     }
 
 .. note::
-    **Accessing metadata within test cases:** The test bed also makes accessible test session metadata directly in test cases.
+    **Accessing metadata within test cases:** The Test Bed also makes accessible test session metadata directly in test cases.
     The test session identifier, test case identifier and test engine version can also be
     `accessed through the test session context <https://www.itb.ec.europa.eu/docs/tdl/latest/expressions/index.html#accessing-test-session-metadata>`_.
 

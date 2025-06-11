@@ -54,7 +54,7 @@ Service operations
 .. note::
     **Service WSDLs and XSDs:** The WSDL and XSD for validation services are listed in the :ref:`specification reference section<introduction__specification_links>`.
 
-The following figure illustrates the operations that a validation service needs to implement and their use by the test bed.
+The following figure illustrates the operations that a validation service needs to implement and their use by the Test Bed.
 
 .. figure:: ValidationService.png
   :align: center
@@ -92,10 +92,10 @@ validation service.
 
 This operation is the first one to be called when using the service in a standalone manner as it allows the caller to figure out the
 inputs it expects. The validation service API defines generally how inputs are passed but not how many in this specific case nor the 
-name and value of each one. When used by the test bed this operation is also important as it determines:
+name and value of each one. When used by the Test Bed this operation is also important as it determines:
 
   * The types of expected inputs. This enables automatic type conversions when passing the call's parameters.
-  * The mandatory inputs. The test bed checks that all required inputs are accounted for before calling the :ref:`validation__operations__validate` operation
+  * The mandatory inputs. The Test Bed checks that all required inputs are accounted for before calling the :ref:`validation__operations__validate` operation
     to fail quickly without an unnecessary service call.
 
 The following example shows a complete implementation of the ``getModuleDefinition`` operation.
@@ -187,7 +187,7 @@ Apart from fully implementing the expected web service operations, the validatio
   * The name of the service port must be "ValidationServicePort".
   * The namespace must be set to "http://www.gitb.com/vs/v1/".
 
-Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
+Failure to do so will result in the Test Bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
 could be done in a `Spring`_ implementation using `CXF`_:
 
 .. code-block:: java

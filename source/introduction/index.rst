@@ -14,8 +14,8 @@ What are the GITB service specifications?
 -----------------------------------------
 
 The `GITB project`_ represents a CEN standardisation initiative funded by the European Commission’s DG GROW 
-to provide the specifications for a generic interoperability test bed and their implementation in the form 
-of the GITB test bed software. The focus of these specifications and software is not any kind of testing 
+to provide the specifications for a generic interoperability Test Bed and their implementation in the form 
+of the GITB Test Bed software. The focus of these specifications and software is not any kind of testing 
 (e.g. performance, regression, penetration) but rather conformance and interoperability testing. Simply
 put, *conformance testing* verifies that the requirements of a given specification are met, whereas
 *interoperability testing* comes as a second step to verify that two or more parties can interact as expected.
@@ -23,17 +23,17 @@ Furthermore, the focus here is on technical specifications related to e.g. messa
 whereas the parties previously mentioned would typically be software components.
 
 A key element of the GITB specifications is the set of **GITB test service APIs**. These are SOAP web service
-interfaces (defined using WSDLs and XSDs) that allow extension of the core GITB test bed software by means of
+interfaces (defined using WSDLs and XSDs) that allow extension of the core GITB Test Bed software by means of
 decoupled components that offer domain-specific capabilities. Such capabilities may be specific to a given 
-project's testing needs and would not be offered by the test bed out of the box, such as the handling of a custom 
+project's testing needs and would not be offered by the Test Bed out of the box, such as the handling of a custom 
 communication protocol or the validation of arbitrary content. The purpose of the GITB test service APIs is to 
-define a common interface between such components and the test bed so that they can interact in a consistent 
+define a common interface between such components and the Test Bed so that they can interact in a consistent 
 manner as part of test cases.
 
 Currently three types of services are defined:
 
   * **Validation services:** Used to validate content and produce a validation report.
-  * **Messaging services:** Used to send and receive content to and from the test bed using an arbitrary communication protocol.
+  * **Messaging services:** Used to send and receive content to and from the Test Bed using an arbitrary communication protocol.
   * **Processing services:** Used as utility functions to process input and produce output.
 
 .. note::
@@ -46,11 +46,11 @@ Currently three types of services are defined:
 Where are they used?
 ~~~~~~~~~~~~~~~~~~~~
 
-The short answer is that the GITB test services are used by the GITB test bed software (or another test bed implementation 
+The short answer is that the GITB test services are used by the GITB Test Bed software (or another Test Bed implementation 
 based on its specifications) to extend its capabilities.
 
 Keep in mind however that these test services are simply SOAP web services that use a specific API. As such, they could be
-used independently of the test bed by any SOAP client; the use of a common API serves in this case to allow service
+used independently of the Test Bed by any SOAP client; the use of a common API serves in this case to allow service
 calls to be consistent and share the same semantics. In practice, messaging and processing services are not typically
 used in a standalone manner as they are really focused on making additional capabilities available to test sessions. Validation 
 services however, given also the simplicity of the involved API, are good candidates for independent use. It is often
@@ -144,7 +144,7 @@ Once actors are defined they play an important role in the testing process as fo
 
 * They define properties relevant to the testing (think of them as actor-specific configuration elements). Such properties
   are grouped into **endpoints**, named configuration sets that can be referenced in test cases.
-* Each test case foresees that actors are either simulated by the test bed or are the focus of the test. In the latter case
+* Each test case foresees that actors are either simulated by the Test Bed or are the focus of the test. In the latter case
   they are referred to as having a role of **SUT** (System Under Test).
 
 .. index:: Service handlers
@@ -155,7 +155,7 @@ Service handlers
 
 **Service handlers** are effectively synonymous to the GITB test services. They represent from the perspective of a given test case
 the implementation to carry out specific validation, messaging or processing steps. The distinction here is that the implementation of 
-these handlers could also be a component, embedded within the test bed software itself, that implements the same operations but is 
+these handlers could also be a component, embedded within the Test Bed software itself, that implements the same operations but is 
 called locally. Such embedded implementations are of course limited to truly generic capabilities that are commonly required.
 
 More information on service handlers and embedded ones in particular can be looked up in the `GITB TDL documentation`_.
@@ -165,25 +165,25 @@ More information on service handlers and embedded ones in particular can be look
 Test service architecture
 -------------------------
 
-A good way of better understanding how GITB test services are used is to consider the test bed as a *test-oriented Enterprise Service Bus (ESB)*. 
+A good way of better understanding how GITB test services are used is to consider the Test Bed as a *test-oriented Enterprise Service Bus (ESB)*. 
 This is illustrated in the following diagram:
 
 .. figure:: SOA.png
   :align: center
   :figclass: no-bottom-margin
 
-  Use of test services by the test bed
+  Use of test services by the Test Bed
 
-Testers use the test bed through its user interface to lookup and execute one or more test cases. These test cases are authored in the `GITB TDL`_
+Testers use the Test Bed through its user interface to lookup and execute one or more test cases. These test cases are authored in the `GITB TDL`_
 and capture the testing logic as a sequence of steps, certain of which may need validation, processing or messaging that is not natively supported by 
-the test bed. The test case developer may delegate the implementation of such a step to an external service that implements the relevant interface by
+the Test Bed. The test case developer may delegate the implementation of such a step to an external service that implements the relevant interface by
 providing the service's WSDL file address as the value for the step's ``handler`` attribute.
 
 .. code-block:: xml
 
     <!--
       Validation using an embedded validation handler.
-      Lookup "StringValidator" as an embedded validator component within the test bed.
+      Lookup "StringValidator" as an embedded validator component within the Test Bed.
     -->
     <verify handler="StringValidator" desc="Check string">
         <input name="actualstring">$aString</input>
@@ -199,17 +199,17 @@ providing the service's WSDL file address as the value for the step's ``handler`
 
 From the test case's perspective there is no difference between an embedded and remote handler apart from the value for the ``handler`` attribute.
 The actions to prepare, call, and post-process the relevant step (`verify`_ in the above example) are identical. The only difference is 
-that the test bed, when executing the step, calls the same method signatures replacing what would be local method invocations with remote SOAP web 
+that the Test Bed, when executing the step, calls the same method signatures replacing what would be local method invocations with remote SOAP web 
 service calls.
 
-Decoupled test services are ideally suited to bring domain-specific logic to the test bed and also to extend its capabilities without impacting its operation.
-Simply put, if you need to perform arbitrary processing on content and then validate it in a specific way, you can set this up in services that the test bed can 
-immediately start using. The test bed acts as the orchestrator of service calls and other test case steps, following the description laid out in the GITB TDL test case
+Decoupled test services are ideally suited to bring domain-specific logic to the Test Bed and also to extend its capabilities without impacting its operation.
+Simply put, if you need to perform arbitrary processing on content and then validate it in a specific way, you can set this up in services that the Test Bed can 
+immediately start using. The Test Bed acts as the orchestrator of service calls and other test case steps, following the description laid out in the GITB TDL test case
 it is executing. In addition, it adds the test session context as an overarching construct that brings meaning and a persistent conversional state to otherwise 
 one-off service calls: you can process content in one step, save the result in the test session context, and then several steps later you can retrieve it to use for
 further processing, messaging of validation. In short:
 
-  * The **test bed** executes test sessions, orchestrates service calls and adds context over steps.
+  * The **Test Bed** executes test sessions, orchestrates service calls and adds context over steps.
   * **Test services** add new capabilities on-the-fly to cover domain-specific needs.
 
 .. _introduction__test_service_campaign:
@@ -217,18 +217,18 @@ further processing, messaging of validation. In short:
 Test services as part of a testing campaign
 -------------------------------------------
 
-To better understand how test services fit within the test bed it is useful to consider how they would be approached as part of the overall setup of a project's 
+To better understand how test services fit within the Test Bed it is useful to consider how they would be approached as part of the overall setup of a project's 
 testing campaign. From a high-level perspective, setting up the conformance testing for a project would involve the following steps:
 
-  #. Create and customise the project's domain, specification(s) and community in the test bed (see the `domain management`_ and `community management`_ user guide sections for details).
+  #. Create and customise the project's domain, specification(s) and community in the Test Bed (see the `domain management`_ and `community management`_ user guide sections for details).
   #. Determine what the project's users are expected to test for. This will help identify the specification actors and notably the actors to be simulated and 
      the one(s) representing the System Under Test (SUT).
   #. Determine the overall structure of test cases (e.g. what messaging is involved, what is validated), the different types of test cases (e.g. tests where the SUT
      sends messages versus tests where it receives them) and their organisation in test suites.
-  #. Check the existing capabilities of the test bed and the GITB TDL (by consulting the `available TDL constructs`_ and `embedded service handlers`_) to see if all identified testing needs can be covered.
+  #. Check the existing capabilities of the Test Bed and the GITB TDL (by consulting the `available TDL constructs`_ and `embedded service handlers`_) to see if all identified testing needs can be covered.
   #. Address missing capabilities by designing GITB-compliant test services. Implement and test these services to ensure they fully match the project's testing needs and
      actual specifications.
-  #. Develop the GITB TDL test cases making use of the implemented test services and deploy them to the test bed in appropriate test suites.
+  #. Develop the GITB TDL test cases making use of the implemented test services and deploy them to the Test Bed in appropriate test suites.
   #. Create organisation accounts for the project's users to begin testing.
 
 It is important to consider test services as a tool rather than a requirement. The fact that a project foresees the exchange of messages between different parties does not
@@ -244,8 +244,8 @@ easier updating of the validation artefacts through the single centralised servi
 
 .. note::
     **XML validation:** Given the frequent need of validating XML content using XSDs and Schematrons (and the frequent mistakes that come up in custom validator implementations),
-    the test bed offers an existing GITB-compliant XML validation service that can be easily setup to cover your needs. More information on setting up this service and a
-    comparison with the embedded `XSDValidator`_ and `SchematronValidator`_ are available in the test bed's `XML validation guide`_.
+    the Test Bed offers an existing GITB-compliant XML validation service that can be easily setup to cover your needs. More information on setting up this service and a
+    comparison with the embedded `XSDValidator`_ and `SchematronValidator`_ are available in the Test Bed's `XML validation guide`_.
 
 .. index:: GITB
 .. _introduction__specification_links:
@@ -269,11 +269,11 @@ messaging, processing and validation services as well as the XSDs for all GITB t
   GITB validation service types, The XSD defining the validation service message types, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/schema/gitb_vs.xsd
   GITB processing service API, The WSDL defining processing service operations, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/wsdl/gitb_ps.wsdl
   GITB processing service types, The XSD defining the processing service message types, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/schema/gitb_ps.xsd
-  GITB test bed service API, The WSDL defining test bed service operations, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/wsdl/gitb_tbs.wsdl
-  GITB test bed service types, The XSD defining the test bed service message types, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/schema/gitb_tbs.xsd
+  GITB Test Bed service API, The WSDL defining Test Bed service operations, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/wsdl/gitb_tbs.wsdl
+  GITB Test Bed service types, The XSD defining the Test Bed service message types, https://github.com/ISAITB/gitb-types/blob/master/gitb-types-specs/src/main/resources/schema/gitb_tbs.xsd
 
 .. note::
-  **Prebuilt Java classes for WSDLs and XSDs:** The test bed maintains the `gitb-types Java library on Maven Central <https://search.maven.org/artifact/eu.europa.ec.itb/gitb-types>`_
+  **Prebuilt Java classes for WSDLs and XSDs:** The Test Bed maintains the `gitb-types Java library on Maven Central <https://search.maven.org/artifact/eu.europa.ec.itb/gitb-types>`_
   which includes the classes and service stubs corresponding to the WSDLs and XSDs. The WSDLs and XSDs themselves are also included in this library.
 
   For more information on this library and its available variants, check :ref:`common__gitb-types`.

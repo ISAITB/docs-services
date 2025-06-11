@@ -3,9 +3,9 @@
 Processing services
 ===================
 
-**GITB processing services** are used to extend the capabilities of the test bed with domain-specific processing functions.
+**GITB processing services** are used to extend the capabilities of the Test Bed with domain-specific processing functions.
 If a utility function is needed that is not supported natively or is too complex to realise with existing GITB TDL 
-constructs, you can add it to the test bed on-the-fly by means of a processing service. Their purpose is to receive inputs and produce outputs
+constructs, you can add it to the Test Bed on-the-fly by means of a processing service. Their purpose is to receive inputs and produce outputs
 through one or more defined operations.
 
 Processing services foresee the definition of **processing transactions**, which can be considered as potentially long-running
@@ -79,7 +79,7 @@ Service operations
 .. note::
     **Service WSDLs and XSDs:** The WSDL and XSD for processing services are listed in the :ref:`specification reference section<introduction__specification_links>`.
 
-The following figure illustrates the operations that a processing service needs to implement and their use by the test bed.
+The following figure illustrates the operations that a processing service needs to implement and their use by the Test Bed.
 
 .. figure:: ProcessingService.png
   :align: center
@@ -174,7 +174,7 @@ zero or more configuration properties that could be specific to the transaction 
 across operations it can completely ignore transactions, leaving the implementation of the ``beginTransaction`` operation empty.
 
 In case maintaining state is meaningful, the processing service is expected to create a session and return its identifier as part of the operation's response. This session is not related
-to the test session running in the test bed but is rather used only for the internal purposes of the processing service. What the test bed guarantees is that the 
+to the test session running in the Test Bed but is rather used only for the internal purposes of the processing service. What the Test Bed guarantees is that the 
 identifier that is assigned to this session will be provided back to the processing service as part of every relevant call.
 
 When the processing service wants to maintain transaction/session state it will typically do the following steps in the ``beginTransaction`` operation:
@@ -184,7 +184,7 @@ When the processing service wants to maintain transaction/session state it will 
        in-memory in a thread-safe map construct or even in a database.
     #. Return the identifier as part of the response.
 
-You also have the option of not returning a specific session identifier here in which case the test bed will consider the overall test session identifier instead. 
+You also have the option of not returning a specific session identifier here in which case the Test Bed will consider the overall test session identifier instead. 
 The difference in this last case is that you will register new sessions during the :ref:`process<processing__operations__process>` operation when a new session ID is encountered.
 
 An example implementation from a session-aware processing service is provided in the following code block:
@@ -366,7 +366,7 @@ Apart from implementing the expected web service operations, the processing serv
   * The name of the service port must be "ProcessingServicePort".
   * The namespace must be set to "http://www.gitb.com/ps/v1/".
 
-Failure to do so will result in the test bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
+Failure to do so will result in the Test Bed not being able to correctly lookup the endpoint to call. The following example illustrates how this 
 could be done in a `Spring`_ implementation using `CXF`_:
 
 .. code-block:: java
@@ -526,7 +526,7 @@ Using the service standalone
 ----------------------------
 
 Processing services can also be called in a standalone manner to perform processing actions. You may want to do this if the processing logic you have implemented
-for use by the test bed is also useful to you outside the context of a test session.
+for use by the Test Bed is also useful to you outside the context of a test session.
 
 In case your service makes use of transactions/sessions you will first need to create one:
 
