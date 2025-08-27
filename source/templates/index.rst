@@ -62,7 +62,7 @@ To generate a new service follow these steps:
 
 .. code-block:: none
 
-    mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-test-service" "-DarchetypeVersion=1.27.3"
+    mvn archetype:generate "-DarchetypeGroupId=eu.europa.ec.itb" "-DarchetypeArtifactId=template-test-service" "-DarchetypeVersion=1.27.4"
 
 This will download and run the project generation process. Provide the following values for the requested properties:
 
@@ -82,7 +82,7 @@ You should now see output similar to the following:
 
     ...
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: template-test-service:1.27.3
+    [INFO] Using following parameters for creating project from Archetype: template-test-service:1.27.4
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: org.test
     [INFO] Parameter: artifactId, Value: test-services
