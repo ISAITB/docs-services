@@ -24,9 +24,9 @@ copyright = '2025, European Commission, DIGIT'
 author = 'European Commission, DIGIT'
 
 # The short X.Y version
-version = 'GITB services version 1.27.4'
+version = 'GITB services version 1.28.0'
 # The full version, including alpha/beta/rc tags
-release = 'GITB services version 1.27.4'
+release = 'GITB services version 1.28.0'
 
 html_show_sourcelink = False
 html_show_sphinx = False
