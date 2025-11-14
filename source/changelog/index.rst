@@ -9,7 +9,7 @@ Release numbers follow **global numbering** covering all Test Bed components, me
 actually introduced changes to the GITB service APIs. The current page lists only the releases that introduced changes, whereas
 those not included are global maintenance releases that made no changes to the APIs.
 
-The latest release of the GITB test service APIs is **1.28.2**.
+The latest release of the GITB test service APIs is **1.28.3**.
 
 Release 1.25.0 - 31/01/2025
 ---------------------------
