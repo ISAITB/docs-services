@@ -34,3 +34,7 @@ This is then used as "sphinx_rtd_theme"
 
 To generate the HTML documentation issue (from the current folder): `make html`. The output is stored in folder "build"
 To fully cleanup the produced documentation: `make clean`.
+
+## Licence
+
+The sources in this repository are published under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) licence.
